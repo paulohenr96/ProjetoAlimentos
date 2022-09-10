@@ -47,8 +47,9 @@ public class FiltroLogin extends HttpFilter implements Filter {
 
 		// pass the request along the filter chain
 		String user=(String) session.getAttribute("user");
+		System.out.println("Filtro:"+user);
 		if (user==null && !urlParaAutentificar.equalsIgnoreCase("/servletlogin")) {
-			request.getRequestDispatcher("index.jsp").forward(servletRequest, response);
+			request.getRequestDispatcher("/index.jsp").forward(servletRequest, response);
 		}
 		else {
 			

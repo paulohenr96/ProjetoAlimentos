@@ -5,8 +5,11 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="projeto-alimentos">
 			<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+			
 	
 		<class>model.ModelUsuario</class>
+				<class>model.ModelAlimento</class>
+		
 		<properties>
 		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/projetoalimentos"/>
 		<property name="javax.persistence.jdbc.user" value="postgres"/>
