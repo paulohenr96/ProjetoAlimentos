@@ -7,17 +7,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.DAOGeneric;
+import model.ModelUsuario;
+
 /**
- * Servlet implementation class ServletLogin
+ * Servlet implementation class ServletCadastro
  */
-@WebServlet("/ServletLogin")
-public class ServletLogin extends HttpServlet {
+@WebServlet("/ServletCadastro")
+public class ServletCadastro extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ServletLogin() {
+    public ServletCadastro() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,26 +38,45 @@ public class ServletLogin extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+		
+		String nome = request.getParameter("nome");
+		String sobreNome = request.getParameter("sobrenome");
 		String login = request.getParameter("login");
+		String email = request.getParameter("email");
 		String senha = request.getParameter("senha");
+		String confirmaSenha = request.getParameter("confirmasenha");
 		
 		
-		System.out.println("Login : "+login);
-		System.out.println("Senha : "+senha);
-	
-		
-		if (login==null || senha==null || !login.equals("admin") || !senha.equals("admin")) {
-			System.out.println("Nao admin.");
-			request.getSession().setAttribute("msg", "Usuario e senha incorretos.");
+		if (!senha.equals(confirmaSenha)) {
+			request.getSession().setAttribute("msg", "As senhas não coincidem.");
+			request.getRequestDispatcher("cadastrar.jsp").forward(request, response);
+		}else if (login.equals("admin")) {
+			request.getSession().setAttribute("msg", "Login inválido.");
+			request.getRequestDispatcher("cadastrar.jsp").forward(request, response);
+
+
+		}else {
+			ModelUsuario model=new ModelUsuario();
+			model.setEmail(email);
+			model.setNome(nome);
+			model.setSobreNome(sobreNome);
+			model.setLogin(login);
+			
+			DAOGeneric<ModelUsuario> dao=new DAOGeneric<ModelUsuario>();
+			dao.salvar(model);
 			request.getRequestDispatcher("index.jsp").forward(request, response);
 
 		}
-		else {
-			System.out.println("Admin");
-			request.getSession().setAttribute("user","admin");
-			request.getRequestDispatcher("principal/paginainicial.jsp").forward(request, response);
-		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
 	}
 
 }
