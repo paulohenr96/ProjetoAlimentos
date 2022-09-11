@@ -10,14 +10,11 @@ public class JPAUtil {
 	
 	
 	static {
-		try {
 			if (factory==null) {
+				System.out.println("Factory JPAUTIL ESTATICO");
 				factory= Persistence.createEntityManagerFactory("projeto-alimentos");
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
 	}
 	
 	public static EntityManager getEntityManager() {

@@ -48,10 +48,8 @@ public class ServletCadastro extends HttpServlet {
 		
 		
 		if (!senha.equals(confirmaSenha)) {
-			request.getSession().setAttribute("msg", "As senhas não coincidem.");
 			request.getRequestDispatcher("cadastrar.jsp").forward(request, response);
 		}else if (login.equals("admin")) {
-			request.getSession().setAttribute("msg", "Login inválido.");
 			request.getRequestDispatcher("cadastrar.jsp").forward(request, response);
 
 

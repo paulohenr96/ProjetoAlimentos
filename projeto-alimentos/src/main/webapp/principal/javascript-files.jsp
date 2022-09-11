@@ -30,4 +30,7 @@
     <script type="text/javascript" src="<%=request.getContextPath() %>/assets/pages/dashboard/custom-dashboard.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath() %>/assets/js/script.js "></script>
     <script type="text/javascript" src="<%=request.getContextPath() %>/assets/js/jquery.maskMoney.min.js"></script>
-   
+            <script type="text/javascript" src="<%=request.getContextPath() %>/assets/js/datatables-simple-demo.js"></script>
+    
+   <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
+	crossorigin="anonymous"></script>
