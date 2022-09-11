@@ -114,51 +114,73 @@
 					<!-- 							</table> -->
 					<!-- 						</div> -->
 					<!-- 					</div> -->
-			<c:if test="${not empty todos}">
-					<table class="table table-hover">
-						<thead>
-							<tr>
+					<c:if test="${not empty todos}">
+						<table class="table table-hover">
+							<thead>
+								<tr>
 
-								<th>Nome</th>
-								<th>Porcao</th>
-								<th>Calorias</th>
-								<th>P</th>
-								<th>C</th>
-								<th>G</th>
+									<th>Nome</th>
+									<th>Porcao</th>
+									<th>Calorias</th>
+									<th>P</th>
+									<th>C</th>
+									<th>G</th>
 
-							</tr>
-
-						</thead>
-						<tbody>
-							<c:forEach items="${todos}" var="ali">
-								<tr onclick="pegarAlimento(${ali.id})">
-									<td>${ali.nome}</td>
-									<td>${ali.porcao}</td>
-									<td>${ali.caloria }</td>
-									<td>${ali.proteina}</td>
-									<td>${ali.carboidrato}</td>
-									<td>${ali.gordura}</td>
 								</tr>
-							</c:forEach>
-						</tbody>
-					</table>
-					<nav aria-label="Page navigation example">
-						<ul class="pagination justify-content-end">
-							<li class="page-item disabled"><a class="page-link">Previous</a>
-							</li>
-							<c:forEach begin="1" end="${totalpaginas}" step="1" var="p">
-								<c:if test="${p==paginaatual}">
-								<li class="page-item"><a class="page-link" autofocus="autofocus" href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${p}">${p}</a></li>
+
+							</thead>
+							<tbody>
+								<c:forEach items="${todos}" var="ali">
+									<tr onclick="pegarAlimento(${ali.id})">
+										<td>${ali.nome}</td>
+										<td>${ali.porcao}</td>
+										<td>${ali.caloria }</td>
+										<td>${ali.proteina}</td>
+										<td>${ali.carboidrato}</td>
+										<td>${ali.gordura}</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+						<nav aria-label="Page navigation example">
+							<ul class="pagination justify-content-end">
+
+								<c:if test="${paginaatual!=1 }">
+									<li class="page-item ">
 								</c:if>
-								
-								<c:if test="${p!=paginaatual}">
-								<li class="page-item"><a class="page-link"  href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${p}">${p}</a></li>
+								<c:if test="${paginaatual==1 }">
+									<li class="page-item disabled">
 								</c:if>
-							</c:forEach>
-							<li class="page-item"><a class="page-link" href="#">Next</a>
-							</li>
-						</ul>
-					</nav>
+								<a
+									href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${paginaatual-1}"
+									class="page-link">Previous</a>
+
+								</li>
+
+								<c:forEach begin="1" end="${totalpaginas}" step="1" var="p">
+									<c:if test="${p==paginaatual}">
+										<li class="page-item"><a class="page-link"
+											autofocus="autofocus"
+											href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${p}">${p}</a></li>
+									</c:if>
+
+									<c:if test="${p!=paginaatual}">
+										<li class="page-item"><a class="page-link"
+											href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${p}">${p}</a></li>
+									</c:if>
+								</c:forEach>
+								<c:if test="${totalpaginas!=paginaatual}">
+									<li class="page-item">
+								</c:if>
+								<c:if test="${totalpaginas==paginaatual}">
+									<li class="page-item disabled">
+								</c:if>
+								<a class="page-link"
+									href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${paginaatual+1}">Next</a>
+
+								</li>
+							</ul>
+						</nav>
 					</c:if>
 				</div>
 			</main>

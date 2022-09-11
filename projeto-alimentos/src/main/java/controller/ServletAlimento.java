@@ -48,8 +48,8 @@ public class ServletAlimento extends HttpServlet {
 			request.setAttribute("todos", todos);
 			request.setAttribute("totalpaginas", totalPaginas);
 			request.setAttribute("paginaatual", paginaAtual);
-
-
+			
+			
 
 			
 			request.getRequestDispatcher("/principal/alimentos.jsp").forward(request, response);
