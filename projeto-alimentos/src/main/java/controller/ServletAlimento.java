@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,9 +33,15 @@ public class ServletAlimento extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String acao = request.getParameter("acao");
+		DAOGeneric<ModelAlimento> dao=new DAOGeneric<ModelAlimento>();
+
 		
-		if (acao!=null && acao.equalsIgnoreCase("adicionaralimento")) {
+		if (acao!=null && acao.equalsIgnoreCase("mostrartodosalimentos")) {
 			
+			List<ModelAlimento> todos = dao.consultarTodos(ModelAlimento.class);
+			System.out.println(todos);
+			request.getRequestDispatcher("/principal/alimentos.jsp").forward(request, response);
+
 		}
 	
 
@@ -70,7 +78,7 @@ public class ServletAlimento extends HttpServlet {
 		
 		
 		dao.salvar(modelAlimento);
-		request.getRequestDispatcher("principal/alimentos.jsp").forward(request, response);
+		request.getRequestDispatcher("/principal/alimentos.jsp").forward(request, response);
 	}
 
 }

@@ -1,5 +1,7 @@
 package dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
@@ -17,6 +19,14 @@ public class DAOGeneric <E>{
 		
 		entityManager.close();
 	
+	}
+	
+	public List<E> consultarTodos (Class<E> e){
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		List<E> list =entityManager.createQuery("from "+e.getCanonicalName()).getResultList();
+		return list;
 	}
 	
 

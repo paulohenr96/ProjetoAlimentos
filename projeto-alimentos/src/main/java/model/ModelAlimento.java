@@ -60,5 +60,10 @@ public double getGordura() {
 public void setGordura(double gordura) {
 	this.gordura = gordura;
 }
+@Override
+public String toString() {
+	return "ModelAlimento [id=" + id + ", nome=" + nome + ", porcao=" + porcao + ", caloria=" + caloria + ", proteina="
+			+ proteina + ", carboidrato=" + carboidrato + ", gordura=" + gordura + "]";
+}
 	
 }

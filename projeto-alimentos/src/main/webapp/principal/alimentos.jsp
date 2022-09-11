@@ -69,6 +69,8 @@
 						</div>
 						<button type="submit" class="btn btn-success"
 							>Adicionar</button>
+						<button type="button" onclick="mostrarTodosAlimentos()" class="btn btn-primary">Mostrar Todos</button>
+						
 					</form>
 
 				</div>
@@ -103,13 +105,13 @@
 	<jsp:include page="javascript-files.jsp"></jsp:include>
 
 	<script type="text/javascript">
-		function addAlimento() {
+		function mostrarTodosAlimentos() {
 			document.getElementById("form-user").method = "get";
-			document.getElementById("acao").value = "adicionaralimento";
+			var urlAction=document.getElementById("form-user").action;
 
+			window.location.href = urlAction + "?acao=mostrartodosalimentos";
 
-			document.getElementById("form-user").submit();
-
+		
 		}
 	</script>
 </body>

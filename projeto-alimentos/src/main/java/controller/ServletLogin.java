@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class ServletLogin
  */
-@WebServlet("/ServletLogin")
+@WebServlet(urlPatterns = {"/ServletLogin","/principal/ServletLogin"})
 public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -27,7 +27,13 @@ public class ServletLogin extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+
+	String acao=request.getParameter("acao");
+	if (acao!=null && acao.equals("logout")) {
+		System.out.println("logout");
+		request.getSession().invalidate();
+		request.getRequestDispatcher("index.jsp").forward(request, response);
+	}
 	}
 
 	/**
@@ -47,12 +53,13 @@ public class ServletLogin extends HttpServlet {
 		if (login==null || senha==null || !login.equals("admin") || !senha.equals("admin")) {
 			System.out.println("Nao admin.");
 			request.getSession().setAttribute("msg", "Usuario e senha incorretos.");
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+			request.getRequestDispatcher("/index.jsp").forward(request, response);
 
 		}
 		else {
 			System.out.println("Admin");
 			request.getSession().setAttribute("user","admin");
+			System.out.println(request.getContextPath());
 			request.getRequestDispatcher("principal/paginainicial.jsp").forward(request, response);
 		}
 	}
