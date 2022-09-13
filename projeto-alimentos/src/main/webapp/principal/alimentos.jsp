@@ -15,7 +15,13 @@
 <title>Sidenav Light - SB Admin</title>
 <link href="<%=request.getContextPath()%>/assets/css/styles.css"
 	rel="stylesheet" />
+<style>
 
+.table tr:hover {
+	cursor:pointer;
+}
+
+</style>
 
 
 </head>
@@ -33,111 +39,91 @@
 			<main>
 
 				<div class="container-sm" style="width: 80%">
+
 					<form method="post"
 						action="<%=request.getContextPath()%>/ServletAlimento"
 						id="form-user">
 						<input type="hidden" id="acao" name="acao" value="">
 
 						<h1>Alimentos</h1>
-
 						<div class="mb-2">
-							<label for="formGroupExampleInput" class="form-label">Nome</label>
-							<input type="text" class="form-control"
-								id="formGroupExampleInput" name="nome"
+							<label for="id" class="form-label">ID</label> <input type="text"
+								readonly="readonly" class="form-control" id="id" name="id"
 								placeholder="Example input placeholder">
 						</div>
 						<div class="mb-2">
-							<label for="formGroupExampleInput2" class="form-label">Porção</label>
-							<input type="text" class="form-control" required
-								id="formGroupExampleInput2" name="porcao"
-								placeholder="Another input placeholder">
+							<label for="nome" class="form-label">Nome</label> <input
+								type="text" class="form-control" id="nome" name="nome"
+								placeholder="Example input placeholder">
 						</div>
 						<div class="mb-2">
-							<label for="formGroupExampleInput2" class="form-label">Caloria</label>
-							<input type="text" class="form-control" required
-								id="formGroupExampleInput2" name="caloria"
-								placeholder="Another input placeholder">
+							<label for="porcao" class="form-label">Porção</label> <input
+								type="text" class="form-control" required id="porcao"
+								name="porcao" placeholder="Another input placeholder">
 						</div>
 						<div class="mb-2">
-							<label for="formGroupExampleInput2" class="form-label">Proteina</label>
-							<input type="text" class="form-control" required
-								id="formGroupExampleInput2" name="proteina"
-								placeholder="Another input placeholder">
+							<label for="caloria" class="form-label">Caloria</label> <input
+								type="text" class="form-control" required id="caloria"
+								name="caloria" placeholder="Another input placeholder">
 						</div>
 						<div class="mb-2">
-							<label for="formGroupExampleInput2" class="form-label">Carboidrato</label>
-							<input type="text" class="form-control" required
-								id="formGroupExampleInput2" name="carboidrato"
-								placeholder="Another input placeholder">
+							<label for="proteina" class="form-label">Proteina</label> <input
+								type="text" class="form-control" required id="proteina"
+								name="proteina" placeholder="Another input placeholder">
 						</div>
 						<div class="mb-2">
-							<label for="formGroupExampleInput2" class="form-label">Gordura</label>
-							<input type="text" class="form-control" required
-								id="formGroupExampleInput2" name="gordura"
-								placeholder="Another input placeholder">
+							<label for="carboidrato" class="form-label">Carboidrato</label> <input
+								type="text" class="form-control" required id="carboidrato"
+								name="carboidrato" placeholder="Another input placeholder">
+						</div>
+						<div class="mb-2">
+							<label for="gordura" class="form-label">Gordura</label> <input
+								type="text" class="form-control" required id="gordura"
+								name="gordura" placeholder="Another input placeholder">
 						</div>
 						<button type="submit" class="btn btn-success">Adicionar</button>
+
 						<button type="button" onclick="mostrarTodosAlimentos()"
 							class="btn btn-primary">Mostrar Todos</button>
+						<button type="button" onclick="editarAlimento()"
+							class="btn btn-secondary">Editar</button>
+
 
 					</form>
-					<!-- 					<div class="card mb-4"> -->
-					<!-- 						<div class="card-header"> -->
-					<!-- 							<i class="fas fa-table me-1"></i> DataTable Example -->
-					<!-- 						</div> -->
-					<!-- 						<div class="card-body"> -->
-					<!-- 							<table id="datatablesSimple"> -->
-					<!-- 								<thead> -->
-					<!-- 									<tr> -->
-					<!-- 										<th>Nome</th> -->
-					<!-- 										<th>Porcao</th> -->
-					<!-- 										<th>Calorias</th> -->
-					<!-- 										<th>P</th> -->
-					<!-- 										<th>C</th> -->
-					<!-- 										<th>G</th> -->
-					<!-- 									</tr> -->
+					<c:if test="${not empty msg }">
+						<div style="margin-top:10px" class="alert alert-info" role="alert">${msg}</div>
 
-					<!-- 								</thead> -->
+					</c:if>
 
-					<!-- 								<tbody> -->
-					<%-- 									<c:forEach items="${todos}" var="ali"> --%>
-					<%-- 										<tr  onclick="pegarAlimento(${ali.id})" > --%>
-					<%-- 											<td>${ali.nome}</td> --%>
-					<%-- 											<td>${ali.porcao}</td> --%>
-					<%-- 											<td>${ali.caloria }</td> --%>
-					<%-- 											<td>${ali.proteina}</td> --%>
-					<%-- 											<td>${ali.carboidrato}</td> --%>
-					<%-- 											<td>${ali.gordura}</td> --%>
-					<!-- 										</tr> -->
-					<%-- 									</c:forEach> --%>
-					<!-- 								</tbody> -->
-					<!-- 							</table> -->
-					<!-- 						</div> -->
-					<!-- 					</div> -->
 					<c:if test="${not empty todos}">
 						<table class="table table-hover">
 							<thead>
 								<tr>
-
+									<th>ID</th>
 									<th>Nome</th>
 									<th>Porcao</th>
 									<th>Calorias</th>
 									<th>P</th>
 									<th>C</th>
 									<th>G</th>
+									<th>Remover</th>
 
 								</tr>
 
 							</thead>
 							<tbody>
 								<c:forEach items="${todos}" var="ali">
-									<tr onclick="pegarAlimento(${ali.id})">
+									<tr id="${ali.id}" onclick="pegarAlimento(${ali.id})">
+										<td>${ali.id}</td>
+
 										<td>${ali.nome}</td>
 										<td>${ali.porcao}</td>
 										<td>${ali.caloria }</td>
 										<td>${ali.proteina}</td>
 										<td>${ali.carboidrato}</td>
 										<td>${ali.gordura}</td>
+										<td><button type="button" onclick="deletarId(${ali.id})" class="btn btn-danger btn-sm">Excluir</button>
+										</td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -221,8 +207,33 @@
 		}
 		
 		function pegarAlimento(alimento){
-			alert(alimento);
+			var linha=document.getElementById(alimento);
+			document.getElementById("id").value=alimento;
+
+			document.getElementById("nome").value=linha.cells[1].innerHTML;
+			document.getElementById("porcao").value=linha.cells[2].innerHTML;
+			document.getElementById("caloria").value=linha.cells[3].innerHTML;
+			document.getElementById("proteina").value=linha.cells[4].innerHTML;
+			document.getElementById("carboidrato").value=linha.cells[5].innerHTML;
+			document.getElementById("gordura").value=linha.cells[6].innerHTML;
+
+			
 		}
+		
+		function editarAlimento(){
+			document.getElementById("form-user").method = "get";
+			document.getElementById("acao").value = "editar";
+			document.getElementById("form-user").submit();
+		}
+		function deletarId(id){
+			document.getElementById("form-user").method = "get";
+			var urlAction = document.getElementById("form-user").action;
+
+			window.location.href = urlAction + "?acao=deletarId&paginaatual=1&idalimento="+id;
+
+		}
+		
+		
 	</script>
 </body>
 </html>
