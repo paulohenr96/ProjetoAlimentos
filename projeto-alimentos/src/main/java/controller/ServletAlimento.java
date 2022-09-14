@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.DAOGeneric;
 import model.ModelAlimento;
+import model.ModelConsumidoDia;
 
 /**
  * Servlet implementation class ServletAlimento
@@ -131,11 +133,28 @@ public class ServletAlimento extends HttpServlet {
 			request.setAttribute("msg","Clique no Alimento para Editar");
 	
 			request.getRequestDispatcher("/principal/refeicoes.jsp").forward(request, response);
+		}else if (acao!=null && acao.equalsIgnoreCase("alimentoconsumido")) {
+			Long id=Long.parseLong(request.getParameter("id"));
+			int quantidade=Integer.parseInt(request.getParameter("quantidade"));
+			ModelAlimento alimento = dao.buscarUsandoID(id,ModelAlimento.class).consumir(quantidade);
+			
+			Date data=new Date();
+			System.out.println(data);		
+			ModelConsumidoDia dia=new ModelConsumidoDia();
+			dia.setData(data);
+			DAOGeneric<ModelConsumidoDia> dao2=new DAOGeneric<ModelConsumidoDia>();
+			
+			dao2.salvar(dia);
+			response.getWriter().write(alimento.toString());
+
 		}
+		
+		
 
 	
 
 	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

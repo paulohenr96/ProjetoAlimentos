@@ -7,13 +7,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.DAOGeneric;
+import model.ModelUsuario;
+
 /**
  * Servlet implementation class ServletLogin
  */
 @WebServlet(urlPatterns = { "/ServletLogin", "/principal/ServletLogin" })
 public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private DAOGeneric<ModelUsuario> dao=new DAOGeneric<>();
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -53,18 +56,23 @@ public class ServletLogin extends HttpServlet {
 		System.out.println("Senha : " + senha);
 		String url="";
 		String msg = "";
-		if (login != null && senha != null && login.equals("admin") && senha.equals("admin")) {
-			System.out.println("Admin");
+		ModelUsuario user=new ModelUsuario();
+		
+		user.setLogin(login);
+		user.setSenha(senha);
+		System.out.println("Usuario tentando logar : "+user);
+		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && dao.autentificar(user)!=null ) {
+			System.out.println("Logado");
 			request.getSession().setAttribute("user", "admin");
+
 			System.out.println(request.getContextPath());
 			
 			
 			request.getRequestDispatcher("/principal/paginainicial.jsp").forward(request, response);
 
 		} else {
-			System.out.println("Nao admin.");
 
-			msg = "Usuario e senha incorretos.";
+			msg = "Usuario e senopkpokha incorretos.";
 			request.setAttribute("msg", msg);
 			request.getRequestDispatcher("/index.jsp").forward(request, response);
 

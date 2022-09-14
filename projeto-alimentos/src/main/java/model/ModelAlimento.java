@@ -1,12 +1,14 @@
 package model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class ModelAlimento {
+public class ModelAlimento implements Serializable {
 	
 @Id
 @GeneratedValue (strategy=GenerationType.AUTO)
@@ -59,6 +61,15 @@ public double getGordura() {
 }
 public void setGordura(double gordura) {
 	this.gordura = gordura;
+}
+public ModelAlimento consumir(int quantidade) {
+	double k=quantidade/porcao;
+	
+	proteina*=k;
+	caloria*=k;
+	gordura*=k;
+	carboidrato*=k;
+	return this;
 }
 @Override
 public String toString() {

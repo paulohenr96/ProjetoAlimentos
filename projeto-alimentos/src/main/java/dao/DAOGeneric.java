@@ -21,7 +21,22 @@ public class DAOGeneric<E> {
 		entityManager.close();
 
 	}
-
+	public ModelUsuario autentificar(ModelUsuario m) {
+		
+		if (contarLogin(m)==0) {
+			return null;
+		}
+		
+		EntityManager manager = JPAUtil.getEntityManager();
+		
+		manager.getTransaction().begin();
+		
+		return (ModelUsuario) manager
+				.createQuery("from ModelUsuario where login=:login and senha=:senha")
+				.setParameter("login", m.getLogin())
+				.setParameter("senha", m.getSenha())
+				.getSingleResult();
+	}
 	public void merge(E entidade) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
@@ -99,6 +114,25 @@ public class DAOGeneric<E> {
 		transaction.commit();
 		entityManager.close();
 		return total;
+	}
+	public Long contarLogin(ModelUsuario m) {
+		EntityManager manager = JPAUtil.getEntityManager();
+		manager.getTransaction().begin();
+		Long singleResult =(Long) manager.createQuery("select count(1) from "+m.getClass().getCanonicalName() +" where upper(login)=upper('"+m.getLogin()+"') and upper(senha)=upper('"+m.getSenha()+"')")
+				.getSingleResult();
+		
+		
+		manager.getTransaction().commit();
+		manager.close();
+		return singleResult;
+	}
+	public E buscarUsandoID(Long id,Class<E> e) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		E find = entityManager.find(e, id);
+		transaction.commit();
+		return find;
 	}
 
 }
