@@ -61,10 +61,11 @@ public class ServletLogin extends HttpServlet {
 		user.setLogin(login);
 		user.setSenha(senha);
 		System.out.println("Usuario tentando logar : "+user);
-		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && dao.autentificar(user)!=null ) {
+		ModelUsuario modelUsuario = dao.autentificar(user);
+		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && modelUsuario!=null ) {
 			System.out.println("Logado");
-			request.getSession().setAttribute("user", "admin");
-
+			request.getSession().setAttribute("user", modelUsuario.getLogin());
+			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
 			System.out.println(request.getContextPath());
 			
 			

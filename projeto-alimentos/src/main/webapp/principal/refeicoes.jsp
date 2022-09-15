@@ -68,21 +68,23 @@
 
 
 
-					<button type="button" onclick="mostrarAlimentoConsumido()" class="btn btn-warning">Adicionar</button>
+					<button type="button" onclick="mostrarAlimentoConsumido()"
+						class="btn btn-warning">Adicionar</button>
 
 
 
-<table id="lista-alimentos" class="table table-hover">
-	<thead>
-	<tr>
-	<td>#</td>
-	<td>Nome</td>
-	<td>Quantidade</td>
-	</tr>
-	
-	</thead>
+					<table id="lista-alimentos" class="table table-hover">
+						<thead>
+							<tr>
+								<td>#</td>
+								<td>Nome</td>
+								<td>Quantidade</td>
+								<td>Remover</td>
+							</tr>
 
-</table>
+						</thead>
+
+					</table>
 
 
 
@@ -240,10 +242,10 @@
 			</footer>
 		</div>
 	</div>
-	
-	
-		<jsp:include page="javascript-files.jsp"></jsp:include>
-	
+
+
+	<jsp:include page="javascript-files.jsp"></jsp:include>
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
@@ -301,6 +303,28 @@
 			document.getElementById("idselecionado").value=id;
 
 		}
+		function removerAlimento(id,quantidade){
+			 var urlAction = document.getElementById("form-user").action;
+
+			  if (
+			    id != null &&
+			    id != ""
+			  ) {
+			    $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "id=" + id + "&acao=removeralimentoconsumido&quantidade="+quantidade,
+			      success: function (response, textStatus, xhr) {
+			        alert(response);
+			        document.getElementById("comido"+id).remove();
+			      },
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+			  }
+			}
+
+		
 		
 		
 		function adicionar(){
@@ -308,8 +332,12 @@
 			var id=document.getElementById("idselecionado").value;
 			var quantidade=document.getElementById("quantidade").value;
 			var lista=document.getElementById("lista-alimentos");
-			lista.innerHTML+="  <tr><td>"+id+"</td><td>"+nome+"</td><td>"+quantidade+"</td></tr>";
+			var botao="<button onclick=\"removerAlimento("+id+","+quantidade+")\"type=\"button\" class=\"btn btn-danger\">Danger</button>";
+
+			var string="<tr id=\"comido"+id+"\"><td>"+id+"</td><td>"+nome+"</td><td>"+quantidade+"</td><td>"+botao+"</td></tr>";
 			
+			lista.innerHTML+=string;
+
 		}
 		
 		</script>

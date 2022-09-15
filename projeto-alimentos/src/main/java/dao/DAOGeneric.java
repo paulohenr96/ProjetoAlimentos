@@ -1,11 +1,18 @@
 package dao;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 import model.ModelAlimento;
+import model.ModelConsumidoDia;
 import model.ModelUsuario;
 import util.JPAUtil;
 
@@ -23,19 +30,22 @@ public class DAOGeneric<E> {
 	}
 	public ModelUsuario autentificar(ModelUsuario m) {
 		
-		if (contarLogin(m)==0) {
+		ModelUsuario user=new ModelUsuario();
+		try {
+			EntityManager manager = JPAUtil.getEntityManager();
+			
+			manager.getTransaction().begin();
+			
+			user=	(ModelUsuario) manager
+					.createQuery("from ModelUsuario where login=:login and senha=:senha")
+					.setParameter("login", m.getLogin())
+					.setParameter("senha", m.getSenha())
+					.getSingleResult();	
+		}catch(NoResultException e) {
 			return null;
 		}
+		return user;
 		
-		EntityManager manager = JPAUtil.getEntityManager();
-		
-		manager.getTransaction().begin();
-		
-		return (ModelUsuario) manager
-				.createQuery("from ModelUsuario where login=:login and senha=:senha")
-				.setParameter("login", m.getLogin())
-				.setParameter("senha", m.getSenha())
-				.getSingleResult();
 	}
 	public void merge(E entidade) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
@@ -118,7 +128,8 @@ public class DAOGeneric<E> {
 	public Long contarLogin(ModelUsuario m) {
 		EntityManager manager = JPAUtil.getEntityManager();
 		manager.getTransaction().begin();
-		Long singleResult =(Long) manager.createQuery("select count(1) from "+m.getClass().getCanonicalName() +" where upper(login)=upper('"+m.getLogin()+"') and upper(senha)=upper('"+m.getSenha()+"')")
+		Long singleResult =(Long) manager.createQuery("select count(1) from "+m.getClass().getCanonicalName() +" where upper(login)=upper(:login)")
+				.setParameter("login",m.getLogin())
 				.getSingleResult();
 		
 		
@@ -133,6 +144,40 @@ public class DAOGeneric<E> {
 		E find = entityManager.find(e, id);
 		transaction.commit();
 		return find;
+	}
+	
+	public ModelConsumidoDia consultarConsumoDia(Date date, Long idLogado) {
+		try {
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			String format = dateFormat.format(date);
+			
+			EntityManager entityManager = JPAUtil.getEntityManager();
+			EntityTransaction transaction = entityManager.getTransaction();
+			transaction.begin();
+			System.out.println(format);
+			ModelConsumidoDia m = (ModelConsumidoDia) entityManager.createQuery("from ModelConsumidoDia where data=:data and usuario_id=:id")
+					.setParameter("id",idLogado)
+					.setParameter("data", dateFormat.parse(format))
+					.getSingleResult();
+			transaction.commit();
+			entityManager.close();
+			return m;
+
+		}catch (NoResultException e) {
+			System.out.println("sem resultado:"+e.getMessage());
+			return null;
+		} 
+		catch (NonUniqueResultException e) {
+			System.out.println("Multiplo resultados :"+e.getMessage());
+
+			return null;
+		}catch(ParseException e) {
+			e.printStackTrace();
+			return null;
+
+		}
+
 	}
 
 }

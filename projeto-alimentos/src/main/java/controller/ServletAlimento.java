@@ -1,6 +1,10 @@
 package controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.DAOGeneric;
 import model.ModelAlimento;
 import model.ModelConsumidoDia;
+import model.ModelUsuario;
 
 /**
  * Servlet implementation class ServletAlimento
@@ -23,7 +28,7 @@ import model.ModelConsumidoDia;
 @WebServlet("/ServletAlimento")
 public class ServletAlimento extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private DAOGeneric<ModelAlimento> dao=new DAOGeneric<ModelAlimento>();
+    private DAOGeneric dao=new DAOGeneric();
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -136,17 +141,70 @@ public class ServletAlimento extends HttpServlet {
 		}else if (acao!=null && acao.equalsIgnoreCase("alimentoconsumido")) {
 			Long id=Long.parseLong(request.getParameter("id"));
 			int quantidade=Integer.parseInt(request.getParameter("quantidade"));
-			ModelAlimento alimento = dao.buscarUsandoID(id,ModelAlimento.class).consumir(quantidade);
+			ModelAlimento alimento =((ModelAlimento) dao.buscarUsandoID(id,ModelAlimento.class)).consumir(quantidade);
 			
-			Date data=new Date();
-			System.out.println(data);		
+			
 			ModelConsumidoDia dia=new ModelConsumidoDia();
-			dia.setData(data);
-			DAOGeneric<ModelConsumidoDia> dao2=new DAOGeneric<ModelConsumidoDia>();
+			Long idLogado=(Long)request.getSession().getAttribute("IDLogado");
 			
-			dao2.salvar(dia);
+			
+			dia.setUsuario((ModelUsuario)dao.buscarUsandoID(idLogado, ModelUsuario.class));
+			Date data=new Date();
+			dia.setData(data);
+			dia.adicionarAlimento(alimento);
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			String format = dateFormat.format(data);
+			Date data2=null;
+
+			try {
+				data2=dateFormat.parse(format);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(data2,idLogado);
+
+			
+			if (consumoDia!=null) {
+				System.out.println("Ja tem !!!!!");
+				consumoDia.adicionarAlimento(alimento);
+				dao.merge(consumoDia);
+			}else {
+				dao.salvar(dia);
+
+			}
 			response.getWriter().write(alimento.toString());
 
+		} else if (acao!=null && acao.equalsIgnoreCase("removeralimentoconsumido")) {
+			Long id=Long.parseLong(request.getParameter("id"));
+			int quantidade=Integer.parseInt(request.getParameter("quantidade"));
+			ModelAlimento alimento =((ModelAlimento) dao.buscarUsandoID(id,ModelAlimento.class)).consumir(quantidade);
+			ModelConsumidoDia dia=new ModelConsumidoDia();
+			Long idLogado=(Long)request.getSession().getAttribute("IDLogado");
+			
+			
+			dia.setUsuario((ModelUsuario)dao.buscarUsandoID(idLogado, ModelUsuario.class));
+			Date data=new Date();
+			dia.setData(data);
+			dia.adicionarAlimento(alimento);
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			String format = dateFormat.format(data);
+			Date data2=null;
+
+			try {
+				data2=dateFormat.parse(format);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(data2,idLogado);
+			consumoDia.retirarAlimento(alimento);
+			
+			dao.merge(consumoDia);
+//
+			response.getWriter().write("oi");
+
+			
 		}
 		
 		

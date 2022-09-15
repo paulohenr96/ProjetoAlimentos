@@ -46,10 +46,12 @@ public class ServletCadastro extends HttpServlet {
 		String senha = request.getParameter("senha");
 		String confirmaSenha = request.getParameter("confirmasenha");
 		
-		
 		if (!senha.equals(confirmaSenha)) {
-			request.getRequestDispatcher("cadastrar.jsp").forward(request, response);
-		}else {
+			request.getRequestDispatcher("registrar.jsp").forward(request, response);
+		}
+		
+		
+		else {
 			ModelUsuario model=new ModelUsuario();
 			model.setEmail(email);
 			model.setNome(nome);
@@ -57,9 +59,18 @@ public class ServletCadastro extends HttpServlet {
 			model.setLogin(login);
 			model.setSenha(senha);
 			DAOGeneric<ModelUsuario> dao=new DAOGeneric<ModelUsuario>();
-			dao.salvar(model);
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+			if (dao.contarLogin(model)>0) {
+				
+				
+				request.getRequestDispatcher("registrar.jsp").forward(request, response);
 
+				
+			}else {
+				dao.salvar(model);
+				request.getRequestDispatcher("index.jsp").forward(request, response);
+	
+			}
+			
 		}
 		
 		
