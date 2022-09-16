@@ -30,6 +30,24 @@
 
 			<main>
 				<div class="container-fluid px-4">
+
+					<table class="table table-borderless">
+						<thead>
+							<tr>
+								<th>Caloria</th>
+								<th>Proteina</th>
+								<th>Carboidrato</th>
+								<th>Gordura</th>
+							</tr>
+						</thead>
+						<tr>
+							<td id="data-caloria"></td>
+							<td id="data-proteina"></td>
+							<td id="data-carboidrato"></td>
+							<td id="data-gordura"></td>
+						</tr>
+					</table>
+
 					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
 
 					<form id="form-user"
@@ -70,6 +88,7 @@
 
 					<button type="button" onclick="mostrarAlimentoConsumido()"
 						class="btn btn-warning">Adicionar</button>
+					<button type="button" onclick="zerarCalorias()" class="btn btn-primary">Limpar</button>
 
 
 
@@ -270,7 +289,7 @@
 			  var idselecionado = document.getElementById("idselecionado").value;
 			  var quantidade=document.getElementById("quantidade").value;
 			  var urlAction = document.getElementById("form-user").action;
-
+				alert(urlAction);
 			  if (
 			    idselecionado != null &&
 			    idselecionado != "" &&
@@ -281,8 +300,15 @@
 			      url: urlAction,
 			      data: "id=" + idselecionado + "&acao=alimentoconsumido&quantidade="+quantidade,
 			      success: function (response, textStatus, xhr) {
+			    	  
+			    		var json = JSON.parse(response);
+						document.getElementById("data-caloria").innerHTML=json.calorias;
+						document.getElementById("data-proteina").innerHTML=json.proteinas;
+						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
+						document.getElementById("data-gordura").innerHTML=json.gordura;
+
+						console.log(json);
 			        adicionar();
-			        alert(response);
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
 			      alert("Error ao buscar usuário por nome" + xhr.responseText);
@@ -308,6 +334,7 @@
 
 			  if (
 			    id != null &&
+			    
 			    id != ""
 			  ) {
 			    $.ajax({
@@ -315,8 +342,15 @@
 			      url: urlAction,
 			      data: "id=" + id + "&acao=removeralimentoconsumido&quantidade="+quantidade,
 			      success: function (response, textStatus, xhr) {
-			        alert(response);
-			        document.getElementById("comido"+id).remove();
+						var json = JSON.parse(response);
+
+						console.log(json);
+						document.getElementById("data-caloria").innerHTML=json.calorias;
+						document.getElementById("data-proteina").innerHTML=json.proteinas;
+						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
+						document.getElementById("data-gordura").innerHTML=json.gordura;
+						
+						document.getElementById("comido"+id).remove();
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
 			      alert("Error ao buscar usuário por nome" + xhr.responseText);
@@ -338,6 +372,10 @@
 			
 			lista.innerHTML+=string;
 
+		}
+		
+		function zerarCalorias(){
+			
 		}
 		
 		</script>

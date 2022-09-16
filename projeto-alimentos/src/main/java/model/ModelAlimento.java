@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,10 +16,20 @@ public class ModelAlimento implements Serializable {
 
 private Long id;
 private String nome;
+
+@Column(precision=10, scale=2)
 private double porcao;
+
+@Column(precision=10, scale=2)
 private double caloria;
+
+@Column(precision=10, scale=2)
 private double proteina;
+
+@Column(precision=10, scale=2)
 private double carboidrato;
+
+@Column(precision=10, scale=2)
 private double gordura;
 public Long getId() {
 	return id;

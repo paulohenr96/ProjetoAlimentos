@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,10 +31,19 @@ public class ModelConsumidoDia implements Serializable{
 	@Basic
 	@Temporal(TemporalType.DATE)
 	private Date data;
+	
+	@Column(precision=10, scale=2)
 	private double calorias;
+	
+	@Column(precision=10, scale=2)
 	private double proteinas;
+	
+	@Column(precision=10, scale=2)
 	private double carboidrato;
+
+	@Column(precision=10, scale=2)
 	private double gordura;
+	
 	public Long getId() {
 		return id;
 	}

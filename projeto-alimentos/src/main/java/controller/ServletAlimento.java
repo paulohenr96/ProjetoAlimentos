@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import beanDTO.GraficoMacros;
 import dao.DAOGeneric;
 import model.ModelAlimento;
 import model.ModelConsumidoDia;
@@ -173,7 +176,11 @@ public class ServletAlimento extends HttpServlet {
 				dao.salvar(dia);
 
 			}
-			response.getWriter().write(alimento.toString());
+			ObjectMapper mapper = new ObjectMapper();
+
+			String json = mapper.writeValueAsString(consumoDia);
+
+			response.getWriter().write(json);
 
 		} else if (acao!=null && acao.equalsIgnoreCase("removeralimentoconsumido")) {
 			Long id=Long.parseLong(request.getParameter("id"));
@@ -201,10 +208,54 @@ public class ServletAlimento extends HttpServlet {
 			consumoDia.retirarAlimento(alimento);
 			
 			dao.merge(consumoDia);
-//
-			response.getWriter().write("oi");
+			ObjectMapper mapper = new ObjectMapper();
+
+			String json = mapper.writeValueAsString(consumoDia);
+
+			response.getWriter().write(json);
 
 			
+		}else if (acao!=null && acao.equalsIgnoreCase("historico")) {
+			Long idLogado=(Long)request.getSession().getAttribute("IDLogado");
+
+			List<ModelConsumidoDia> lista=dao.consultarTodos(ModelConsumidoDia.class,idLogado);
+			request.setAttribute("lista", lista);
+			request.getRequestDispatcher("/principal/historico.jsp").forward(request, response);
+
+		}else if (acao!=null && acao.equalsIgnoreCase("mostrargrafico")) {
+			String macro=request.getParameter("macro");
+			Long idLogado=(Long)request.getSession().getAttribute("IDLogado");
+
+			List<ModelConsumidoDia> lista=dao.consultarTodos(ModelConsumidoDia.class,idLogado);
+			
+			
+			
+			GraficoMacros graficoMacros=new GraficoMacros();
+			
+			lista.forEach(e->{
+
+				graficoMacros.getListaCalorias().add(e.getCalorias());
+				graficoMacros.getListaData().add(e.getData());
+				graficoMacros.getListaProteinas().add(e.getProteinas());
+				graficoMacros.getListaCarboidratos().add(e.getCarboidrato());
+				graficoMacros.getListaGorduras().add(e.getGordura());
+
+			});
+			
+			
+			
+			ObjectMapper mapper = new ObjectMapper();
+
+			
+			
+			
+			String json = mapper.writeValueAsString(graficoMacros);
+
+			
+				
+			
+			response.getWriter().write(json);
+
 		}
 		
 		

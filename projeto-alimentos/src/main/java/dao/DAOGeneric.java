@@ -66,6 +66,15 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
+	public List<E> consultarTodos(Class<E> e,Long userLogado) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		List<E> list = entityManager.createQuery("from " + e.getCanonicalName()+" where usuario_id="+userLogado).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
 
 	public List<E> consultarTodosPaginado(Class<E> e, int porPagina, int paginaAtual) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
