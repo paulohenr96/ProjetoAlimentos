@@ -125,17 +125,31 @@
 						
 						console.log(json);
 						var listaMacro;
+						var titulo;
+						var cor;
 						if (macro=='calorias'){
 							listaMacro=json.listaCalorias;
+							titulo="Calorias";
+							cor="brown";
 						}
 						if (macro=='proteina'){
 							listaMacro=json.listaProteinas;
+							titulo="Proteinas";
+							cor="blue";
+
 						}
 						if (macro=='carboidrato'){
 							listaMacro=json.listaCarboidratos;
+							titulo="Carboidratos";
+							cor="green";
+
 						}
 						if (macro=='gordura'){
 							listaMacro=json.listaGorduras;
+							titulo="Gorduras";
+							cor="orangered";
+							
+
 						}
 						myChart.destroy();
 						
@@ -144,11 +158,11 @@
 							    {
 								    type: 'line',
 								    data:  {
-									    labels: json.listaData,
+									    labels:json.listaData  ,
 									    datasets: [{
-									      label: 'Gráfico de Média Salarial por Perfil',
-									      backgroundColor: 'rgb(255, 99, 132)',
-									      borderColor: 'rgb(255, 99, 132)',
+									      label: 'Gráfico de '+titulo,
+									      backgroundColor: cor,
+									      borderColor: cor,
 									      data: listaMacro,
 									    }]
 									  },

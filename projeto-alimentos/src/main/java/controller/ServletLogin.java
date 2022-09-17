@@ -1,6 +1,11 @@
 package controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DAOGeneric;
+import model.ModelConsumidoDia;
 import model.ModelUsuario;
 
 /**
@@ -69,6 +75,35 @@ public class ServletLogin extends HttpServlet {
 			System.out.println(request.getContextPath());
 			
 			
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			String format = dateFormat.format(new Date());
+			Date data2 = null;
+
+			try {
+				data2 = dateFormat.parse(format);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ModelConsumidoDia macros = dao.consultarConsumoDia(data2, modelUsuario.getId());
+			if (macros==null) {
+				macros=new ModelConsumidoDia();
+				macros.setCalorias(0);
+				macros.setProteinas(0);
+				macros.setCarboidrato(0);
+				macros.setGordura(0);
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			request.getSession().setAttribute("macros", macros);
+
 			request.getRequestDispatcher("/principal/paginainicial.jsp").forward(request, response);
 
 		} else {

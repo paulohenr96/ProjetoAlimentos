@@ -41,10 +41,10 @@
 							</tr>
 						</thead>
 						<tr>
-							<td id="data-caloria"></td>
-							<td id="data-proteina"></td>
-							<td id="data-carboidrato"></td>
-							<td id="data-gordura"></td>
+							<td id="data-caloria">${macros.calorias}</td>
+							<td id="data-proteina">${macros.proteinas}</td>
+							<td id="data-carboidrato">${macros.carboidrato}</td>
+							<td id="data-gordura">${macros.gordura}</td>
 						</tr>
 					</table>
 
@@ -88,7 +88,7 @@
 
 					<button type="button" onclick="mostrarAlimentoConsumido()"
 						class="btn btn-warning">Adicionar</button>
-					<button type="button" onclick="zerarCalorias()" class="btn btn-primary">Limpar</button>
+					<button type="button" onclick="limparMacros()" class="btn btn-primary">Limpar</button>
 
 
 
@@ -289,7 +289,6 @@
 			  var idselecionado = document.getElementById("idselecionado").value;
 			  var quantidade=document.getElementById("quantidade").value;
 			  var urlAction = document.getElementById("form-user").action;
-				alert(urlAction);
 			  if (
 			    idselecionado != null &&
 			    idselecionado != "" &&
@@ -317,7 +316,28 @@
 			}
 
 		
-		
+		function limparMacros(){
+			  var urlAction = document.getElementById("form-user").action;
+				
+			  
+			  
+			  
+			  $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "&acao=limparmacros",
+			      success: function (response, textStatus, xhr) {
+			    	  
+						document.getElementById("data-caloria").innerHTML=0;
+						document.getElementById("data-proteina").innerHTML=0;
+						document.getElementById("data-carboidrato").innerHTML=0;
+						document.getElementById("data-gordura").innerHTML=0;
+
+			      },
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+		}
 		
 		function pegarAlimento(id){
 			var linha=document.getElementById(id);
