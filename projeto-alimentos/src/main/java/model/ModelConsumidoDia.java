@@ -1,7 +1,10 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,21 +14,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-public class ModelConsumidoDia implements Serializable{
+public class ModelConsumidoDia {
+	/**
+	 * 
+	 */
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	
+	@JsonIgnore
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private ModelUsuario usuario;
 	
 	
 	private Long idAlimento;
 	
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "macros",fetch=FetchType.EAGER)
+	private List<ModelAlimentoConsumido> listaAlimentos;
 	
 	
 	@Basic
@@ -111,6 +127,32 @@ public class ModelConsumidoDia implements Serializable{
 		
 	
 	}
+	public List<ModelAlimentoConsumido> getListaAlimentos() {
+		return listaAlimentos;
+	}
+	public void setListaAlimentos(List<ModelAlimentoConsumido> listaAlimentos) {
+		this.listaAlimentos = listaAlimentos;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ModelConsumidoDia)) {
+			return false;
+		}
+		ModelConsumidoDia other = (ModelConsumidoDia) obj;
+		return Double.doubleToLongBits(calorias) == Double.doubleToLongBits(other.calorias)
+				&& Double.doubleToLongBits(carboidrato) == Double.doubleToLongBits(other.carboidrato)
+				&& Objects.equals(data, other.data)
+				&& Double.doubleToLongBits(gordura) == Double.doubleToLongBits(other.gordura)
+				&& Objects.equals(id, other.id) && Objects.equals(idAlimento, other.idAlimento)
+				&& Objects.equals(listaAlimentos, other.listaAlimentos)
+				&& Double.doubleToLongBits(proteinas) == Double.doubleToLongBits(other.proteinas)
+				&& Objects.equals(usuario, other.usuario);
+	}
+	
 	
 	
 }

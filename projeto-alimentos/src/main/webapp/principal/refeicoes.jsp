@@ -90,6 +90,9 @@
 						class="btn btn-warning">Adicionar</button>
 					<button type="button" onclick="limparMacros()" class="btn btn-primary">Limpar</button>
 
+<button type="button" class="btn btn-primary"
+						data-bs-toggle="modal" data-bs-target="#exampleModal"
+						data-bs-whatever="@getbootstrap" onclick="exibirModal()">Ver Alimentos</button>
 
 
 					<table id="lista-alimentos" class="table table-hover">
@@ -200,11 +203,7 @@
 
 
 
-					<button type="button" class="btn btn-primary"
-						data-bs-toggle="modal" data-bs-target="#exampleModal"
-						data-bs-whatever="@getbootstrap">Open modal for
-						@getbootstrap</button>
-
+					
 					<div class="modal fade" id="exampleModal" tabindex="-1"
 						role="dialog" aria-labelledby="exampleModalLabel"
 						aria-hidden="true">
@@ -215,7 +214,17 @@
 									<button type="button" class="btn-close" data-bs-dismiss="modal"
 										aria-label="Close"></button>
 								</div>
-								<div class="modal-body"></div>
+								<div class="modal-body">
+								<table id="comi-hoje" class="table table-striped">
+								<thead><tr><th>#</th><th>Nome</th><th>Quantidade</th></tr></thead>
+								
+								
+								
+								
+</table>
+								
+								
+								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
 										data-bs-dismiss="modal">Close</button>
@@ -380,7 +389,33 @@
 
 		
 		
-		
+		function exibirModal(){
+			 var urlAction = document.getElementById("form-user").action;
+
+			 $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "acao=alimentosmodal",
+			      success: function (response, textStatus, xhr) {
+						var json = JSON.parse(response);
+				    	  console.log(json[1].idAlimento);						
+						if (json.length==0){
+							document.getElementById("comi-hoje").innerHTML="<tr>Sem Alimentos</tr>";
+						}
+						else {
+							var tabela="";
+							for (let i=0;i<json.length;i++){
+								console.log(i);
+								 tabela +="<tr><td>"+json[i].idAlimento+"</td><td>"+json[i].nome+"</td><td>"+json[i].quantidade+"</td></tr>"
+							}
+							document.getElementById("comi-hoje").innerHTML+=tabela;
+						}
+						
+			      },
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+		}
 		function adicionar(){
 			var nome=document.getElementById("nomeselecionado").value;
 			var id=document.getElementById("idselecionado").value;

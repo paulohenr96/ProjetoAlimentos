@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
 import model.ModelAlimento;
+import model.ModelAlimentoConsumido;
 import model.ModelConsumidoDia;
 import model.ModelUsuario;
 import util.JPAUtil;
@@ -88,6 +89,24 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
+	
+	public List<E> consultarTodosPaginadoAlimentos(int porPagina, int paginaAtual,Long macrosId) {
+		try {
+			EntityManager entityManager = JPAUtil.getEntityManager();
+			EntityTransaction transaction = entityManager.getTransaction();
+			int offset = porPagina * (paginaAtual - 1);
+			int ultimoResultado = porPagina;
+			transaction.begin();
+			List<E> list = entityManager.createQuery("from " + ModelAlimentoConsumido.class.getCanonicalName() +" where macros_id="+macrosId ).setFirstResult(offset)
+					.setMaxResults(ultimoResultado).getResultList();
+			transaction.commit();
+			entityManager.close();
+			return list;
+		}catch (NoResultException e) {
+			return null;
+		}
+	
+	}
 
 	public List<E> consultarNomePaginado(Class<E> e, String nome, int porPagina, int paginaAtual) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
@@ -122,6 +141,16 @@ public class DAOGeneric<E> {
 		entityManager.close();
 
 	}
+	public void deletarAlimentoConsumidoPorId(Class<E> e,Long idMacros) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.createQuery("delete from "+e.getCanonicalName()+" where  macros_id =" + idMacros).executeUpdate();
+		transaction.commit();
+		entityManager.close();
+
+	}
+	
 
 	public Long contarTotal(Class<E> e, String nome) {
 		// TODO Auto-generated method stub

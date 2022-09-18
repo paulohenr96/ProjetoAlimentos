@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -29,6 +32,9 @@ public class ModelUsuario implements Serializable{
 	private String email;	
 	private String senha;
 	
+	
+	
+	@JsonIgnore
 	@OneToMany(mappedBy = "usuario",fetch=FetchType.EAGER)
 	private List<ModelConsumidoDia> alimentos;
 	public Long getId() {
@@ -71,6 +77,24 @@ public class ModelUsuario implements Serializable{
 	public String toString() {
 		return "ModelUsuario [id=" + id + ", login=" + login + ", nome=" + nome + ", sobreNome=" + sobreNome
 				+ ", email=" + email + ", senha=" + senha + ", alimentos=" + alimentos + "]";
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(alimentos, email, id, login, nome, senha, sobreNome);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ModelUsuario)) {
+			return false;
+		}
+		ModelUsuario other = (ModelUsuario) obj;
+		return Objects.equals(alimentos, other.alimentos) && Objects.equals(email, other.email)
+				&& Objects.equals(id, other.id) && Objects.equals(login, other.login)
+				&& Objects.equals(nome, other.nome) && Objects.equals(senha, other.senha)
+				&& Objects.equals(sobreNome, other.sobreNome);
 	}
 	
 	
