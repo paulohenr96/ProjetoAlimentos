@@ -69,6 +69,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Histórico
                             </a>
+                            <a class="nav-link" href="<%=request.getContextPath()%>/principal/relatorio.jsp">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Relatório
+                            </a>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">

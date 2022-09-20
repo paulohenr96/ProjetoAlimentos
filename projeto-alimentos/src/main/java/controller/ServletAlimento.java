@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import beanDTO.GraficoMacros;
@@ -29,6 +31,7 @@ import model.ModelAlimento;
 import model.ModelAlimentoConsumido;
 import model.ModelConsumidoDia;
 import model.ModelUsuario;
+import util.ReportUtil;
 
 /**
  * Servlet implementation class ServletAlimento
@@ -266,6 +269,33 @@ public class ServletAlimento extends HttpServlet {
 
 			}
 		
+		}else if (acao != null && acao.equalsIgnoreCase("ImprimirRelatorioMacrosPDF")) {
+			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
+
+			List<ModelConsumidoDia> lista = dao.consultarTodos(ModelConsumidoDia.class, idLogado);
+
+			lista.sort(new Comparator<ModelConsumidoDia>() {
+
+				@Override
+				public int compare(ModelConsumidoDia o1, ModelConsumidoDia o2) {
+					// TODO Auto-generated method stub
+					return o2.getData().after(o1.getData()) ? 1 : -1;
+				}
+				
+				
+				
+			});
+			
+			
+			try {
+				byte[] relatorio=new ReportUtil().geraRelatorioPdf(lista, "rel_alimentos_jsp", request.getServletContext());
+				response.setHeader("Content-Disposition","attachment;filename=arquivo.pdf");
+				response.getOutputStream().write(relatorio);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 
 	}
