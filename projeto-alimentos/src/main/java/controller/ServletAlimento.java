@@ -46,14 +46,14 @@ public class ServletAlimento extends HttpServlet {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-	public void paginar(HttpServletRequest request, HttpServletResponse response,String msg) throws ServletException, IOException {
+	public void paginar(HttpServletRequest request, HttpServletResponse response, String msg)
+			throws ServletException, IOException {
 		int porPagina = 5;
-		int paginaAtual=1;
-		if (request.getParameter("paginaatual")!=null) {
+		int paginaAtual = 1;
+		if (request.getParameter("paginaatual") != null) {
 			paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
 		}
-		
+
 		Long total = (dao.contarTotal(ModelAlimento.class));
 		int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
 		List<ModelAlimento> todos = dao.consultarTodosPaginado(ModelAlimento.class, porPagina, paginaAtual);
@@ -65,28 +65,28 @@ public class ServletAlimento extends HttpServlet {
 
 		request.getRequestDispatcher("/principal/alimentos.jsp").forward(request, response);
 	}
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String acao = request.getParameter("acao");
 		String msg = "";
 
-		if (acao != null && acao.equalsIgnoreCase("mostrartodosalimentospaginados")) {		
-				paginar(request,response,"Clique no Alimento para Editar");
+		if (acao != null && acao.equalsIgnoreCase("mostrartodosalimentospaginados")) {
+			paginar(request, response, "Clique no Alimento para Editar");
 		} else if (acao != null && acao.equalsIgnoreCase("editar")) {
-			dao.merge(gerarAlimento(request,response));
-			paginar(request,response,"Alimento Editado");
+			dao.merge(gerarAlimento(request, response));
+			paginar(request, response, "Alimento Editado");
 
 		} else if (acao != null && acao.equalsIgnoreCase("deletarId")) {
 			Long id = Long.parseLong(request.getParameter("idalimento"));
 			dao.deletarPorId(ModelAlimento.class, id);
-			paginar(request,response,"Alimento Removido");
+			paginar(request, response, "Alimento Removido");
 
 		} else if (acao != null && acao.equalsIgnoreCase("pesquisaralimentos")) {
 			int porPagina = 5;
@@ -116,14 +116,14 @@ public class ServletAlimento extends HttpServlet {
 			int quantidade = Integer.parseInt(request.getParameter("quantidade"));
 			ModelAlimento alimento = ((ModelAlimento) dao.buscarUsandoID(id, ModelAlimento.class)).consumir(quantidade);
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
-			ModelConsumidoDia macros = dao.consultarConsumoDia(editaData(new Date()), idLogado);
-
-			ModelAlimentoConsumido alimentoConsumido=new ModelAlimentoConsumido();
+			String data = request.getParameter("data");
+			ModelConsumidoDia macros = dao.consultarConsumoDia(editaData(data), idLogado);
+			System.out.println(request.getParameter("data"));
+			ModelAlimentoConsumido alimentoConsumido = new ModelAlimentoConsumido();
 			alimentoConsumido.setIdAlimento(alimento.getId());
 			alimentoConsumido.setNome(alimento.getNome());
 			alimentoConsumido.setQuantidade(quantidade);
-			
-			
+
 			if (macros != null) {
 				System.out.println("Ja tem !!!!!");
 				macros.adicionarAlimento(alimento);
@@ -131,20 +131,17 @@ public class ServletAlimento extends HttpServlet {
 				alimentoConsumido.setMacros(macros);
 
 			} else {
-				
-				
+
 				ModelConsumidoDia dia = new ModelConsumidoDia();
 				dia.setUsuario((ModelUsuario) dao.buscarUsandoID(idLogado, ModelUsuario.class));
-				dia.setData(new Date());
+				dia.setData(editaData(data));
 				dia.adicionarAlimento(alimento);
 				dao.salvar(dia);
 				alimentoConsumido.setMacros(dia);
 
-
 			}
 			dao.salvar(alimentoConsumido);
 			request.getSession().setAttribute("macros", macros);
-			macros.getListaAlimentos().clear();
 
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(macros);
@@ -154,15 +151,20 @@ public class ServletAlimento extends HttpServlet {
 			Long id = Long.parseLong(request.getParameter("id"));
 			int quantidade = Integer.parseInt(request.getParameter("quantidade"));
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
-			//Alimento que será removido
-			ModelAlimento alimento = ((ModelAlimento) dao.buscarUsandoID(id, ModelAlimento.class)).consumir(quantidade);
-		
-			
-			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(editaData(new Date()), idLogado);
+			// Alimento que será removido
+
+			ModelAlimentoConsumido alimentoConsumido = (ModelAlimentoConsumido) dao.buscarUsandoID(id,
+					ModelAlimentoConsumido.class);
+			System.out.println(id);
+			dao.deletarPorId(ModelAlimentoConsumido.class , alimentoConsumido.getId());
+
+			ModelAlimento alimento = ((ModelAlimento) dao.buscarUsandoID(alimentoConsumido.getIdAlimento(),
+					ModelAlimento.class)).consumir(quantidade);
+			String data=request.getParameter("data");
+			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(editaData(data), idLogado);
 			consumoDia.retirarAlimento(alimento);
 			dao.merge(consumoDia);
-		
-			
+
 			ObjectMapper mapper = new ObjectMapper();
 			request.getSession().setAttribute("macros", consumoDia);
 			String json = mapper.writeValueAsString(consumoDia);
@@ -172,7 +174,7 @@ public class ServletAlimento extends HttpServlet {
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
 
 			List<ModelConsumidoDia> lista = dao.consultarTodos(ModelConsumidoDia.class, idLogado);
-			
+
 			lista.sort(new Comparator<ModelConsumidoDia>() {
 
 				@Override
@@ -189,7 +191,7 @@ public class ServletAlimento extends HttpServlet {
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
 
 			List<ModelConsumidoDia> lista = dao.consultarTodos(ModelConsumidoDia.class, idLogado);
-			
+
 			lista.sort(new Comparator<ModelConsumidoDia>() {
 
 				@Override
@@ -217,42 +219,53 @@ public class ServletAlimento extends HttpServlet {
 
 		} else if (acao != null && acao.equalsIgnoreCase("limparmacros")) {
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
-			
-			Date data=new Date();
+
+			String data=request.getParameter("data");
 
 			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(editaData(data), idLogado);
 			consumoDia.setCalorias(0);
 			consumoDia.setProteinas(0);
 			consumoDia.setCarboidrato(0);
 			consumoDia.setGordura(0);
-			
+
 			dao.merge(consumoDia);
-			dao.deletarAlimentoConsumidoPorId(ModelAlimentoConsumido.class,consumoDia.getId());
+			dao.deletarAlimentoConsumidoPorId(ModelAlimentoConsumido.class, consumoDia.getId());
 			request.getSession().setAttribute("macros", consumoDia);
-			
+
 			response.getWriter().write("");
 
 		} else if (acao != null && acao.equalsIgnoreCase("alimentosmodal")) {
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
 
 			int porPagina = 5;
-			int paginaAtual=1;
-			if (request.getParameter("paginaatual")!=null) {
+			int paginaAtual = 1;
+			if (request.getParameter("paginaatual") != null) {
 				paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
 			}
-			
-			Long total = (dao.contarTotal(ModelAlimento.class));
-			int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
+			String data=request.getParameter("data");
+			ModelConsumidoDia macros = dao.consultarConsumoDia(editaData(data), idLogado);
+			if (macros!=null) {
+				Long macroId = macros.getId();
+				Long total = (dao.contarTodosAlimentosConsumidos(ModelAlimentoConsumido.class, macroId));
+				int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
+				
+				List<ModelAlimentoConsumido> consultarTodosPaginadoAlimentos = dao
+						.consultarTodosPaginadoAlimentos(porPagina, paginaAtual, macroId);
 
-			
-			
-			
-			List<ModelAlimentoConsumido> consultarTodosPaginadoAlimentos = dao.consultarTodosPaginadoAlimentos(porPagina, paginaAtual,dao.consultarConsumoDia(editaData(new Date()), idLogado).getId() );
-			
-			System.out.println(consultarTodosPaginadoAlimentos);
-			ObjectMapper mapper = new ObjectMapper();
-			String json = mapper.writeValueAsString(consultarTodosPaginadoAlimentos);
-			response.getWriter().write(json);
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(consultarTodosPaginadoAlimentos);
+				response.addHeader("totalPagina", "" + total);
+				response.getWriter().write(json);
+			}else {
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(new ArrayList());
+
+				response.getWriter().write(json);
+
+				response.getWriter().write("");
+
+			}
+		
 		}
 
 	}
@@ -264,11 +277,12 @@ public class ServletAlimento extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		dao.salvar(gerarAlimento(request,response));
+
+		dao.salvar(gerarAlimento(request, response));
 		request.setAttribute("msg", "Alimento Adicionado.");
 		request.getRequestDispatcher("/principal/alimentos.jsp").forward(request, response);
 	}
+
 	public ModelAlimento gerarAlimento(HttpServletRequest request, HttpServletResponse response) {
 		String nome = request.getParameter("nome");
 		double porcao = Double.parseDouble(request.getParameter("porcao"));
@@ -285,12 +299,13 @@ public class ServletAlimento extends HttpServlet {
 		modelAlimento.setPorcao(porcao);
 		modelAlimento.setNome(nome);
 		modelAlimento.setProteina(proteina);
-		
+
 		return modelAlimento;
 	}
-	public Date editaData (Date data) {
+
+	public Date editaData(String format) {
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		String format = dateFormat.format(data);
+//		String format = dateFormat.format(data);
 		Date data2 = null;
 		try {
 			data2 = dateFormat.parse(format);

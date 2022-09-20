@@ -14,6 +14,9 @@
 <title>Sidenav Light - SB Admin</title>
 <link href="<%=request.getContextPath()%>/assets/css/styles.css"
 	rel="stylesheet" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
 	crossorigin="anonymous"></script>
 </head>
@@ -56,6 +59,14 @@
 						<input type="hidden" id="acao" name="acao" value="">
 
 						<div class="mb-2">
+							<label for="data" class="form-label">Data</label> <input
+								type="text" class="form-control" id="data" name="data">
+
+
+						</div>
+
+
+						<div class="mb-2">
 							<label for="idselecionado" class="form-label">ID</label> <input
 								type="text" readonly="readonly" class="form-control" required
 								id="idselecionado" name="idselecionado">
@@ -88,25 +99,16 @@
 
 					<button type="button" onclick="mostrarAlimentoConsumido()"
 						class="btn btn-warning">Adicionar</button>
-					<button type="button" onclick="limparMacros()" class="btn btn-primary">Limpar</button>
+					<button type="button" onclick="limparMacros()"
+						class="btn btn-primary">Limpar</button>
 
-<button type="button" class="btn btn-primary"
+					<button type="button" class="btn btn-primary"
 						data-bs-toggle="modal" data-bs-target="#exampleModal"
-						data-bs-whatever="@getbootstrap" onclick="exibirModal()">Ver Alimentos</button>
+						data-bs-whatever="@getbootstrap" onclick="exibirModal(1)">Ver
+						Alimentos</button>
 
 
-					<table id="lista-alimentos" class="table table-hover">
-						<thead>
-							<tr>
-								<td>#</td>
-								<td>Nome</td>
-								<td>Quantidade</td>
-								<td>Remover</td>
-							</tr>
 
-						</thead>
-
-					</table>
 
 
 
@@ -203,7 +205,7 @@
 
 
 
-					
+
 					<div class="modal fade" id="exampleModal" tabindex="-1"
 						role="dialog" aria-labelledby="exampleModalLabel"
 						aria-hidden="true">
@@ -215,15 +217,25 @@
 										aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
-								<table id="comi-hoje" class="table table-striped">
-								<thead><tr><th>#</th><th>Nome</th><th>Quantidade</th></tr></thead>
-								
-								
-								
-								
-</table>
-								
-								
+									<table id="comi-hoje" class="table table-striped">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Nome</th>
+												<th>Quantidade</th>
+											</tr>
+										</thead>
+
+
+
+
+									</table>
+
+									<nav aria-label="Page navigation example">
+										<ul id="paginacao-modal" class="pagination">
+
+										</ul>
+									</nav>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
@@ -255,7 +267,6 @@
 
 
 
-
 			<footer class="py-4 bg-light mt-auto">
 				<div class="container-fluid px-4">
 					<div
@@ -271,7 +282,8 @@
 		</div>
 	</div>
 
-
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
 	<jsp:include page="javascript-files.jsp"></jsp:include>
 
 	<script
@@ -279,6 +291,11 @@
 		crossorigin="anonymous"></script>
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
 	<script type="text/javascript">
+	
+	flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
+
+	
+	
 		function pesquisar() {
 			var urlAction = document.getElementById("form-user").action;
 			var nome = document.getElementById("nome").value;
@@ -298,6 +315,8 @@
 			  var idselecionado = document.getElementById("idselecionado").value;
 			  var quantidade=document.getElementById("quantidade").value;
 			  var urlAction = document.getElementById("form-user").action;
+			  var data=document.getElementById("data").value;
+				console.log(data);
 			  if (
 			    idselecionado != null &&
 			    idselecionado != "" &&
@@ -306,7 +325,10 @@
 			    $.ajax({
 			      method: "get",
 			      url: urlAction,
-			      data: "id=" + idselecionado + "&acao=alimentoconsumido&quantidade="+quantidade,
+			      data: "id=" + idselecionado +
+			      "&acao=alimentoconsumido"+
+			      "&quantidade="+quantidade+
+			      "&data="+data,
 			      success: function (response, textStatus, xhr) {
 			    	  
 			    		var json = JSON.parse(response);
@@ -328,13 +350,14 @@
 		function limparMacros(){
 			  var urlAction = document.getElementById("form-user").action;
 				
-			  
-			  
+			  var data=document.getElementById("data").value;
+
 			  
 			  $.ajax({
 			      method: "get",
 			      url: urlAction,
-			      data: "&acao=limparmacros",
+			      data: "acao=limparmacros"+
+			      "&data="+data,
 			      success: function (response, textStatus, xhr) {
 			    	  
 						document.getElementById("data-caloria").innerHTML=0;
@@ -360,7 +383,7 @@
 		}
 		function removerAlimento(id,quantidade){
 			 var urlAction = document.getElementById("form-user").action;
-
+			  var data=document.getElementById("data").value;
 			  if (
 			    id != null &&
 			    
@@ -369,7 +392,9 @@
 			    $.ajax({
 			      method: "get",
 			      url: urlAction,
-			      data: "id=" + id + "&acao=removeralimentoconsumido&quantidade="+quantidade,
+			      data: "id=" + id +
+			      "&acao=removeralimentoconsumido&quantidade="+quantidade+
+			      "&data="+data,
 			      success: function (response, textStatus, xhr) {
 						var json = JSON.parse(response);
 
@@ -379,7 +404,7 @@
 						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
 						document.getElementById("data-gordura").innerHTML=json.gordura;
 						
-						document.getElementById("comido"+id).remove();
+						exibirModal(1);
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
 			      alert("Error ao buscar usuário por nome" + xhr.responseText);
@@ -389,33 +414,88 @@
 
 		
 		
-		function exibirModal(){
+		function exibirModal(paginaAtual){
 			 var urlAction = document.getElementById("form-user").action;
-
-			 $.ajax({
-			      method: "get",
-			      url: urlAction,
-			      data: "acao=alimentosmodal",
-			      success: function (response, textStatus, xhr) {
-						var json = JSON.parse(response);
-				    	  console.log(json[1].idAlimento);						
-						if (json.length==0){
-							document.getElementById("comi-hoje").innerHTML="<tr>Sem Alimentos</tr>";
-						}
-						else {
-							var tabela="";
-							for (let i=0;i<json.length;i++){
-								console.log(i);
-								 tabela +="<tr><td>"+json[i].idAlimento+"</td><td>"+json[i].nome+"</td><td>"+json[i].quantidade+"</td></tr>"
+			  var data=document.getElementById("data").value;
+			  var spinner="<div class=\"spinner-border text-primary\" role=\"status\">"+
+			  "<span class=\"sr-only\">Loading...</span>"+
+			  "</div>";
+			  document.getElementById("comi-hoje").innerHTML=spinner;
+			if (data!=""){
+				$.ajax({
+				      method: "get",
+				      url: urlAction,
+				      data: "acao=alimentosmodal&paginaatual="+paginaAtual+
+				      		"&data="+data,
+				      success: function (response, textStatus, xhr) {
+							var json = JSON.parse(response);
+							if (json.length==0){
+								document.getElementById("comi-hoje").innerHTML="<tr>Sem Alimentos</tr>";
 							}
-							document.getElementById("comi-hoje").innerHTML+=tabela;
-						}
+							else {
+								var tabela="";
+								var previous="";
+								var next="";
+								var paginacao="";
+								var titulo="<thead><tr><th>#</th><th>Nome</th><th>Quantidade</th></tr></thead>";
+
+								for (let i=0;i<json.length;i++){
+									console.log(i);
+									var botao="<button onclick=\"removerAlimento("+json[i].id+","+json[i].quantidade+")\"type=\"button\" class=\"btn btn-danger\">Danger</button>";
+
+									 tabela +="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+json[i].nome+"</td><td>"+json[i].quantidade+"</td><td>"+botao+"</td></tr>"
+								}
+								document.getElementById("comi-hoje").innerHTML=titulo+tabela;
+								
+								
+								var totalElementos = xhr
+								.getResponseHeader("totalPagina");
+								const quotient = Math.floor(totalElementos/5);
+								const remainder = totalElementos % 5;
+								var totalPagina=quotient;
+								if (remainder!=0){
+									totalPagina++;
+								}
+								for (var i=1;i<=totalPagina;i++){
+									
+									
+									if (paginaAtual==i){
+										
+											paginacao+="<li class=\"page-item active\"  onclick=\"exibirModal("+i+")\"><a  class=\"page-link\" >"+i+"</a></li>";
+									}
+									else {
+										paginacao+="<li class=\"page-item\" onclick=\"exibirModal("+i+")\"><a class=\"page-link\" href=\"#\" >"+i+"</a></li>";
+
+									}
+								}
+								if  (totalPagina>1){
+									previous="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual-1)+")\"><a class=\"page-link\" href=\"#\" ><</a></li>";
+									next="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual+1)+")\"><a class=\"page-link\" href=\"#\" >></a></li>";
+
+									if (paginaAtual==1){
+										previous="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" ><</a></li>";
+
+									}
+									if (paginaAtual==totalPagina){
+										next="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" >></a></li>";
+
+									}
+
+								}
+								document.getElementById("paginacao-modal").innerHTML=previous+paginacao+next;
+							}
+							
 						
-			      },
-			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
-			    });
-		}
+							
+				      },
+				    }).fail(function (xhr, status, errorThrown) {
+				      alert("Error ao buscar usuário por nome" + xhr.responseText);
+				    });
+
+			}else {
+				alert("Selecione uma data.");
+			}
+			  		}
 		function adicionar(){
 			var nome=document.getElementById("nomeselecionado").value;
 			var id=document.getElementById("idselecionado").value;
@@ -429,9 +509,6 @@
 
 		}
 		
-		function zerarCalorias(){
-			
-		}
 		
 		</script>
 </body>

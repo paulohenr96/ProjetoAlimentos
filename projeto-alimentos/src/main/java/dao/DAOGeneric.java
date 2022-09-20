@@ -131,7 +131,17 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return total;
 	}
+	public Long contarTodosAlimentosConsumidos(Class<E> e,Long macroId) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
 
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		Long total = (Long) entityManager.createQuery("select count(1) from " + e.getCanonicalName() +" where macros_id="+macroId).getSingleResult();
+		transaction.commit();
+		entityManager.close();
+		return total;
+	}
+	
 	public void deletarPorId(Class<E> e, Long id) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
@@ -196,7 +206,7 @@ public class DAOGeneric<E> {
 			System.out.println(format);
 			ModelConsumidoDia m = (ModelConsumidoDia) entityManager.createQuery("from ModelConsumidoDia where data=:data and usuario_id=:id")
 					.setParameter("id",idLogado)
-					.setParameter("data", dateFormat.parse(format))
+					.setParameter("data", date)
 					.getSingleResult();
 			transaction.commit();
 			entityManager.close();
@@ -210,10 +220,6 @@ public class DAOGeneric<E> {
 			System.out.println("Multiplo resultados :"+e.getMessage());
 
 			return null;
-		}catch(ParseException e) {
-			e.printStackTrace();
-			return null;
-
 		}
 
 	}
