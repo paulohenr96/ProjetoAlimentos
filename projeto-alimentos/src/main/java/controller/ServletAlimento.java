@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -286,9 +288,11 @@ public class ServletAlimento extends HttpServlet {
 				
 			});
 			
+			HashMap <String,Object> params=new HashMap<String, Object>();
 			
+			params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("relatorio")+File.separator);
 			try {
-				byte[] relatorio=new ReportUtil().geraRelatorioPdf(lista, "rel_alimentos_jsp", request.getServletContext());
+				byte[] relatorio=new ReportUtil().geraRelatorioPdf(lista, "rel_alimentos_jsp",params, request.getServletContext());
 				response.setHeader("Content-Disposition","attachment;filename=arquivo.pdf");
 				response.getOutputStream().write(relatorio);
 			} catch (Exception e) {
