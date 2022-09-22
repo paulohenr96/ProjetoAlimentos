@@ -16,11 +16,9 @@
 <link href="<%=request.getContextPath()%>/assets/css/styles.css"
 	rel="stylesheet" />
 <style>
-
 .table tr:hover {
-	cursor:pointer;
+	cursor: pointer;
 }
-
 </style>
 
 
@@ -51,37 +49,53 @@
 								readonly="readonly" class="form-control" id="id" name="id"
 								placeholder="Example input placeholder">
 						</div>
-						<div class="mb-2">
-							<label for="nome" class="form-label">Nome</label> <input
-								type="text" class="form-control" id="nome" name="nome"
-								placeholder="Example input placeholder">
+						<div class="dados-inseridos">
+
+							<div class="mb-2">
+								<label for="nome" class="form-label">Nome</label> <input
+									type="text" class="form-control" id="nome" name="nome"
+									placeholder="Example input placeholder">
+							</div>
+							<div class="numeros">
+								<div class="mb-2">
+									<label for="porcao" class="form-label">Porção</label> <input
+										type="number" min="0" step=".1" class="form-control" required
+										id="porcao" name="porcao"
+										placeholder="Another input placeholder">
+								</div>
+
+								<div class="mb-2">
+									<label for="caloria" class="form-label">Caloria</label> <input
+										type="number" class="form-control" required id="caloria"
+										name="caloria" placeholder="Another input placeholder">
+								</div>
+
+
+								<div class="mb-2">
+									<label for="proteina" class="form-label">Proteina</label> <input
+										type="number" class="form-control" required id="proteina"
+										name="proteina" placeholder="Another input placeholder">
+								</div>
+
+
+								<div class="mb-2">
+									<label for="carboidrato" class="form-label">Carboidrato</label>
+									<input type="number" class="form-control" required
+										id="carboidrato" name="carboidrato"
+										placeholder="Another input placeholder">
+
+								</div>
+
+								<div class="mb-2">
+									<label for="gordura" class="form-label">Gordura</label> <input
+										type="text" class="form-control" required id="gordura"
+										name="gordura" placeholder="Another input placeholder">
+
+								</div>
+							</div>
 						</div>
-						<div class="mb-2">
-							<label for="porcao" class="form-label">Porção</label> <input
-								type="text" class="form-control" required id="porcao"
-								name="porcao" placeholder="Another input placeholder">
-						</div>
-						<div class="mb-2">
-							<label for="caloria" class="form-label">Caloria</label> <input
-								type="text" class="form-control" required id="caloria"
-								name="caloria" placeholder="Another input placeholder">
-						</div>
-						<div class="mb-2">
-							<label for="proteina" class="form-label">Proteina</label> <input
-								type="text" class="form-control" required id="proteina"
-								name="proteina" placeholder="Another input placeholder">
-						</div>
-						<div class="mb-2">
-							<label for="carboidrato" class="form-label">Carboidrato</label> <input
-								type="text" class="form-control" required id="carboidrato"
-								name="carboidrato" placeholder="Another input placeholder">
-						</div>
-						<div class="mb-2">
-							<label for="gordura" class="form-label">Gordura</label> <input
-								type="text" class="form-control" required id="gordura"
-								name="gordura" placeholder="Another input placeholder">
-						</div>
-						<button type="submit" class="btn btn-success">Adicionar</button>
+						<button type="button" onclick="mandarFormulario()"
+							class="btn btn-success">Adicionar</button>
 
 						<button type="button" onclick="mostrarTodosAlimentos()"
 							class="btn btn-primary">Mostrar Todos</button>
@@ -91,7 +105,8 @@
 
 					</form>
 					<c:if test="${not empty msg }">
-						<div style="margin-top:10px" class="alert alert-info" role="alert">${msg}</div>
+						<div style="margin-top: 10px" class="alert alert-info"
+							role="alert">${msg}</div>
 
 					</c:if>
 
@@ -122,8 +137,8 @@
 										<td>${ali.proteina}</td>
 										<td>${ali.carboidrato}</td>
 										<td>${ali.gordura}</td>
-										<td><button type="button" onclick="deletarId(${ali.id})" class="btn btn-danger btn-sm">Excluir</button>
-										</td>
+										<td><button type="button" onclick="deletarId(${ali.id})"
+												class="btn btn-danger btn-sm">Excluir</button></td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -198,6 +213,67 @@
 	<jsp:include page="javascript-files.jsp"></jsp:include>
 
 	<script type="text/javascript">
+	function verificarFormulario(){
+		var regex=/^[0-9]*(\.[0-9]{0,2})?$/;
+		const container = document.querySelectorAll(".numeros .mb-2");
+		const todos = document.querySelectorAll(".dados-inseridos .mb-2");
+		var erro=0;
+		console.log(document.querySelectorAll(".dados-inseridos .mb-2"));
+		todos.forEach ((e)=>{
+			if (e.querySelector("div.alerta")!=null){
+				e.querySelector("div.alerta").remove();
+
+			}
+			if (e.querySelector("input").value==""){
+				e.innerHTML+="<div class=\"alerta\"><span style=\"color:red;\">Campo Vazio.</span></div>";
+				erro++;
+			}
+		});
+		
+		
+		
+		if (erro>0){
+			return false;
+		}
+		
+		
+		
+		container.forEach((e)=> {
+			
+			if(!regex.test(e.querySelector("input").value)){
+				e.innerHTML+="<div class=\"alerta\"><span style=\"color:red;\">Apenas duas casas decimais.</span></div>";
+				erro++;
+			}
+			else{
+				
+				
+				if (e.querySelector("div.alerta")!=null){
+					e.querySelector("div.alerta").remove();
+
+				}
+				
+			}
+			});
+		
+		
+		
+		
+		if (erro>0){
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+		function mandarFormulario(){
+			
+			if (verificarFormulario()){
+				document.getElementById("form-user").submit();
+
+			}
+			
+		}
 		function mostrarTodosAlimentos() {
 			document.getElementById("form-user").method = "get";
 			var urlAction = document.getElementById("form-user").action;
@@ -221,9 +297,12 @@
 		}
 		
 		function editarAlimento(){
+			if (verificarFormulario()){
 			document.getElementById("form-user").method = "get";
 			document.getElementById("acao").value = "editar";
 			document.getElementById("form-user").submit();
+			}
+			
 		}
 		function deletarId(id){
 			document.getElementById("form-user").method = "get";

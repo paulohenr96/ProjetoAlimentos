@@ -299,6 +299,7 @@
 		function pesquisar() {
 			var urlAction = document.getElementById("form-user").action;
 			var nome = document.getElementById("nome").value;
+			  alert(urlAction);
 
 			if (nome == "") {
 				window.location.href = urlAction
@@ -310,18 +311,42 @@
 
 		}
 		
-		
+		function verificarFormulario(){
+			var erro=0;
+			  var quantidade=document.getElementById("quantidade");
+			  var idselecionado = document.getElementById("idselecionado");
+				var data=document.getElementById("data");
+			  if (document.querySelector(".alerta")!=null){
+				  document.querySelector(".alerta").remove();  
+			  }
+			  
+			  if (idselecionado.value=="" ){
+				idselecionado.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Por favor Selecione Um alimento na Lista abaixo.</span>";
+				return false;
+			}
+			  if (data.value=="" ){
+					data.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Por favor, selecione uma data.</span>";
+					flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
+					return false;
+				}
+			if (quantidade.value==""){
+				
+				erro++;
+				quantidade.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Insira uma Quantidade</span>";
+				return false;
+			} 
+			
+			
+			return true;
+			
+		}
 		function mostrarAlimentoConsumido() {
 			  var idselecionado = document.getElementById("idselecionado").value;
 			  var quantidade=document.getElementById("quantidade").value;
 			  var urlAction = document.getElementById("form-user").action;
+			  alert(urlAction);
 			  var data=document.getElementById("data").value;
-				console.log(data);
-			  if (
-			    idselecionado != null &&
-			    idselecionado != "" &&
-			    idselecionado.trim() != ""
-			  ) {
+			  if (verificarFormulario()) {
 			    $.ajax({
 			      method: "get",
 			      url: urlAction,

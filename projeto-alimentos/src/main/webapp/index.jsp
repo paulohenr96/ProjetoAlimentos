@@ -24,13 +24,14 @@
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
                                     <div class="card-body">
-                                        <form action="ServletLogin" method="post">
+                                        <form action="ServletLogin" id="form-user" method="post">
+                                            
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="inputEmail" type="text" name="login" placeholder="Insira o usuário" />
+                                                <input class="form-control" id="usuario" type="text" name="login" placeholder="Insira o usuário" />
                                                 <label for="usuario">Usuário</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" name="senha" id="inputPassword" type="password" placeholder="Password" /> <label
+                                                <input class="form-control" name="senha" id="senha" type="password" placeholder="Password" /> <label
 												for="inputPassword">Senha</label>
 										</div>
                                             <div class="form-check mb-3">
@@ -39,7 +40,7 @@
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                                                 <a class="small" href="password.html">Forgot Password?</a>
-                                                <button type="submit" class="btn btn-primary">Entrar</button>
+                                                <button type="button" onclick="enviarFormulario()" class="btn btn-primary">Entrar</button>
                                             </div>
                                             <c:if test="${not empty msg }">
                                             
@@ -52,7 +53,7 @@
                                         </form>
                                     </div>
                                     <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="registrar.jsp">Need an account? Sign up!</a></div>
+                                        <div class="small"><a href="<%=request.getContextPath()%>/registrar.jsp">Need an account? Sign up!</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -77,5 +78,29 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="<%=request.getContextPath() %>/assets/js/scripts.js"></script>
+        
+        <script type="text/javascript">
+        
+        function enviarFormulario(){
+        	var entradas=document.querySelectorAll(".form-floating");
+        	var erro=0;
+			entradas.forEach((e)=>{
+				if (e.querySelector(".alerta")!=null){
+					e.querySelector(".alerta").remove();
+				}
+				if (e.querySelector("input").value==""){
+					e.innerHTML+="<div class=\"alerta\"><span style=\"color:red;\">Campo vazio.</span></div>";
+				
+					erro++;
+				}
+			})
+			
+			if (erro==0){
+				document.getElementById("form-user").submit();
+			}
+        }
+        
+        
+        </script>
     </body>
 </html>

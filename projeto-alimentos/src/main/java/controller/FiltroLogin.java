@@ -47,7 +47,7 @@ public class FiltroLogin extends HttpFilter implements Filter {
 		// pass the request along the filter chain
 		 Object attribute = session.getAttribute("user");
 		 System.out.println(urlParaAutentificar);
-		 if (attribute==null && !urlParaAutentificar.contains("/ServletLogin")) {
+		 if (attribute==null && !urlParaAutentificar.contains("/ServletLogin") && !urlParaAutentificar.contains("/registrar.jsp")) {
 			 
 			
 			request.getRequestDispatcher("/index.jsp").forward(servletRequest, response);

@@ -65,7 +65,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Grafico
                             </a>
-                            <a class="nav-link" href="<%=request.getContextPath()%>/ServletAlimento?acao=historico">
+                            <a class="nav-link" href="<%=request.getContextPath()%>/principal/historico.jsp">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Histórico
                             </a>

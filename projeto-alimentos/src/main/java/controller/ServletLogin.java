@@ -76,33 +76,6 @@ public class ServletLogin extends HttpServlet {
 			
 			
 			
-			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-			String format = dateFormat.format(new Date());
-			Date data2 = null;
-
-			try {
-				data2 = dateFormat.parse(format);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			ModelConsumidoDia macros = dao.consultarConsumoDia(data2, modelUsuario.getId());
-			if (macros==null) {
-				macros=new ModelConsumidoDia();
-				macros.setCalorias(0);
-				macros.setProteinas(0);
-				macros.setCarboidrato(0);
-				macros.setGordura(0);
-				
-			}
-			
-			
-			
-			
-			
-			
-			
-			request.getSession().setAttribute("macros", macros);
 
 			request.getRequestDispatcher("/principal/paginainicial.jsp").forward(request, response);
 

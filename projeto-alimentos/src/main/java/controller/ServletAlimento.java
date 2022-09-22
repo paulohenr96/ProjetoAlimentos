@@ -177,20 +177,27 @@ public class ServletAlimento extends HttpServlet {
 
 		} else if (acao != null && acao.equalsIgnoreCase("historico")) {
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
+			int paginaAtual=1;
+			int porPagina=Integer.parseInt(request.getParameter("porpagina"));
 
-			List<ModelConsumidoDia> lista = dao.consultarTodos(ModelConsumidoDia.class, idLogado);
+			if (request.getParameter("paginaatual") != null) {
+				paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
+			}
+			
+			
+			List<ModelConsumidoDia> lista = dao.consultarTodosPaginadoMacros(porPagina,paginaAtual,idLogado);
 
-			lista.sort(new Comparator<ModelConsumidoDia>() {
+			Long total = (dao.contarTotalMacros(idLogado));
+			int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
 
-				@Override
-				public int compare(ModelConsumidoDia o1, ModelConsumidoDia o2) {
-					// TODO Auto-generated method stub
-					return o2.getData().after(o1.getData()) ? 1 : -1;
-				}
-			});
-			request.setAttribute("lista", lista);
-			request.getRequestDispatcher("/principal/historico.jsp").forward(request, response);
-
+			
+			response.addHeader("totalPagina", "" + total);
+			
+			System.out.println(lista);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(lista);
+			response.getWriter().write(json);
 		} else if (acao != null && acao.equalsIgnoreCase("mostrargrafico")) {
 			String macro = request.getParameter("macro");
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");

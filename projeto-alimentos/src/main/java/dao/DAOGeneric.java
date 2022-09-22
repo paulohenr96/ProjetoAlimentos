@@ -76,6 +76,23 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
+	public List<E> consultarTodosPaginadoMacros(int porPagina, int paginaAtual,Long userLogado) {
+		try {
+			EntityManager entityManager = JPAUtil.getEntityManager();
+			EntityTransaction transaction = entityManager.getTransaction();
+			int offset = porPagina * (paginaAtual - 1);
+			int ultimoResultado = porPagina;
+			transaction.begin();
+			List<E> list = entityManager.createQuery("from " + ModelConsumidoDia.class.getCanonicalName() +" where usuario_id="+userLogado +" order by data DESC").setFirstResult(offset)
+					.setMaxResults(ultimoResultado).getResultList();
+			transaction.commit();
+			entityManager.close();
+			return list;
+		}catch (NoResultException e) {
+			return null;
+		}
+	
+	}
 
 	public List<E> consultarTodosPaginado(Class<E> e, int porPagina, int paginaAtual) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
@@ -127,6 +144,16 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		Long total = (Long) entityManager.createQuery("select count(1) from " + e.getCanonicalName()).getSingleResult();
+		transaction.commit();
+		entityManager.close();
+		return total;
+	}
+	public Long contarTotalMacros(Long user) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		Long total = (Long) entityManager.createQuery("select count(1) from " + ModelConsumidoDia.class.getCanonicalName()+" where usuario_id="+user).getSingleResult();
 		transaction.commit();
 		entityManager.close();
 		return total;
