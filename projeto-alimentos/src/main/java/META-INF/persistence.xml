@@ -11,6 +11,8 @@
 				<class>model.ModelAlimento</class>
 				<class>model.ModelConsumidoDia</class>
 				<class>model.ModelAlimentoConsumido</class>
+				<class>model.ModelAlimentoRefeicao</class>
+				<class>model.ModelRefeicao</class>
 		
 		<properties>
 		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/projetoalimentos"/>

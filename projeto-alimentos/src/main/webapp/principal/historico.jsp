@@ -17,6 +17,13 @@
 	rel="stylesheet" />
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
 	crossorigin="anonymous"></script>
+<style>
+th:hover {
+	cursor:pointer;
+}
+
+</style>
+
 </head>
 <body class="sb-nav-fixed">
 	<jsp:include page="header.jsp"></jsp:include>
@@ -37,28 +44,29 @@
 
 
 
-<select onchange="mostrarHistorico(1)" class="custom-select custom-select-lg mb-3">
-  <option value="2">2 por pagina</option>
-  <option value="4">4 por pagina</option>
-  <option selected value="5">5 por pagina</option>
-    <option value="10">10 por pagina</option>
-  
-</select>
+					<select onchange="mostrarHistorico(1)"
+						class="custom-select custom-select-lg mb-3">
+						<option value="2">2 por pagina</option>
+						<option value="4">4 por pagina</option>
+						<option selected value="5">5 por pagina</option>
+						<option value="10">10 por pagina</option>
+
+					</select>
 
 					<table class="table table-striped-columns">
 						<thead>
 							<tr>
-								<th>Data</th>
-								<th>Calorias</th>
-								<th>Proteina</th>
-								<th>Gordura</th>
-								<th>Carboidrato</th>
+								<th onclick="ordenarData()">Data</th>
+								<th onclick="ordenarCalorias()">Calorias</th>
+								<th onclick="ordenarProteinas()">Proteina</th>
+								<th onclick="ordenarGordura()">Gordura</th>
+								<th onclick="ordenarCarboidrato()">Carboidrato</th>
 							</tr>
 						</thead>
 						<tbody>
-						
-						
-						
+
+
+
 						</tbody>
 
 
@@ -109,10 +117,54 @@
 		crossorigin="anonymous"></script>
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
 
-		<jsp:include page="javascript-files.jsp"></jsp:include>
-	
+	<jsp:include page="javascript-files.jsp"></jsp:include>
+
 	<script type="text/javascript">
-	
+	var ordem="data";
+	var asc="desc";
+	document.querySelector(".table > tbody").innerHTML="<div class=\"spinner-border\" role=\"status\">  <span class=\"sr-only\">Loading...</span>  </div>";
+
+	function ordenarData(){
+		ordem="data";
+		inverterOrdem();
+		mostrarHistorico(1);
+
+	}
+	function inverterOrdem(){
+		if (asc=="asc"){
+			asc="desc";
+		}else {
+			asc="asc";
+		}
+	}
+	function ordenarProteinas(){
+		ordem="proteinas";
+		inverterOrdem();
+
+		mostrarHistorico(1);
+
+	}
+	function ordenarCalorias(){
+		ordem="calorias";
+		inverterOrdem();
+
+		mostrarHistorico(1);
+
+	}
+	function ordenarCarboidrato(){
+		ordem="carboidrato";
+		inverterOrdem();
+
+		mostrarHistorico(1);
+
+	}
+	function ordenarGordura(){
+		ordem="gordura";
+		inverterOrdem();
+
+		mostrarHistorico(1);
+
+	}
 	mostrarHistorico(1);
 		function mostrarHistorico(paginaatual) {
 			var porpagina=document.querySelector("select").value;
@@ -120,15 +172,16 @@
 				method : "get",
 				url : window.location.pathname.substring(0, window.location.pathname.indexOf("/",2))+ "/ServletAlimento",
 				data : "paginaatual=" + paginaatual + "&porpagina=" + porpagina
-						+ "&acao=historico",
+						+ "&acao=historico&ordem="+ordem+"&asc="+asc,
 				success : function(response, textStatus, xhr) {
 				
 					console.log(response);
 					var json=JSON.parse(response);
 					document.querySelector(".table > tbody").innerHTML="";
 					json.forEach((e)=>{
+						var minhaData=new Date(e.data);
 						console.log();
-						document.querySelector(".table > tbody").innerHTML+="<tr><td>"+new Date(e.data).toDateString()+"</td>"+"<td>"+e.calorias+"</td>"+"<td>"+e.proteinas+"</td>"+"<td>"+e.carboidrato+"</td>"+"<td>"+e.gordura+"</td>"+"</tr>";
+						document.querySelector(".table > tbody").innerHTML+="<tr><td>"+minhaData.getUTCDate()+"/"+(minhaData.getUTCMonth() + 1)+"/"+(minhaData.getUTCFullYear())+"</td>"+"<td>"+e.calorias+"</td>"+"<td>"+e.proteinas+"</td>"+"<td>"+e.carboidrato+"</td>"+"<td>"+e.gordura+"</td>"+"</tr>";
 						
 						
 						
@@ -188,10 +241,10 @@
 		}
 		
 		
-		function getContextPath() {
-			   return window.location.protocol+"//"+ window.location.host+window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
-			}
-			alert(getContextPath());
+// 		function getContextPath() {
+// 			   return window.location.protocol+"//"+ window.location.host+window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
+// 			}
+// 			alert(getContextPath());
 	</script>
 </body>
 </html>

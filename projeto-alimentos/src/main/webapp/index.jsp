@@ -96,6 +96,7 @@
 			})
 			
 			if (erro==0){
+				document.querySelector("button").innerHTML="<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>Loading...";
 				document.getElementById("form-user").submit();
 			}
         }

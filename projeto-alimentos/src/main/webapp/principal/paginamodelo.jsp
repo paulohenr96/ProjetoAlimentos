@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -50,6 +52,9 @@
                 </footer>
             </div>
         </div>
+        
+        	<jsp:include page="javascript-files.jsp"></jsp:include>
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="<%=request.getContextPath() %>/assets/js/scripts.js"></script>
     </body>

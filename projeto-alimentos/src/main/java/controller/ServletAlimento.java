@@ -32,6 +32,7 @@ import dao.DAOGeneric;
 import model.ModelAlimento;
 import model.ModelAlimentoConsumido;
 import model.ModelConsumidoDia;
+import model.ModelRefeicao;
 import model.ModelUsuario;
 import util.ReportUtil;
 
@@ -179,13 +180,15 @@ public class ServletAlimento extends HttpServlet {
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
 			int paginaAtual=1;
 			int porPagina=Integer.parseInt(request.getParameter("porpagina"));
-
+			String ordenar=request.getParameter("asc");
+			System.out.println(ordenar+"-------");
+			String ordem=request.getParameter("ordem");
 			if (request.getParameter("paginaatual") != null) {
 				paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
 			}
 			
 			
-			List<ModelConsumidoDia> lista = dao.consultarTodosPaginadoMacros(porPagina,paginaAtual,idLogado);
+			List<ModelConsumidoDia> lista = dao.consultarTodosPaginadoMacros(porPagina,paginaAtual,idLogado,ordem,ordenar);
 
 			Long total = (dao.contarTotalMacros(idLogado));
 			int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
@@ -307,8 +310,21 @@ public class ServletAlimento extends HttpServlet {
 				e.printStackTrace();
 			}
 			
+		}else if (acao != null && acao.equalsIgnoreCase("novarefeicao")) {
+			String nome=request.getParameter("nome");
+			Long userLogado=(Long) request.getSession().getAttribute("IDLogado");
+			ModelRefeicao refeicao=new ModelRefeicao();
+			
+			refeicao.setNome(nome);
+			refeicao.setIdUserLogado(userLogado);
+			
+			dao.salvar(refeicao);
+			
+			response.getWriter().write("Refeição "+nome);
+
 		}
 
+			
 	}
 
 	/**

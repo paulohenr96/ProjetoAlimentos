@@ -1,12 +1,15 @@
 package model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class ModelAlimento implements Serializable {
@@ -16,6 +19,11 @@ public class ModelAlimento implements Serializable {
 
 private Long id;
 private String nome;
+
+
+@OneToMany(mappedBy = "alimento",fetch=FetchType.EAGER)
+private List<ModelAlimentoRefeicao> listaAlimentosRefeicao;
+
 
 @Column(precision=10, scale=2)
 private double porcao;

@@ -76,14 +76,14 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
-	public List<E> consultarTodosPaginadoMacros(int porPagina, int paginaAtual,Long userLogado) {
+	public List<E> consultarTodosPaginadoMacros(int porPagina, int paginaAtual,Long userLogado,String ordem,String ordenar) {
 		try {
 			EntityManager entityManager = JPAUtil.getEntityManager();
 			EntityTransaction transaction = entityManager.getTransaction();
 			int offset = porPagina * (paginaAtual - 1);
 			int ultimoResultado = porPagina;
 			transaction.begin();
-			List<E> list = entityManager.createQuery("from " + ModelConsumidoDia.class.getCanonicalName() +" where usuario_id="+userLogado +" order by data DESC").setFirstResult(offset)
+			List<E> list = entityManager.createQuery("from " + ModelConsumidoDia.class.getCanonicalName() +" where usuario_id="+userLogado +" order by "+ordem+" "+ordenar).setFirstResult(offset)
 					.setMaxResults(ultimoResultado).getResultList();
 			transaction.commit();
 			entityManager.close();
