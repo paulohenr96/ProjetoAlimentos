@@ -36,7 +36,7 @@
 
 			<main>
 
-				<div class="container-sm" style="width: 80%">
+				<div class="container-sm px-4" >
 
 					<form method="post"
 						action="<%=request.getContextPath()%>/ServletAlimento"
@@ -44,37 +44,37 @@
 						<input type="hidden" id="acao" name="acao" value="">
 
 						<h1>Alimentos</h1>
-						<div class="mb-2">
+						<div class="mb-2 col-2">
 							<label for="id" class="form-label">ID</label> <input type="text"
 								readonly="readonly" class="form-control" id="id" name="id"
-								placeholder="Example input placeholder">
+								placeholder="ID">
 						</div>
-						<div class="dados-inseridos">
+						<div class="dados-inseridos col-5 ">
 
 							<div class="mb-2">
 								<label for="nome" class="form-label">Nome</label> <input
 									type="text" class="form-control" id="nome" name="nome"
-									placeholder="Example input placeholder">
+									placeholder="">
 							</div>
 							<div class="numeros">
 								<div class="mb-2">
 									<label for="porcao" class="form-label">Porção</label> <input
 										type="number" min="0" step=".1" class="form-control" required
 										id="porcao" name="porcao"
-										placeholder="Another input placeholder">
+										placeholder="">
 								</div>
 
 								<div class="mb-2">
 									<label for="caloria" class="form-label">Caloria</label> <input
 										type="number" class="form-control" required id="caloria"
-										name="caloria" placeholder="Another input placeholder">
+										name="caloria" placeholder="">
 								</div>
 
 
 								<div class="mb-2">
 									<label for="proteina" class="form-label">Proteina</label> <input
 										type="number" class="form-control" required id="proteina"
-										name="proteina" placeholder="Another input placeholder">
+										name="proteina" placeholder="">
 								</div>
 
 
@@ -82,14 +82,14 @@
 									<label for="carboidrato" class="form-label">Carboidrato</label>
 									<input type="number" class="form-control" required
 										id="carboidrato" name="carboidrato"
-										placeholder="Another input placeholder">
+										placeholder="">
 
 								</div>
 
 								<div class="mb-2">
 									<label for="gordura" class="form-label">Gordura</label> <input
 										type="text" class="form-control" required id="gordura"
-										name="gordura" placeholder="Another input placeholder">
+										name="gordura" placeholder="">
 
 								</div>
 							</div>

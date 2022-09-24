@@ -27,22 +27,45 @@
 
 
 			<main>
-				<div class="container-fluid px-4">
+				<div class="container-sm px-4">
 					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
-					<div class="form-floating mb-3">
-						<input class="form-control" name="nome" required id="nome"
-							type="text" placeholder="Nome da refeição" /> <label for="nome">Nome</label>
-					</div>
-					
-					<div class="alimentos"></div>
-					
-					
-					<div class="mt-4 mb-0">
-						<div class="d-grid">
-							<button type="button" onclick="novaRefeicao()" class="btn btn-primary btn-block">Nova
-								Refeição</button>
+					<form id="form-user" method="get"
+						action="<%=request.getContextPath()%>/ServletAlimento">
+						<input type="hidden" id="acao" value="">
+						<div class="mb-2">
+							<label for="nome">Nome</label> <input class="form-control"
+								name="nome" required id="nome" type="text"
+								placeholder="Nome da refeição" />
 						</div>
-					</div>
+
+						<div class="alimentos"></div>
+
+
+						<div class="mt-4 mb-0 col-3">
+							<div class="d-grid">
+								<button type="button" onclick="novaRefeicao()"
+									class="btn btn-primary btn-block">Nova</button>
+							</div>
+						</div>
+					</form>
+
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Nome</th>
+								<th scope="col">Calorias</th>
+								<th scope="col">Proteinas</th>
+								<th scope="col">Carboidratos</th>
+								<th scope="col">Gorduras</th>
+								<th scope="col">Remover</th>
+								<th scope="col">Ver</th>
+
+
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
 				</div>
 			</main>
 
@@ -76,34 +99,69 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
-	
-	
-	
+
+
+
 	<script type="text/javascript">
+		function novoAlimento() {
+			document.querySelector("div.alimentos").innerHTML += "<br/>";
+			document.querySelector("div.alimentos").innerHTML += "<div class=\"row\">  <div class=\"col\">  <input type=\"text\" class=\"form-control\" placeholder=\"First name\" aria-label=\"First name\">	  </div>  <div class=\"col\">   <input type=\"text\" class=\"form-control\" placeholder=\"Last name\" aria-label=\"Last name\">	  </div>	</div>";
+
+		}
+		function novaRefeicao() {
+			var nome = document.querySelector("#nome").value;
+			var urlAction=document.getElementById("form-user").action;
+			$.ajax(
+					{
+						method : "GET",
+						url : urlAction,
+						data : "acao=novarefeicao&nome=" + nome,
+						success : function(response) {
+							alert(response);
+						}
+
+					}).fail(function(xhr, status, errorThrown) {
+				alert("Error ao buscar usuário por nome" + xhr.responseText);
+			});
+
+		}
+		mostrarTodasRefeicoes();
+		function mostrarTodasRefeicoes() {
+			var urlAction=document.getElementById("form-user").action;
 	
-	function novoAlimento(){
-		document.querySelector("div.alimentos").innerHTML+="<br/>";
-		document.querySelector("div.alimentos").innerHTML+="<div class=\"row\">  <div class=\"col\">  <input type=\"text\" class=\"form-control\" placeholder=\"First name\" aria-label=\"First name\">	  </div>  <div class=\"col\">   <input type=\"text\" class=\"form-control\" placeholder=\"Last name\" aria-label=\"Last name\">	  </div>	</div>";
+			$.ajax(
+					{
+						method : "GET",
+						url :urlAction,
+						data : "acao=todasrefeicoes",
+						success : function(response) {
+
+						var json=JSON.parse(response);
+						
+						json.forEach((e)=>{
+							var botaoremover="<button type=\"button\" class=\"btn btn-danger\">EXCLUIR</button>";
+							var botaover="<button type=\"button\" onclick=\"verRefeicao("+e.id+")\" class=\"btn btn-success\">VER</button>";
+
+							document.querySelector("table >tbody").innerHTML+="<tr><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
+						
+						})
+						
+						
+						
+						}
+
+					}).fail(function(xhr, status, errorThrown) {
+				alert("Error ao buscar usuário por nome" + xhr.responseText);
+			});
+		}
 		
-	}
-	function novaRefeicao(){
-		var nome=document.querySelector("#nome").value;
-		$.ajax({
-			method:"GET",
-			url:window.location.pathname.substring(0, window.location.pathname.indexOf("/",2))+ "/ServletAlimento",
-			data:"acao=novarefeicao&nome="+nome,
-			success:function(response){
-				alert(response);	
-			}
-			
-			
-		}).fail(function (xhr, status, errorThrown) {
-		      alert("Error ao buscar usuário por nome" + xhr.responseText);
-	    });
-		
-		
-	}
-	
+		function verRefeicao(refeicao){
+				alert(refeicao);
+
+				var urlAction = document.getElementById("form-user").action;
+
+				window.location.href = urlAction + "?acao=consultarrefeicao&idrefeicao=" + refeicao;
+		}
 	</script>
 </body>
 </html>

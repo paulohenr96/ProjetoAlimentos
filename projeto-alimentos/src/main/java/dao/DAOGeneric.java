@@ -57,6 +57,16 @@ public class DAOGeneric<E> {
 		entityManager.close();
 
 	}
+	public E consultarPorId(Class<E> e,Long id) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		
+		transaction.begin();
+		E find = entityManager.find(e, id);
+		transaction.commit();
+		entityManager.close();
+		return find;
+	}
 
 	public List<E> consultarTodos(Class<E> e) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
@@ -72,6 +82,16 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		List<E> list = entityManager.createQuery("from " + e.getCanonicalName()+" where usuario_id="+userLogado).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
+	
+	public List<E> consultarTodosRefeicao(Class<E> e,Long userLogado) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		List<E> list = entityManager.createQuery("from " + e.getCanonicalName()+" where idUserLogado="+userLogado).getResultList();
 		transaction.commit();
 		entityManager.close();
 		return list;
