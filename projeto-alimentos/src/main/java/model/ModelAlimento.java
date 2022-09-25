@@ -81,7 +81,7 @@ public double getGordura() {
 public void setGordura(double gordura) {
 	this.gordura = gordura;
 }
-public ModelAlimento consumir(int quantidade) {
+public ModelAlimento consumir(double quantidade) {
 	double k=quantidade/porcao;
 	
 	proteina*=k;

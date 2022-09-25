@@ -31,6 +31,7 @@ import beanDTO.GraficoMacros;
 import dao.DAOGeneric;
 import model.ModelAlimento;
 import model.ModelAlimentoConsumido;
+import model.ModelAlimentoRefeicao;
 import model.ModelConsumidoDia;
 import model.ModelRefeicao;
 import model.ModelUsuario;
@@ -354,7 +355,49 @@ public class ServletAlimento extends HttpServlet {
 
 			response.getWriter().write(json);
 
+		}else if (acao != null && acao.equalsIgnoreCase("adicionaralimentorefeicao")) {
+			Long id=Long.parseLong(request.getParameter("id"));
+			Long idRefeicao=Long.parseLong(request.getParameter("idrefeicao"));
+
+			double quantidade=Double.parseDouble(request.getParameter("quantidade"));
+			
+			ModelAlimento alimento=(ModelAlimento)dao.consultarPorId(ModelAlimento.class,id);
+			ModelRefeicao ref=(ModelRefeicao)dao.consultarPorId(ModelRefeicao.class,idRefeicao);
+			ModelAlimentoRefeicao ali=new ModelAlimentoRefeicao();
+			ali.setAlimento(alimento);
+			ali.setQuantidade(quantidade);
+			ali.setRefeicao(ref);
+			System.out.println(ali.getAlimento().getNome());
+			ref.addAlimento(ali);
+			
+			dao.merge(ref);
+			dao.salvar(ali);
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(ref);
+			response.getWriter().write(json);
+
+		}else if (acao != null && acao.equalsIgnoreCase("alimentosrefeicao")) {
+			Long idRefeicao=Long.parseLong(request.getParameter("idrefeicao"));
+			List lista = dao.consultarAlimentosRefeicao(idRefeicao);
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(lista);
+			response.getWriter().write(json);
+			
+		}else if (acao != null && acao.equalsIgnoreCase("removeralimentorefeicao")) {
+			Long idAlimento=Long.parseLong(request.getParameter("idalimento"));
+			Long idRefeicao=Long.parseLong(request.getParameter("idrefeicao"));
+
+			
+			ModelAlimentoRefeicao ali=(ModelAlimentoRefeicao)dao.consultarPorId(ModelAlimentoRefeicao.class, idAlimento);
+			ModelRefeicao ref=(ModelRefeicao)dao.consultarPorId(ModelRefeicao.class, idRefeicao);
+			ref.removeralimento(ali);
+			dao.merge(ref);
+			dao.deletarPorId(ModelAlimentoRefeicao.class, idAlimento);
+			response.getWriter().write("");
+
 		}
+			
+			
 
 	}
 

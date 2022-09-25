@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class ModelAlimentoRefeicao implements Serializable {
 	
@@ -26,7 +28,7 @@ public class ModelAlimentoRefeicao implements Serializable {
 	@Column(precision=10, scale=2)
 	private double quantidade;
 
-	
+	@JsonIgnore
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private ModelRefeicao refeicao;
 	

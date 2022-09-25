@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class ModelRefeicao implements Serializable{
 	/**
@@ -21,6 +23,8 @@ public class ModelRefeicao implements Serializable{
 	private Long id;
 	private String nome;
 	
+	
+	@JsonIgnore
 	@OneToMany(mappedBy = "refeicao",fetch=FetchType.EAGER)
 	private List <ModelAlimentoRefeicao> listaAlimentos;
 	private Long idUserLogado;
@@ -79,5 +83,24 @@ public class ModelRefeicao implements Serializable{
 	}
 	
 	
-	
+	public void addAlimento(ModelAlimentoRefeicao ali) {
+		double quantidade = ali.getQuantidade();
+		ali.getAlimento().consumir(ali.getQuantidade());
+		
+		calorias+=(ali.getAlimento().getCaloria());
+		proteinas+=(ali.getAlimento().getProteina());
+		carboidratos+=(ali.getAlimento().getCarboidrato());
+		gorduras+=(ali.getAlimento().getGordura());
+
+		
+	}
+	public void removeralimento(ModelAlimentoRefeicao ali) {
+		// TODO Auto-generated method stub
+		ali.getAlimento().consumir(ali.getQuantidade());
+
+		calorias-=(ali.getAlimento().getCaloria());
+		proteinas-=(ali.getAlimento().getProteina());
+		carboidratos-=(ali.getAlimento().getCarboidrato());
+		gorduras-=(ali.getAlimento().getGordura());		
+	}
 }

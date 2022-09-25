@@ -13,11 +13,23 @@ import javax.persistence.NonUniqueResultException;
 
 import model.ModelAlimento;
 import model.ModelAlimentoConsumido;
+import model.ModelAlimentoRefeicao;
 import model.ModelConsumidoDia;
+import model.ModelRefeicao;
 import model.ModelUsuario;
 import util.JPAUtil;
 
 public class DAOGeneric<E> {
+
+	public List<E> consultarAlimentosRefeicao(Long idRefeicao){
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		List<E> list = entityManager.createQuery("from " + ModelAlimentoRefeicao.class.getCanonicalName()+" where refeicao_id="+idRefeicao).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
 
 	public void salvar(E entidade) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
