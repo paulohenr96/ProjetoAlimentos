@@ -283,4 +283,15 @@ public class DAOGeneric<E> {
 
 	}
 
+	public void removerAlimentoRefeicao(Long idrefeicao) {
+		// TODO Auto-generated method stub
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.createQuery("delete from "+ModelAlimentoRefeicao.class.getCanonicalName()+" where  refeicao_id =" + idrefeicao).executeUpdate();
+		transaction.commit();
+		entityManager.close();
+
+	}
+
 }

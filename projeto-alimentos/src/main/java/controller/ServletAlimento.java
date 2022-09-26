@@ -395,6 +395,14 @@ public class ServletAlimento extends HttpServlet {
 			dao.deletarPorId(ModelAlimentoRefeicao.class, idAlimento);
 			response.getWriter().write("");
 
+		}else if (acao != null && acao.equalsIgnoreCase("removerrefeicao")) {
+			Long idrefeicao=Long.parseLong(request.getParameter("idrefeicao"));
+			
+			
+			dao.removerAlimentoRefeicao(idrefeicao);
+			dao.deletarPorId(ModelRefeicao.class, idrefeicao);
+			response.getWriter().write("");
+
 		}
 			
 			

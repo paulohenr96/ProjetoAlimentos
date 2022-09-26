@@ -139,13 +139,37 @@
 						var json=JSON.parse(response);
 						
 						json.forEach((e)=>{
-							var botaoremover="<button type=\"button\" class=\"btn btn-danger\">EXCLUIR</button>";
+							var botaoremover="<button type=\"button\" onclick=\"excluirRefeicao("+e.id+")\" class=\"btn btn-danger\">EXCLUIR</button>";
 							var botaover="<button type=\"button\" onclick=\"verRefeicao("+e.id+")\" class=\"btn btn-success\">VER</button>";
 
-							document.querySelector("table >tbody").innerHTML+="<tr><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
+							document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
 						
 						})
 						
+						
+						
+						}
+
+					}).fail(function(xhr, status, errorThrown) {
+				alert("Error ao buscar usuário por nome" + xhr.responseText);
+			});
+		}
+		
+		function excluirRefeicao(idrefeicao){
+			
+			var urlAction=document.getElementById("form-user").action;
+			
+			
+			$.ajax(
+					{
+						method : "GET",
+						url :urlAction,
+						data : "acao=removerrefeicao&idrefeicao="+idrefeicao,
+						success : function(response) {
+
+						
+						$("#"+idrefeicao).remove();
+							
 						
 						
 						}
