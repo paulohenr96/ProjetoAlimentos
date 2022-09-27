@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,16 +50,16 @@ public class ModelConsumidoDia {
 	private Date data;
 	
 	@Column(precision=10, scale=2)
-	private double calorias;
+	private BigDecimal calorias;
 	
 	@Column(precision=10, scale=2)
-	private double proteinas;
+	private BigDecimal proteinas;
 	
 	@Column(precision=10, scale=2)
-	private double carboidrato;
+	private BigDecimal carboidrato;
 
 	@Column(precision=10, scale=2)
-	private double gordura;
+	private BigDecimal gordura;
 	
 	public Long getId() {
 		return id;
@@ -84,46 +85,36 @@ public class ModelConsumidoDia {
 	public void setData(Date data) {
 		this.data = data;
 	}
-	public double getCalorias() {
-		return calorias;
-	}
-	public void setCalorias(double calorias) {
-		this.calorias = calorias;
-	}
-	public double getProteinas() {
-		return proteinas;
-	}
-	public void setProteinas(double proteinas) {
-		this.proteinas = proteinas;
-	}
-	public double getCarboidrato() {
-		return carboidrato;
-	}
-	public void setCarboidrato(double carboidrato) {
-		this.carboidrato = carboidrato;
-	}
-	public double getGordura() {
-		return gordura;
-	}
-	public void setGordura(double gordura) {
-		this.gordura = gordura;
-	}
+	
 
 	
 	public void adicionarAlimento(ModelAlimento ali) {
-		proteinas+=ali.getProteina();
-		carboidrato+=ali.getCarboidrato();
-		gordura+=ali.getGordura();
-		calorias+=ali.getCaloria();
+		
+		if (proteinas!=null && calorias !=null && gordura!=null && carboidrato!=null) {
+			proteinas=new BigDecimal(proteinas.doubleValue()+ali.getProteina().doubleValue());
+			carboidrato=new BigDecimal(carboidrato.doubleValue()+ali.getCarboidrato().doubleValue());
+			gordura=new BigDecimal(gordura.doubleValue()+ali.getGordura().doubleValue());
+			calorias=new BigDecimal(calorias.doubleValue()+ali.getCaloria().doubleValue());
+		}else {
+			proteinas=new BigDecimal(ali.getProteina().doubleValue());
+			carboidrato=new BigDecimal(ali.getCarboidrato().doubleValue());
+			gordura=new BigDecimal(ali.getGordura().doubleValue());
+			calorias=new BigDecimal(ali.getCaloria().doubleValue());
+		}
+		
+		
+	
 		
 	
 	}
 	
+	
 	public void retirarAlimento(ModelAlimento ali) {
-		proteinas-=ali.getProteina();
-		carboidrato-=ali.getCarboidrato();
-		gordura-=ali.getGordura();
-		calorias-=ali.getCaloria();
+		proteinas=new BigDecimal(proteinas.doubleValue()-ali.getProteina().doubleValue());
+		carboidrato=new BigDecimal(carboidrato.doubleValue()-ali.getCarboidrato().doubleValue());
+		gordura=new BigDecimal(gordura.doubleValue()-ali.getGordura().doubleValue());
+		calorias=new BigDecimal(calorias.doubleValue()-ali.getCaloria().doubleValue());
+		
 		
 	
 	}
@@ -134,23 +125,30 @@ public class ModelConsumidoDia {
 		this.listaAlimentos = listaAlimentos;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof ModelConsumidoDia)) {
-			return false;
-		}
-		ModelConsumidoDia other = (ModelConsumidoDia) obj;
-		return Double.doubleToLongBits(calorias) == Double.doubleToLongBits(other.calorias)
-				&& Double.doubleToLongBits(carboidrato) == Double.doubleToLongBits(other.carboidrato)
-				&& Objects.equals(data, other.data)
-				&& Double.doubleToLongBits(gordura) == Double.doubleToLongBits(other.gordura)
-				&& Objects.equals(id, other.id) && Objects.equals(idAlimento, other.idAlimento)
-				&& Objects.equals(listaAlimentos, other.listaAlimentos)
-				&& Double.doubleToLongBits(proteinas) == Double.doubleToLongBits(other.proteinas)
-				&& Objects.equals(usuario, other.usuario);
+	
+	public BigDecimal getCalorias() {
+		return calorias;
+	}
+	public void setCalorias(BigDecimal calorias) {
+		this.calorias = calorias;
+	}
+	public BigDecimal getProteinas() {
+		return proteinas;
+	}
+	public void setProteinas(BigDecimal proteinas) {
+		this.proteinas = proteinas;
+	}
+	public BigDecimal getCarboidrato() {
+		return carboidrato;
+	}
+	public void setCarboidrato(BigDecimal carboidrato) {
+		this.carboidrato = carboidrato;
+	}
+	public BigDecimal getGordura() {
+		return gordura;
+	}
+	public void setGordura(BigDecimal gordura) {
+		this.gordura = gordura;
 	}
 	
 	

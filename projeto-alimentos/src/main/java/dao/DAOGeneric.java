@@ -108,6 +108,19 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
+	public List<E> consultarTodosRefeicaoPaginado(int paginaAtual,int porPagina,Long userLogado) {
+		
+		int offset = porPagina * (paginaAtual - 1);
+		int ultimoResultado = porPagina;
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		List<E> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName()+" where idUserLogado="+userLogado).setFirstResult(offset)
+				.setMaxResults(ultimoResultado).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
 	public List<E> consultarTodosPaginadoMacros(int porPagina, int paginaAtual,Long userLogado,String ordem,String ordenar) {
 		try {
 			EntityManager entityManager = JPAUtil.getEntityManager();
@@ -168,6 +181,16 @@ public class DAOGeneric<E> {
 		transaction.commit();
 		entityManager.close();
 		return list;
+	}
+	public Long contarTotalRefeicoes(Long idUserLogado) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		Long total = (Long) entityManager.createQuery("select count(1) from " + ModelRefeicao.class.getCanonicalName()+" where idUserLogado="+idUserLogado).getSingleResult();
+		transaction.commit();
+		entityManager.close();
+		return total;
 	}
 
 	public Long contarTotal(Class<E> e) {

@@ -51,16 +51,21 @@
 
 					<table class="table table-striped">
 						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Nome</th>
+								<th scope="col">Calorias</th>
+								<th scope="col">Proteinas</th>
+								<th scope="col">Carboidratos</th>
+								<th scope="col">Gorduras</th>
+								<th scope="col">Remover</th>
+								<th scope="col">Ver</th>
 
+
+							</tr>
 						</thead>
 						<tbody></tbody>
 					</table>
-
-					<nav aria-label="Page navigation example">
-						<ul class="pagination">
-
-						</ul>
-					</nav>
 				</div>
 			</main>
 
@@ -98,16 +103,13 @@
 
 
 	<script type="text/javascript">
-	document.querySelector(".table > tbody").innerHTML="<div class=\"spinner-border\" role=\"status\">  <span class=\"sr-only\">Loading...</span>  </div>";
-
-		function novoAlimento() {
+		function novaRefeicao() {
 			document.querySelector("div.alimentos").innerHTML += "<br/>";
 			document.querySelector("div.alimentos").innerHTML += "<div class=\"row\">  <div class=\"col\">  <input type=\"text\" class=\"form-control\" placeholder=\"First name\" aria-label=\"First name\">	  </div>  <div class=\"col\">   <input type=\"text\" class=\"form-control\" placeholder=\"Last name\" aria-label=\"Last name\">	  </div>	</div>";
 
 		}
-		function novaRefeicao() {
+		function novaDieta() {
 			var nome = document.querySelector("#nome").value;
-			document.querySelector("#nome").value="";
 			var urlAction=document.getElementById("form-user").action;
 			$.ajax(
 					{
@@ -115,7 +117,7 @@
 						url : urlAction,
 						data : "acao=novarefeicao&nome=" + nome,
 						success : function(response) {
-							mostrarTodasRefeicoes(1);
+							alert(response);
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
@@ -123,83 +125,26 @@
 			});
 
 		}
-		var p=1;
-		mostrarTodasRefeicoes(1);
-		function mostrarTodasRefeicoes(paginaatual) {
+		function mostrarTodasDietas() {
 			var urlAction=document.getElementById("form-user").action;
-			var porpagina=5;
-			p=paginaatual;
+	
 			$.ajax(
 					{
 						method : "GET",
 						url :urlAction,
-						data : "acao=todasrefeicoes&paginaatual="+paginaatual+"&porpagina="+porpagina,
-						success : function(response,textStatus,request) {
-				
-						var json=JSON.parse(response);
-						if (json.length>0){
-							$("table >thead").html("<tr>"+
-									"<th scope=\"col\">#</th>"+
-									"<th scope=\"col\">Nome</th>"+
-									"<th scope=\"col\">Calorias</th>"+
-									"<th scope=\"col\">Proteinas</th>"+
-									"<th scope=\"col\">Carboidratos</th>"+
-									"<th scope=\"col\">Gorduras</th>"+
-									"<th scope=\"col\">Remover</th>"+
-									"<th scope=\"col\">Ver</th>"+
-
-
-								"</tr>")
-						$("ul.pagination").html("");
-						document.querySelector("table >tbody").innerHTML="";
-						json.forEach((e)=>{
-							var botaoremover="<button type=\"button\" onclick=\"excluirRefeicao("+e.id+")\" class=\"btn btn-danger\">EXCLUIR</button>";
-							var botaover="<button type=\"button\" onclick=\"verRefeicao("+e.id+")\" class=\"btn btn-success\">VER</button>";
-
-							document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
-						
-						})
-						var totalPaginas=request.getResponseHeader("totalPaginas");
-						for (var i=0;i<totalPaginas;i++){
-							if (paginaatual==(i+1)){
-								document.querySelector("ul.pagination").innerHTML+="<li onclick=\"mostrarTodasRefeicoes("+(i+1)+")\" class=\"page-item active\"><a class=\"page-link\" href=\"#\">"+(i+1)+"</a></li>"			
-
-							}else{
-								document.querySelector("ul.pagination").innerHTML+="<li onclick=\"mostrarTodasRefeicoes("+(i+1)+")\" class=\"page-item\"><a class=\"page-link\" href=\"#\">"+(i+1)+"</a></li>"			
-
-							}
-							
-						
-						
-						
-						
-						}
-						
-						}else {
-							$("table>thead").html("Você não possui refeições cadastradas.");
-						}
-						}
-
-					}).fail(function(xhr, status, errorThrown) {
-				alert("Error ao buscar usuário por nome" + xhr.responseText);
-			});
-		}
-		
-		function excluirRefeicao(idrefeicao){
-			
-			var urlAction=document.getElementById("form-user").action;
-			
-			
-			$.ajax(
-					{
-						method : "GET",
-						url :urlAction,
-						data : "acao=removerrefeicao&idrefeicao="+idrefeicao,
+						data : "acao=todasrefeicoes",
 						success : function(response) {
 
+						var json=JSON.parse(response);
 						
-						$("#"+idrefeicao).remove();
-						mostrarTodasRefeicoes(p);
+						json.forEach((e)=>{
+							var botaoremover="<button type=\"button\" class=\"btn btn-danger\">EXCLUIR</button>";
+							var botaover="<button type=\"button\" onclick=\"verRefeicao("+e.id+")\" class=\"btn btn-success\">VER</button>";
+
+							document.querySelector("table >tbody").innerHTML+="<tr><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
+						
+						})
+						
 						
 						
 						}
@@ -210,6 +155,7 @@
 		}
 		
 		function verRefeicao(refeicao){
+				alert(refeicao);
 
 				var urlAction = document.getElementById("form-user").action;
 

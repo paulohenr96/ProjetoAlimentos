@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -238,10 +239,10 @@ public class ServletAlimento extends HttpServlet {
 			String data = request.getParameter("data");
 
 			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(editaData(data), idLogado);
-			consumoDia.setCalorias(0);
-			consumoDia.setProteinas(0);
-			consumoDia.setCarboidrato(0);
-			consumoDia.setGordura(0);
+			consumoDia.setCalorias(new BigDecimal(0));
+			consumoDia.setProteinas(new BigDecimal(0));
+			consumoDia.setCarboidrato(new BigDecimal(0));
+			consumoDia.setGordura(new BigDecimal(0));
 
 			dao.merge(consumoDia);
 			dao.deletarAlimentoConsumidoPorId(ModelAlimentoConsumido.class, consumoDia.getId());
@@ -323,9 +324,16 @@ public class ServletAlimento extends HttpServlet {
 
 		} else if (acao != null && acao.equalsIgnoreCase("todasrefeicoes")) {
 			Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
+			int porPagina=Integer.parseInt(request.getParameter("porpagina")); 
+			int paginaAtual=Integer.parseInt(request.getParameter("paginaatual")); 
+			Long total=dao.contarTotalRefeicoes(userLogado);
+			int totalPaginas=(int) (total%porPagina==0?total/porPagina: 1+total/porPagina);
+			
+			
+			List<ModelRefeicao> lista = dao.consultarTodosRefeicaoPaginado( paginaAtual, porPagina, userLogado);
 
-			List<ModelRefeicao> lista = dao.consultarTodosRefeicao(ModelRefeicao.class, userLogado);
-
+			
+			response.addHeader("totalPaginas",""+ totalPaginas);
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(lista);
 
@@ -341,7 +349,7 @@ public class ServletAlimento extends HttpServlet {
 			int porPagina=Integer.parseInt(request.getParameter("porpagina"));
 			int paginaAtual=Integer.parseInt(request.getParameter("paginaatual"));
 
-			List lista = dao.consultarTodosPaginado(ModelAlimento.class,porPagina,paginaAtual);
+			List<ModelAlimento> lista = dao.consultarTodosPaginado(ModelAlimento.class,porPagina,paginaAtual);
 			
 			
 			Long total = dao.contarTotal(ModelAlimento.class);
@@ -403,6 +411,15 @@ public class ServletAlimento extends HttpServlet {
 			dao.deletarPorId(ModelRefeicao.class, idrefeicao);
 			response.getWriter().write("");
 
+		}else if (acao != null && acao.equalsIgnoreCase("addrefeicao")) {
+			Long idLogado=(Long)request.getSession().getAttribute("IDLogado");
+			Long idRefeicao=Long.parseLong(request.getParameter("idRefeicao"));
+			String data = request.getParameter("data");
+
+			ModelConsumidoDia macros = dao.consultarConsumoDia(editaData(data), idLogado);
+
+			ModelRefeicao ref=(ModelRefeicao)dao.consultarPorId(ModelRefeicao.class, idRefeicao);
+			
 		}
 			
 			
@@ -432,12 +449,12 @@ public class ServletAlimento extends HttpServlet {
 
 		ModelAlimento modelAlimento = new ModelAlimento();
 
-		modelAlimento.setCaloria(caloria);
-		modelAlimento.setCarboidrato(carboidrato);
-		modelAlimento.setGordura(gordura);
+		modelAlimento.setCaloria(new BigDecimal(caloria));
+		modelAlimento.setCarboidrato(new BigDecimal(carboidrato));
+		modelAlimento.setGordura(new BigDecimal(gordura));
 		modelAlimento.setPorcao(porcao);
 		modelAlimento.setNome(nome);
-		modelAlimento.setProteina(proteina);
+		modelAlimento.setProteina(new BigDecimal(proteina));
 
 		return modelAlimento;
 	}

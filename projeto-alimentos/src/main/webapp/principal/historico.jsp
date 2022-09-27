@@ -55,13 +55,7 @@ th:hover {
 
 					<table class="table table-striped-columns">
 						<thead>
-							<tr>
-								<th onclick="ordenarData()">Data</th>
-								<th onclick="ordenarCalorias()">Calorias</th>
-								<th onclick="ordenarProteinas()">Proteina</th>
-								<th onclick="ordenarGordura()">Gordura</th>
-								<th onclick="ordenarCarboidrato()">Carboidrato</th>
-							</tr>
+						
 						</thead>
 						<tbody>
 
@@ -174,9 +168,19 @@ th:hover {
 				data : "paginaatual=" + paginaatual + "&porpagina=" + porpagina
 						+ "&acao=historico&ordem="+ordem+"&asc="+asc,
 				success : function(response, textStatus, xhr) {
-				
+					
 					console.log(response);
 					var json=JSON.parse(response);
+					if (json.length!=0){
+						$(".table>thead").html("");
+						$(".table>thead").append("<tr>"+
+								"<th onclick=\"ordenarData()\">Data</th>"+
+								"<th onclick=\"ordenarCalorias()\">Calorias</th>"+
+								"<th onclick=\"ordenarProteinas()\">Proteina</th>"+
+								"<th onclick=\"ordenarGordura()\">Gordura</th>"+
+								"<th onclick=\"ordenarCarboidrato()\">Carboidrato</th>"+
+							"</tr>");
+					
 					document.querySelector(".table > tbody").innerHTML="";
 					json.forEach((e)=>{
 						var minhaData=new Date(e.data);
@@ -232,9 +236,17 @@ th:hover {
 					}
 					document.querySelector("ul.pagination").innerHTML=previous+paginacao+next;
 
+					
+					
+					}else{
+						$(".spinner-border").remove();
+						$("main > div.container-fluid").html("<h2>O seu histórico está vazio.</h2>");
+					}
+					
 				}
 
 			}).fail(function (xhr, status, errorThrown) {
+				
 			      alert("Error ao buscar usuário por nome" + xhr.responseText);
 		    });
 

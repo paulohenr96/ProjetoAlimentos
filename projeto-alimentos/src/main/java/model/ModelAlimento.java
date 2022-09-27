@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,16 +12,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class ModelAlimento implements Serializable {
 	
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7051274823496948935L;
 @Id
 @GeneratedValue (strategy=GenerationType.AUTO)
 
 private Long id;
 private String nome;
 
-
+@JsonIgnore
 @OneToMany(mappedBy = "alimento",fetch=FetchType.EAGER)
 private List<ModelAlimentoRefeicao> listaAlimentosRefeicao;
 
@@ -29,16 +36,16 @@ private List<ModelAlimentoRefeicao> listaAlimentosRefeicao;
 private double porcao;
 
 @Column(precision=10, scale=2)
-private double caloria;
+private BigDecimal caloria;
 
 @Column(precision=10, scale=2)
-private double proteina;
+private BigDecimal proteina;
 
 @Column(precision=10, scale=2)
-private double carboidrato;
+private BigDecimal carboidrato;
 
 @Column(precision=10, scale=2)
-private double gordura;
+private BigDecimal gordura;
 public Long getId() {
 	return id;
 }
@@ -57,43 +64,52 @@ public double getPorcao() {
 public void setPorcao(double porcao) {
 	this.porcao = porcao;
 }
-public double getCaloria() {
-	return caloria;
-}
-public void setCaloria(double caloria) {
-	this.caloria = caloria;
-}
-public double getProteina() {
-	return proteina;
-}
-public void setProteina(double proteina) {
-	this.proteina = proteina;
-}
-public double getCarboidrato() {
-	return carboidrato;
-}
-public void setCarboidrato(double carboidrato) {
-	this.carboidrato = carboidrato;
-}
-public double getGordura() {
-	return gordura;
-}
-public void setGordura(double gordura) {
-	this.gordura = gordura;
-}
+
 public ModelAlimento consumir(double quantidade) {
-	double k=quantidade/porcao;
+	double k=(quantidade/porcao);
 	
-	proteina*=k;
-	caloria*=k;
-	gordura*=k;
-	carboidrato*=k;
+	proteina=new BigDecimal(k* ((proteina).doubleValue()));
+	caloria=new BigDecimal(k* ((caloria).doubleValue()));
+	gordura=new BigDecimal(k* ((gordura).doubleValue()));
+	carboidrato=new BigDecimal(k* ((carboidrato).doubleValue()));
 	return this;
 }
+
+
 @Override
 public String toString() {
 	return "ModelAlimento [id=" + id + ", nome=" + nome + ", porcao=" + porcao + ", caloria=" + caloria + ", proteina="
 			+ proteina + ", carboidrato=" + carboidrato + ", gordura=" + gordura + "]";
+}
+public List<ModelAlimentoRefeicao> getListaAlimentosRefeicao() {
+	return listaAlimentosRefeicao;
+}
+public void setListaAlimentosRefeicao(List<ModelAlimentoRefeicao> listaAlimentosRefeicao) {
+	this.listaAlimentosRefeicao = listaAlimentosRefeicao;
+}
+public BigDecimal getCaloria() {
+	return caloria;
+}
+public void setCaloria(BigDecimal caloria) {
+	this.caloria = caloria;
+}
+public BigDecimal getProteina() {
+	return proteina;
+}
+public void setProteina(BigDecimal proteina) {
+	this.proteina = proteina;
+}
+public BigDecimal getCarboidrato() {
+	return carboidrato;
+}
+public void setCarboidrato(BigDecimal carboidrato) {
+	this.carboidrato = carboidrato;
+}
+public BigDecimal getGordura() {
+	return gordura;
+}
+public void setGordura(BigDecimal gordura) {
+	this.gordura = gordura;
 }
 	
 }
