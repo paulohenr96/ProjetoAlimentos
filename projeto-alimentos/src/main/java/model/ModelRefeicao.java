@@ -2,15 +2,20 @@ package model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
@@ -30,14 +35,25 @@ public class ModelRefeicao implements Serializable{
 	@OneToMany(mappedBy = "refeicao",fetch=FetchType.EAGER)
 	private List <ModelAlimentoRefeicao> listaAlimentos;
 	private Long idUserLogado;
+	
 	@Column(precision=10, scale=2)
 	private BigDecimal calorias=new BigDecimal(0);
+	
 	@Column(precision=10, scale=2)
 	private BigDecimal proteinas=new BigDecimal(0);
+	
 	@Column(precision=10, scale=2)
 	private BigDecimal carboidratos=new BigDecimal(0);
+	
 	@Column(precision=10, scale=2)
 	private BigDecimal gorduras=new BigDecimal(0);
+	
+	@ManyToOne  (optional=true)
+	private ModelDieta dieta;
+	
+	@Temporal(TemporalType.TIME)
+	private Date horario;
+	
 	public Long getId() {
 		return id;
 	}
@@ -113,5 +129,11 @@ public class ModelRefeicao implements Serializable{
 	}
 	public void setGorduras(BigDecimal gorduras) {
 		this.gorduras = gorduras;
+	}
+	public Date getHorario() {
+		return horario;
+	}
+	public void setHorario(Date horario) {
+		this.horario = horario;
 	}
 }

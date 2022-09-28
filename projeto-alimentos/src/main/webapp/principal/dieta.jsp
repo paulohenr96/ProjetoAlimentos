@@ -29,21 +29,35 @@
 			<main>
 				<div class="container-sm px-4">
 					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
-					<form id="form-user" method="get"
-						action="<%=request.getContextPath()%>/ServletAlimento">
+					<form id="form-user"
+						action="<%=request.getContextPath()%>/ServletDieta" method="get">
 						<input type="hidden" id="acao" value="">
 						<div class="mb-2">
 							<label for="nome">Nome</label> <input class="form-control"
 								name="nome" required id="nome" type="text"
-								placeholder="Nome da refeição" />
+								placeholder="Nome da dieta" />
+
+
+
+						</div>
+						<div class="mb-2 col-3">
+
+							<select id="obj" class="form-select"
+								aria-label="Default select example">
+								<option selected>Open this select menu</option>
+								<option value="PERDER_MASSA">Emagrecer</option>
+								<option value="GANHAR_MASSA">Ganho de Massa</option>
+								<option value="MANTER_MASSA">Manter</option>
+							</select>
+
 						</div>
 
 						<div class="alimentos"></div>
 
 
-						<div class="mt-4 mb-0 col-3">
+						<div class="mt-4 mb-0 col-2">
 							<div class="d-grid">
-								<button type="button" onclick="novaRefeicao()"
+								<button type="button" onclick="novaDieta()"
 									class="btn btn-primary btn-block">Nova</button>
 							</div>
 						</div>
@@ -52,8 +66,9 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th scope="col">#</th>
 								<th scope="col">Nome</th>
+								<th scope="col">Objetivo</th>
+
 								<th scope="col">Calorias</th>
 								<th scope="col">Proteinas</th>
 								<th scope="col">Carboidratos</th>
@@ -103,21 +118,23 @@
 
 
 	<script type="text/javascript">
-		function novaRefeicao() {
-			document.querySelector("div.alimentos").innerHTML += "<br/>";
-			document.querySelector("div.alimentos").innerHTML += "<div class=\"row\">  <div class=\"col\">  <input type=\"text\" class=\"form-control\" placeholder=\"First name\" aria-label=\"First name\">	  </div>  <div class=\"col\">   <input type=\"text\" class=\"form-control\" placeholder=\"Last name\" aria-label=\"Last name\">	  </div>	</div>";
 
-		}
 		function novaDieta() {
 			var nome = document.querySelector("#nome").value;
+			var objetivo = document.querySelector("select").value;
+
 			var urlAction=document.getElementById("form-user").action;
 			$.ajax(
 					{
 						method : "GET",
 						url : urlAction,
-						data : "acao=novarefeicao&nome=" + nome,
+						data : "acao=novadieta&nome=" + nome+
+								"&objetivo="+objetivo,
 						success : function(response) {
-							alert(response);
+							var json=JSON.parse(response);
+
+							 document.querySelector("#nome").value="";
+							auxMostrarListaDietas(json);
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
@@ -125,6 +142,36 @@
 			});
 
 		}
+		function auxMostrarListaDietas(json){
+			document.querySelector("table >tbody").innerHTML="";
+
+			json.forEach((e)=>{
+				var botaoremover="<button type=\"button\" onclick=\"removerDieta("+e.id+")\" class=\"btn btn-danger\">EXCLUIR</button>";
+				var botaover="<button type=\"button\" onclick=\"verDieta("+e.id+")\" class=\"btn btn-success\">VER</button>";
+
+				document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.nome+"</td><td>"+e.objetivo+"</td><td>"+e.totalCalorias+"</td><td>"+e.totalProteinas+"</td><td>"+e.totalCarboidratos+"</td><td>"+e.totalGorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
+			
+			})
+		}
+		function removerDieta(id){
+			var urlAction=document.getElementById("form-user").action;
+
+			$.ajax(
+					{
+						method : "GET",
+						url :urlAction,
+						data : "acao=removerdieta&id="+id,
+						success : function(response) {
+								
+						alert(response);
+						
+						}
+
+					}).fail(function(xhr, status, errorThrown) {
+				alert("Error ao buscar usuário por nome" + xhr.responseText);
+			});
+		}
+		mostrarTodasDietas();
 		function mostrarTodasDietas() {
 			var urlAction=document.getElementById("form-user").action;
 	
@@ -132,18 +179,12 @@
 					{
 						method : "GET",
 						url :urlAction,
-						data : "acao=todasrefeicoes",
+						data : "acao=todasdietas",
 						success : function(response) {
 
 						var json=JSON.parse(response);
 						
-						json.forEach((e)=>{
-							var botaoremover="<button type=\"button\" class=\"btn btn-danger\">EXCLUIR</button>";
-							var botaover="<button type=\"button\" onclick=\"verRefeicao("+e.id+")\" class=\"btn btn-success\">VER</button>";
-
-							document.querySelector("table >tbody").innerHTML+="<tr><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
-						
-						})
+						auxMostrarListaDietas(json);
 						
 						
 						
@@ -154,12 +195,11 @@
 			});
 		}
 		
-		function verRefeicao(refeicao){
-				alert(refeicao);
+		function verDieta(dieta){
 
 				var urlAction = document.getElementById("form-user").action;
 
-				window.location.href = urlAction + "?acao=consultarrefeicao&idrefeicao=" + refeicao;
+				window.location.href = urlAction + "?acao=verdieta&id=" + dieta;
 		}
 	</script>
 </body>
