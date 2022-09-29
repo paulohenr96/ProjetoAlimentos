@@ -12,6 +12,8 @@
 <title>Dieta ${dieta.nome}</title>
 <link href="<%=request.getContextPath()%>/assets/css/styles.css"
 	rel="stylesheet" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
 	crossorigin="anonymous"></script>
 </head>
@@ -31,6 +33,8 @@
 					<h1>Dieta</h1>
 					<form id="form-user"
 						action="<%=request.getContextPath()%>/ServletDieta" method="get">
+
+						<input type="hidden" id="id-dieta" value="${dieta.id}">
 						<table class="table  table-borderless">
 							<thead>
 
@@ -60,104 +64,71 @@
 							</tbody>
 						</table>
 
-						<button type="button" onclick="mostrarTodasRefeicoes(1)"
-							class="btn btn-success" data-toggle="modal"
-							data-target=".bd-example-modal-lg">Adicionar Refeição</button>
+
+
+						<button type="button" onclick="adicionandoRef()"
+							class="btn btn-primary">Adicionar Refeição</button>
 
 
 					</form>
+
+
+					<div class="mb-2 ">
+						<label for="nome-novo" class="col-sm-2 col-form-label">Nome</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="nome-novo"
+								value="Nome">
+						</div>
+					</div>
+					<div class="mb-2">
+						<label for="horario-novo" class="col-sm-2 col-form-label">Horário</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="horario-novo"
+								placeholder="Horario">
+						</div>
+					</div>
+
+					<button type="button" onclick="salvarRefs()"
+						class="btn btn-primary">Salvar</button>
+
+
+
+
+					<div class="refeicoes">
+						<table class="table  table-borderless">
+							<thead>
+
+
+
+							</thead>
+
+							<tbody>
+							</tbody>
+						</table>
+					</div>
 				</div>
+
 			</main>
 
 
 
 
-			<div class="modal fade bd-example-modal-lg" tabindex="-1"
-				role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-lg">
-					<div class="modal-content">
 
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Nova Refeição</h5>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
+
+
+			<footer class="py-4 bg-light mt-auto">
+				<div class="container-fluid px-4">
+					<div
+						class="d-flex align-items-center justify-content-between small">
+						<div class="text-muted">Copyright &copy; Your Website 2022</div>
+						<div>
+							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
+								&amp; Conditions</a>
 						</div>
-
-
-						<div class="modal-body">
-
-
-<form>
-				  <div class="form-group row">
-				    <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
-				    <div class="col-sm-10">
-				      <input type="text" readonly class="form-control-plaintext" id="nomeref" value="email@example.com">
-				    </div>
-				  </div>
-				  <div class="form-group row">
-				    <label for="inputPassword" class="col-sm-2 col-form-label">Horário</label>
-				    <div class="col-sm-10">
-				      <input type="password" class="form-control" id="horario" placeholder="Password">
-				    </div>
-				  </div>
-				</form>
-
-
-
-							<table class="table table-sm">
-								<thead>
-									<tr>
-										<th scope="col">Nome</th>
-										<th scope="col">Calorias</th>
-										<th scope="col">Carboidratos</th>
-										<th scope="col">Proteinas</th>
-										<th scope="col">Gorduras</th>
-
-									</tr>
-								</thead>
-								<tbody>
-
-								</tbody>
-							</table>
-							<nav aria-label="Page navigation example">
-						<ul class="pagination">
-
-						</ul>
-					</nav>
-
-
-
-
-
-
-
-
-
 					</div>
-
-
 				</div>
-			</div>
+			</footer>
 		</div>
-
-
-
-
-
-		<footer class="py-4 bg-light mt-auto">
-			<div class="container-fluid px-4">
-				<div class="d-flex align-items-center justify-content-between small">
-					<div class="text-muted">Copyright &copy; Your Website 2022</div>
-					<div>
-						<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-							&amp; Conditions</a>
-					</div>
-				</div>
-			</div>
-		</footer>
-	</div>
 	</div>
 
 	<jsp:include page="javascript-files.jsp"></jsp:include>
@@ -166,80 +137,117 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
-
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script>
-	var p=0;
-	function mostrarTodasRefeicoes(paginaatual) {
-		var urlAction=document.getElementById("form-user").action;
-		var porpagina=5;
-		p=paginaatual;
-		$.ajax(
-				{
-					method : "GET",
-					url :"ServletAlimento",
-					data : "acao=todasrefeicoes&paginaatual="+paginaatual+"&porpagina="+porpagina,
-					success : function(response,textStatus,request) {
-			
-					var json=JSON.parse(response);
-					if (json.length>0){
-						$("div.modal-body>table >thead").html("<tr>"+
-								"<th scope=\"col\">#</th>"+
-								"<th scope=\"col\">Nome</th>"+
-								"<th scope=\"col\">Calorias</th>"+
-								"<th scope=\"col\">Proteinas</th>"+
-								"<th scope=\"col\">Carboidratos</th>"+
-								"<th scope=\"col\">Gorduras</th>"+
-								"<th scope=\"col\">SELECIONAR</th>"+
-								
-
-
-							"</tr>")
-					$("ul.pagination").html("");
-					document.querySelector("div.modal-body>table >tbody").innerHTML="";
-					json.forEach((e)=>{
-// 						var botaoremover="<button type=\"button\" onclick=\"excluirRefeicao("+e.id+")\" class=\"btn btn-danger\">EXCLUIR</button>";
-						var botaoselecionar="<button type=\"button\" onclick=\"selecionarRefeicao("+e.id+",'"+e.nome+"')\" class=\"btn btn-success\">VER</button>";
-
-						var botaoremover="";
-						var botaover="";
-
-
-						document.querySelector("div.modal-body>table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoselecionar+"</td></tr>"
-					
-					})
-					var totalPaginas=request.getResponseHeader("totalPaginas");
-					for (var i=0;i<totalPaginas;i++){
-						if (paginaatual==(i+1)){
-							document.querySelector("ul.pagination").innerHTML+="<li onclick=\"mostrarTodasRefeicoes("+(i+1)+")\" class=\"page-item active\"><a class=\"page-link\" href=\"#\">"+(i+1)+"</a></li>"			
-
-						}else{
-							document.querySelector("ul.pagination").innerHTML+="<li onclick=\"mostrarTodasRefeicoes("+(i+1)+")\" class=\"page-item\"><a class=\"page-link\" href=\"#\">"+(i+1)+"</a></li>"			
-
-						}
-						
-					
-					
-					
-					
-					}
-					
-					}else {
-						$("div.modal-body>table>thead").html("Você não possui refeições cadastradas.");
-					}
-					}
-
-				}).fail(function(xhr, status, errorThrown) {
-			alert("Error ao buscar usuário por nome" + xhr.responseText);
+		flatpickr("#horario", {
+			enableTime : true,
+			noCalendar : true,
+			dateFormat : "H:i",
+			time_24hr : true
 		});
+		flatpickr("#horario-novo", {
+			enableTime : true,
+			noCalendar : true,
+			dateFormat : "H:i",
+			time_24hr : true
+		});
+
+		var p = 0;
+
+		$("div.modal-body>form").hide();
+
+		function selecionarRefeicao(id, nome) {
+			$("div.modal-body>form").show();
+			$("#nomeref").val();
+
+		}
+
+		function salvarRefs() {
+			var aux = $("#horario-novo").val();
+			var hora = aux.replace(":", "-");
+			var nome = $("#nome-novo").val();
+			var id = $("#id-dieta").val();
+
+			var urlAction = document.getElementById("form-user").action;
+			$.ajax(
+					{
+						
+						method : "GET",
+						url : urlAction,
+						data : "acao=novaref&hora=" + hora + "&nome=" + nome
+								+ "&id=" + id,
+						success : function(response) {
+							alert(response);
+							
+							
+							var json=JSON.parse(response);
+							
+							montarTabelaRefeicoes(json);
+
+							
+						}
+
+					}).fail(function(xhr, status, errorThrown) {
+				alert("Error ao buscar usuário por nome" + xhr.responseText);
+			});
+		}
+		mostrarRefs();
+		function mostrarRefs(){
+			var id = $("#id-dieta").val();
+	
+			
+			var urlAction = document.getElementById("form-user").action;
+			$.ajax(
+					{
+						
+						method : "GET",
+						url : urlAction,
+						data : "acao=mostrarrefeicoes&id=" + id,
+						success : function(response) {
+							alert(response);
+							
+							
+							var json=JSON.parse(response);
+							montarTabelaRefeicoes(json);
+							
+						}
+
+					}).fail(function(xhr, status, errorThrown) {
+				alert("Error ao buscar usuário por nome" + xhr.responseText);
+			});
+			
+		}
+		
+		
+	function montarTabelaRefeicoes(json){
+		
+		if (json.length==0){
+			$("div.refeicoes>table>thead").append("<th>Sem refeições cadastradas.</th>");
+		}else{
+			$("div.refeicoes>table>thead").html("");
+
+			var thead="<th>REFEICAO</th>	<th>HORARIO</th>	<th>VER</th>	<th>REMOVER</th>";
+
+			$("div.refeicoes>table>thead").append(thead);
+			json.forEach((e)=>{
+				var botaoremover="<button type='button' onclick='deletar("+e.id+")' class='btn btn-danger'>REMOVER</button>";
+				var botaover="<button type='button' onclick='ver("+e.id+")' class='btn btn-success'>VER</button>";
+				$("div.refeicoes > table > tbody").append("<tr><td>"+e.nome+"</td><td>"+e.horario+"</td><td>"+botaover+"</td><td>"+botaoremover+"</td></tr>")
+			})
+			
+		}
+		
+		
 	}
-	$("div.modal-body>form").hide();
+	function ver(id){
+		
+		
 
-	function selecionarRefeicao(id,nome){
-		$("div.modal-body>form").show();
-		$("#nomeref").val(nome);
+		var urlAction = "ServletAlimento";
 
-
+		window.location.href = urlAction + "?acao=consultarrefeicao&idrefeicao=" + id;
 	}
+		
 	</script>
 
 </body>

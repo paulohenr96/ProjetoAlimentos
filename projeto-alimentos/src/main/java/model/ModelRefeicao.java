@@ -48,9 +48,16 @@ public class ModelRefeicao implements Serializable{
 	@Column(precision=10, scale=2)
 	private BigDecimal gorduras=new BigDecimal(0);
 	
+	
+	
 	@ManyToOne  (optional=true)
 	private ModelDieta dieta;
-	
+	public void setDieta(ModelDieta dieta) {
+		this.dieta = dieta;
+	}
+	public ModelDieta getDieta() {
+		return dieta;
+	}
 	@Temporal(TemporalType.TIME)
 	private Date horario;
 	

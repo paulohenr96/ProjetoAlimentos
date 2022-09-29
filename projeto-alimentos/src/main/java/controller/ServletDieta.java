@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DAOGeneric;
 import model.ModelDieta;
+import model.ModelRefeicao;
 
 /**
  * Servlet implementation class ServletDieta
@@ -54,8 +57,21 @@ public class ServletDieta extends HttpServlet {
 			response.getWriter().write(json);
 
 		} else if (acao != null && acao.equalsIgnoreCase("removerdieta")) {
-			response.getWriter().write("Removendo");
+			Long id=Long.parseLong(request.getParameter("id"));
+			
+			
+			ModelDieta dieta=(ModelDieta)dao.consultarPorId(ModelDieta.class, id);
+			
+			dieta.getListaRefeicoes().forEach((e)->{
+				dao.removerAlimentoRefeicao(e.getId());
+			});
+			dao.removerRefeicaoDieta(id);
+			dao.deletarPorId(ModelDieta.class, id);
+			List lista = dao.consultarTodos(ModelDieta.class);
 
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(lista);
+			response.getWriter().write(json);
 		} else if (acao != null && acao.equalsIgnoreCase("todasdietas")) {
 
 			List lista = dao.consultarTodos(ModelDieta.class);
@@ -64,12 +80,54 @@ public class ServletDieta extends HttpServlet {
 			String json = mapper.writeValueAsString(lista);
 			response.getWriter().write(json);
 		} else if (acao != null && acao.equalsIgnoreCase("verdieta")) {
-			Long id=Long.parseLong(request.getParameter("id"));
-			
-			ModelDieta dieta=(ModelDieta)dao.consultarPorId(ModelDieta.class, id);
-			
+			Long id = Long.parseLong(request.getParameter("id"));
+
+			ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);
+
 			request.setAttribute("dieta", dieta);
 			request.getRequestDispatcher("principal/consultadieta.jsp").forward(request, response);
+		} else if (acao != null && acao.equalsIgnoreCase("novaref")) {
+			Long id = Long.parseLong(request.getParameter("id"));
+			String horario = request.getParameter("hora");
+			String nome = request.getParameter("nome");
+//			Long idUserLogado=(Long)request.getSession().getAttribute("idLogado");
+			String hora = horario.replace("-", ":");
+			System.out.println(hora);
+
+			ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);
+			ModelRefeicao ref = new ModelRefeicao();
+
+			ref.setNome(nome);
+
+			try {
+				ref.setHorario(new SimpleDateFormat("HH:mm").parse(hora));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ref.setDieta(dieta);
+			dao.salvar(ref);
+			Long total = dao.contarTotalRefsDieta(id);
+			List<ModelRefeicao> lista = dao.todasRefsDieta(id);
+
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(lista);
+			response.getWriter().write(json);
+
+		}else if (acao != null && acao.equalsIgnoreCase("mostrarrefeicoes")) {
+			Long id = Long.parseLong(request.getParameter("id"));
+
+			List<ModelRefeicao> lista = dao.todasRefsDieta(id);
+
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(lista);
+			response.getWriter().write(json);
+		}
+		
+		
+		else {
+			request.getRequestDispatcher("index.jsp").forward(request, response);
+
 		}
 
 	}

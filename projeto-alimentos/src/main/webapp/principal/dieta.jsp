@@ -163,8 +163,9 @@
 						data : "acao=removerdieta&id="+id,
 						success : function(response) {
 								
-						alert(response);
-						
+							var json=JSON.parse(response);
+							auxMostrarListaDietas(json);
+							
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
