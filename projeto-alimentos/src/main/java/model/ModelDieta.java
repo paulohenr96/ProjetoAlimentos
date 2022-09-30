@@ -111,6 +111,30 @@ public class ModelDieta implements Serializable{
 		return serialVersionUID;
 	}
 	
+	public void adicionarRefeicao(ModelRefeicao ref) {
+		totalCalorias=ref.getCalorias().add(totalCalorias);
+		totalProteinas=ref.getProteinas().add(totalProteinas);
+		totalCarboidratos=ref.getCarboidratos().add(totalCarboidratos);
+		totalGorduras=ref.getGorduras().add(totalGorduras);
+
+	}
+	
+	
+	public void removerRefeicao(Long  idRef) {
+		
+		listaRefeicoes.forEach((ref)->{
+			
+			if (ref.getId()==idRef) {
+				totalCalorias=totalCalorias.subtract(ref.getCalorias());
+				totalProteinas=totalProteinas.subtract(ref.getProteinas());
+				totalCarboidratos=totalCarboidratos.subtract(ref.getCarboidratos());
+				totalGorduras=totalGorduras.subtract(ref.getGorduras());
+			}
+			
+		});
+		
+
+	}
 	
 	
 	 

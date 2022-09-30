@@ -107,9 +107,11 @@ public class ServletDieta extends HttpServlet {
 			}
 			ref.setDieta(dieta);
 			dao.salvar(ref);
-			Long total = dao.contarTotalRefsDieta(id);
+			dao.merge(dieta);
+			
+			
+			
 			List<ModelRefeicao> lista = dao.todasRefsDieta(id);
-
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(lista);
 			response.getWriter().write(json);
@@ -126,7 +128,7 @@ public class ServletDieta extends HttpServlet {
 		
 		
 		else {
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+			request.getRequestDispatcher("erro401.html").forward(request, response);
 
 		}
 

@@ -34,6 +34,7 @@ import model.ModelAlimento;
 import model.ModelAlimentoConsumido;
 import model.ModelAlimentoRefeicao;
 import model.ModelConsumidoDia;
+import model.ModelDieta;
 import model.ModelRefeicao;
 import model.ModelUsuario;
 import util.ReportUtil;
@@ -377,7 +378,11 @@ public class ServletAlimento extends HttpServlet {
 			ali.setRefeicao(ref);
 			System.out.println(ali.getAlimento().getNome());
 			ref.addAlimento(ali);
-			
+			if (ref.getDieta()!=null) {
+				ModelDieta dieta = ref.getDieta();
+				dieta.adicionarRefeicao(ref);
+				dao.merge(dieta);
+			}
 			dao.merge(ref);
 			dao.salvar(ali);
 			ObjectMapper mapper = new ObjectMapper();

@@ -30,6 +30,8 @@
 
 			<main>
 				<div class="container-fluid px-4">
+					<button class="btn btn-link hBack" type="button">VOLTAR</button>
+					
 					<h1>Dieta</h1>
 					<form id="form-user"
 						action="<%=request.getContextPath()%>/ServletDieta" method="get">
@@ -89,7 +91,7 @@
 					</div>
 
 					<button type="button" onclick="salvarRefs()"
-						class="btn btn-primary">Salvar</button>
+						class="btn btn-primary" id="btn-salvar">Salvar</button>
 
 
 
@@ -151,6 +153,10 @@
 			dateFormat : "H:i",
 			time_24hr : true
 		});
+		$(".hBack").on("click", function(e){
+		    e.preventDefault();
+		    window.history.back();
+		});
 
 		var p = 0;
 
@@ -167,7 +173,7 @@
 			var hora = aux.replace(":", "-");
 			var nome = $("#nome-novo").val();
 			var id = $("#id-dieta").val();
-
+			$("btn-salvar").addClass("disabled");
 			var urlAction = document.getElementById("form-user").action;
 			$.ajax(
 					{
@@ -184,7 +190,8 @@
 							
 							montarTabelaRefeicoes(json);
 
-							
+							$("btn-salvar").removeClass("disabled");
+
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
@@ -218,27 +225,42 @@
 			
 		}
 		
-		
+	var ordem;
 	function montarTabelaRefeicoes(json){
-		
+		$("div.refeicoes>table>thead").html("");
+		$("div.refeicoes>table>tbody").html("");
 		if (json.length==0){
 			$("div.refeicoes>table>thead").append("<th>Sem refeições cadastradas.</th>");
 		}else{
-			$("div.refeicoes>table>thead").html("");
-
-			var thead="<th>REFEICAO</th>	<th>HORARIO</th>	<th>VER</th>	<th>REMOVER</th>";
-
+			
+		
+			var thead="<th>REFEICAO</th> 	<th>HORARIO</th> <th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th>	<th>VER</th>	<th>REMOVER</th>";
+			json.sort(compare);
 			$("div.refeicoes>table>thead").append(thead);
 			json.forEach((e)=>{
 				var botaoremover="<button type='button' onclick='deletar("+e.id+")' class='btn btn-danger'>REMOVER</button>";
 				var botaover="<button type='button' onclick='ver("+e.id+")' class='btn btn-success'>VER</button>";
-				$("div.refeicoes > table > tbody").append("<tr><td>"+e.nome+"</td><td>"+e.horario+"</td><td>"+botaover+"</td><td>"+botaoremover+"</td></tr>")
+				$("div.refeicoes > table > tbody").append("<tr><td>"+e.nome+"</td><td>"+e.horario+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaover+"</td><td>"+botaoremover+"</td></tr>")
 			})
 			
 		}
 		
 		
 	}
+	function compare(a, b) {
+		  // Use toUpperCase() to ignore character casing
+		  const bandA = a.horario;
+		  const bandB = b.horario;
+
+		  let comparison = 0;
+		  if (bandA > bandB) {
+		    comparison = 1;
+		  } else if (bandA < bandB) {
+		    comparison = -1;
+		  }
+		  return comparison;
+		}
+	
 	function ver(id){
 		
 		

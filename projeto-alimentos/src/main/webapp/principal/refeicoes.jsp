@@ -66,28 +66,6 @@
 						</div>
 
 
-						<div class="mb-2">
-							<label for="idselecionado" class="form-label">ID</label> <input
-								type="text" readonly="readonly" class="form-control" required
-								id="idselecionado" name="idselecionado">
-
-
-						</div>
-						<div class="mb-2">
-							<label for="nomeselecionado" class="form-label">Nome</label> <input
-								type="text" class="form-control" readonly="readonly" required
-								id="nomeselecionado" name="nomeselecionado">
-
-
-						</div>
-						<div class="mb-2">
-							<label for="quantidade" class="form-label">Quantidade
-								Consumida</label> <input type="text" class="form-control" required
-								id="quantidade" name="quantidade"
-								placeholder="Digite a quantidade...">
-
-
-						</div>
 
 
 
@@ -97,8 +75,7 @@
 
 
 
-					<button type="button" onclick="mostrarAlimentoConsumido()"
-						class="btn btn-warning">Adicionar</button>
+					
 					<button type="button" onclick="limparMacros()"
 						class="btn btn-primary">Limpar</button>
 
@@ -136,13 +113,15 @@
 									<th>P</th>
 									<th>C</th>
 									<th>G</th>
+									<th>VER</th>
+
 
 								</tr>
 
 							</thead>
 							<tbody>
 								<c:forEach items="${todos}" var="ali">
-									<tr id="${ali.id}" onclick="pegarAlimento(${ali.id})">
+									<tr id="${ali.id}">
 										<td>${ali.id}</td>
 
 										<td>${ali.nome}</td>
@@ -151,6 +130,11 @@
 										<td>${ali.proteina}</td>
 										<td>${ali.carboidrato}</td>
 										<td>${ali.gordura}</td>
+										<td><button onclick="pegarAlimento(${ali.id})"
+												class="btn btn-success" data-bs-toggle="modal"
+												data-bs-target="#exampleModal"
+												data-bs-whatever="@getbootstrap">VER</button></td>
+
 										</td>
 									</tr>
 								</c:forEach>
@@ -216,27 +200,7 @@
 									<button type="button" class="btn-close" data-bs-dismiss="modal"
 										aria-label="Close"></button>
 								</div>
-								<div class="modal-body">
-									<table id="comi-hoje" class="table table-striped">
-										<thead>
-											<tr>
-												<th>#</th>
-												<th>Nome</th>
-												<th>Quantidade</th>
-											</tr>
-										</thead>
-
-
-
-
-									</table>
-
-									<nav aria-label="Page navigation example">
-										<ul id="paginacao-modal" class="pagination">
-
-										</ul>
-									</nav>
-								</div>
+								<div class="modal-body"></div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
 										data-bs-dismiss="modal">Close</button>
@@ -400,8 +364,45 @@
 			var linha=document.getElementById(id);
 			var id=linha.cells[0].innerHTML;
 			var nome=linha.cells[1].innerHTML;
+			$("div.modal-body").html("");
+			$("#exampleModalLabel").html("Insira a quantidade.");
+			 $("div.modal-body").append($("<div class=\"mb-2\">"+
+						"<label for=\"idselecionado\" class=\"form-label\">ID</label>" +
+						"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
+						"id=\"idselecionado\" name=\"idselecionado\"></div>"));
+			 $("div.modal-body").append($("<div class=\"mb-2\">"+
+						"<label for=\"nomeselecionado\" class=\"form-label\">NOME</label>" +
+						"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
+						"id=\"nomeselecionado\" name=\"nomeselecionado\"></div>"));
+			 $("div.modal-body").append($("<div class=\"mb-2\">"+
+						"<label for=\"quantidade\" class=\"form-label\">QUANTIDADE</label>" +
+						"<input type=\"text\"  class=\"form-control\" required "+
+						"id=\"quantidade\" name=\"quantidade\"></div>"));
+
 			
-			
+// 				<div class="mb-2">
+// 							<label for="idselecionado" class="form-label">ID</label> <input
+// 								type="text" readonly="readonly" class="form-control" required
+// 								id="idselecionado" name="idselecionado">
+
+
+// 						</div><div cl				<div class="mb-2">
+// 							<label for="nomeselecionado" class="form-label">Nome</label> <input
+// 								type="text" class="form-control" readonly="readonly" required
+// 								id="nomeselecionado" name="nomeselecionado">
+
+
+// 						</div>
+// 						<div class="mb-2">
+// 							<label for="quantidade" class="form-label">Quantidade
+// 								Consumida</label> <input type="text" class="form-control" required
+// 								id="quantidade" name="quantidade"
+// 								placeholder="Digite a quantidade...">
+
+
+// 						</div>
+			var button="<button type=\"button\" onclick=\"mostrarAlimentoConsumido()\" class=\"btn btn-warning\">Adicionar</button>";
+			 $("div.modal-body").append($(button));
 			document.getElementById("nomeselecionado").value=nome;
 			document.getElementById("idselecionado").value=id;
 
@@ -424,7 +425,7 @@
 						var json = JSON.parse(response);
 
 						console.log(json);
-						document.getElementById("data-caloria").innerHTML=json.calorias;
+						document.getElementById("data-caloria")=nnerHTML=json.calorias;
 						document.getElementById("data-proteina").innerHTML=json.proteinas;
 						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
 						document.getElementById("data-gordura").innerHTML=json.gordura;
@@ -442,11 +443,17 @@
 		function exibirModal(paginaAtual){
 			 var urlAction = document.getElementById("form-user").action;
 			  var data=document.getElementById("data").value;
+				$("div.modal-body").html("");
+				console.log(data);
 			  var spinner="<div class=\"spinner-border text-primary\" role=\"status\">"+
 			  "<span class=\"sr-only\">Loading...</span>"+
 			  "</div>";
+			  $("div.modal-body").append($("<table class='table table-striped' id='comi-hoje'></table>"))
+			  $("div.modal-body").append($("<nav aria-label=\"Page navigation example\"><ul id=\"paginacao-modal\" class=\"pagination\"></ul></nav>"))
 			  document.getElementById("comi-hoje").innerHTML=spinner;
-			if (data!=""){
+			if (data!="" && data.trim()!=""){
+				$("#exampleModalLabel").html("Todos os alimentos consumidos em :"+data);
+
 				$.ajax({
 				      method: "get",
 				      url: urlAction,
@@ -518,7 +525,8 @@
 				    });
 
 			}else {
-				alert("Selecione uma data.");
+				$("#exampleModalLabel").html("Nenhum alimento consumido nesta data "+data);
+
 			}
 			  		}
 		function adicionar(){

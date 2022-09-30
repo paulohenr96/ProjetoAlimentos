@@ -28,6 +28,9 @@
 
 			<main>
 				<div class="container-fluid px-4">
+				
+									<button class="btn btn-link hBack" type="button">VOLTAR</button>
+				
 					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
 
 
@@ -217,6 +220,10 @@
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
 
 	<script type="text/javascript">
+	$(".hBack").on("click", function(e){
+	    e.preventDefault();
+	    window.history.back();
+	});
 	$("table.todos").hide();
 	
 		function mostrarListaAlimentos(paginaatual){

@@ -364,7 +364,7 @@ public class DAOGeneric<E> {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName()+" where dieta_id="+id).getResultList();
+		List<E> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName()+" where dieta_id="+id +" order by horario").getResultList();
 		transaction.commit();
 		entityManager.close();
 		return list;
