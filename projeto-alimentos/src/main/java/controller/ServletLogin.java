@@ -60,24 +60,27 @@ public class ServletLogin extends HttpServlet {
 
 		System.out.println("Login : " + login);
 		System.out.println("Senha : " + senha);
-		String url="";
 		String msg = "";
 		ModelUsuario user=new ModelUsuario();
 		
 		user.setLogin(login);
 		user.setSenha(senha);
 		System.out.println("Usuario tentando logar : "+user);
+		System.out.println("Indo para a pagina : "+request.getContextPath()+" ou "+request.getServletPath());
 		ModelUsuario modelUsuario = dao.autentificar(user);
+		
+		String url=request.getParameter("url");
+		
+		System.out.println(url+" <--- Url para Autentificar");
 		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && modelUsuario!=null ) {
 			System.out.println("Logado");
 			request.getSession().setAttribute("user", modelUsuario.getLogin());
 			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
-			System.out.println(request.getContextPath());
 			
 			
 			
 
-			request.getRequestDispatcher("/principal/paginainicial.jsp").forward(request, response);
+			request.getRequestDispatcher(url).forward(request, response);
 
 		} else {
 

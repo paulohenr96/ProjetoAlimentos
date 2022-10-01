@@ -109,6 +109,7 @@ public class ModelConsumidoDia {
 	}
 	
 	
+	
 	public void retirarAlimento(ModelAlimento ali) {
 		proteinas=new BigDecimal(proteinas.doubleValue()-ali.getProteina().doubleValue());
 		carboidrato=new BigDecimal(carboidrato.doubleValue()-ali.getCarboidrato().doubleValue());
@@ -117,6 +118,19 @@ public class ModelConsumidoDia {
 		
 		
 	
+	}
+	public void adicionarRefeicao(ModelRefeicao ref) {
+		proteinas=proteinas.add(ref.getProteinas());
+		calorias=calorias.add(ref.getCalorias());
+		carboidrato=carboidrato.add(ref.getCarboidratos());
+		gordura=gordura.add(ref.getGorduras());
+	}
+	public void removerRefeicao(ModelRefeicao ref) {
+		
+		proteinas=proteinas.subtract(ref.getProteinas());
+		calorias=calorias.subtract(ref.getCalorias());
+		carboidrato=carboidrato.subtract(ref.getCarboidratos());
+		gordura=gordura.add(ref.getGorduras());
 	}
 	public List<ModelAlimentoConsumido> getListaAlimentos() {
 		return listaAlimentos;

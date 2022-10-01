@@ -49,7 +49,8 @@
 												${msg}											
 											</div>
 											</c:if>
-                                           
+                                           <input type="hidden" value="<%=request.getParameter("url")%>"
+			name="url">
                                         </form>
                                     </div>
                                     <div class="card-footer text-center py-3">

@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet Filter implementation class FiltroLogin
  */
-@WebFilter(urlPatterns = { "/principal/*" })
+@WebFilter(urlPatterns = { "/principal/*","/ServletAlimento","/ServletDieta" })
 public class FiltroLogin extends HttpFilter implements Filter {
        
     /**
@@ -48,9 +48,8 @@ public class FiltroLogin extends HttpFilter implements Filter {
 		 Object attribute = session.getAttribute("user");
 		 System.out.println(urlParaAutentificar);
 		 if (attribute==null && !urlParaAutentificar.contains("/ServletLogin") && !urlParaAutentificar.contains("/registrar.jsp")) {
-			 
-			
-			request.getRequestDispatcher("/index.jsp").forward(servletRequest, response);
+			 System.out.println(urlParaAutentificar+"-----------");
+			request.getRequestDispatcher("/index.jsp?url="+urlParaAutentificar).forward(request, response);
 			return;
 		}
 		else {

@@ -75,14 +75,13 @@
 
 
 
-					
+
 					<button type="button" onclick="limparMacros()"
 						class="btn btn-primary">Limpar</button>
 
-					<button type="button" class="btn btn-primary"
-						data-bs-toggle="modal" data-bs-target="#exampleModal"
-						data-bs-whatever="@getbootstrap" onclick="exibirModal(1)">Ver
+					<button type="button" class="btn btn-info" onclick="exibirModal(1)">Ver
 						Alimentos</button>
+
 
 
 
@@ -131,9 +130,7 @@
 										<td>${ali.carboidrato}</td>
 										<td>${ali.gordura}</td>
 										<td><button onclick="pegarAlimento(${ali.id})"
-												class="btn btn-success" data-bs-toggle="modal"
-												data-bs-target="#exampleModal"
-												data-bs-whatever="@getbootstrap">VER</button></td>
+												class="btn btn-success">VER</button></td>
 
 										</td>
 									</tr>
@@ -288,11 +285,7 @@
 				idselecionado.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Por favor Selecione Um alimento na Lista abaixo.</span>";
 				return false;
 			}
-			  if (data.value=="" ){
-					data.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Por favor, selecione uma data.</span>";
-					flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
-					return false;
-				}
+			
 			if (quantidade.value==""){
 				
 				erro++;
@@ -335,77 +328,80 @@
 			  }
 			}
 
-		
+		function verificarData(){
+			var data=document.getElementById("data");
+			  if (document.querySelector(".alerta")!=null){
+				  document.querySelector(".alerta").remove();  
+			  }
+			  
+			  if (data.value=="" || data.value.trim=="" ){
+					data.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Por favor, selecione uma data.</span>";
+					flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
+					return false;
+				}
+			  return true;
+		}
 		function limparMacros(){
 			  var urlAction = document.getElementById("form-user").action;
 				
 			  var data=document.getElementById("data").value;
 
-			  
-			  $.ajax({
-			      method: "get",
-			      url: urlAction,
-			      data: "acao=limparmacros"+
-			      "&data="+data,
-			      success: function (response, textStatus, xhr) {
-			    	  
-						document.getElementById("data-caloria").innerHTML=0;
-						document.getElementById("data-proteina").innerHTML=0;
-						document.getElementById("data-carboidrato").innerHTML=0;
-						document.getElementById("data-gordura").innerHTML=0;
+			  if (verificarData()){
+				  $.ajax({
+				      method: "get",
+				      url: urlAction,
+				      data: "acao=limparmacros"+
+				      "&data="+data,
+				      success: function (response, textStatus, xhr) {
+				    	  
+							document.getElementById("data-caloria").innerHTML=0;
+							document.getElementById("data-proteina").innerHTML=0;
+							document.getElementById("data-carboidrato").innerHTML=0;
+							document.getElementById("data-gordura").innerHTML=0;
 
-			      },
-			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
-			    });
+				      },
+				    }).fail(function (xhr, status, errorThrown) {
+				      alert("Error ao buscar usuário por nome" + xhr.responseText);
+				    });
+			  }
+			 
 		}
 		
 		function pegarAlimento(id){
-			var linha=document.getElementById(id);
-			var id=linha.cells[0].innerHTML;
-			var nome=linha.cells[1].innerHTML;
-			$("div.modal-body").html("");
-			$("#exampleModalLabel").html("Insira a quantidade.");
-			 $("div.modal-body").append($("<div class=\"mb-2\">"+
-						"<label for=\"idselecionado\" class=\"form-label\">ID</label>" +
-						"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
-						"id=\"idselecionado\" name=\"idselecionado\"></div>"));
-			 $("div.modal-body").append($("<div class=\"mb-2\">"+
-						"<label for=\"nomeselecionado\" class=\"form-label\">NOME</label>" +
-						"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
-						"id=\"nomeselecionado\" name=\"nomeselecionado\"></div>"));
-			 $("div.modal-body").append($("<div class=\"mb-2\">"+
-						"<label for=\"quantidade\" class=\"form-label\">QUANTIDADE</label>" +
-						"<input type=\"text\"  class=\"form-control\" required "+
-						"id=\"quantidade\" name=\"quantidade\"></div>"));
-
+			var data=document.getElementById("data");
 			
-// 				<div class="mb-2">
-// 							<label for="idselecionado" class="form-label">ID</label> <input
-// 								type="text" readonly="readonly" class="form-control" required
-// 								id="idselecionado" name="idselecionado">
+			if (verificarData()){
+				$("#exampleModal").modal('show');
 
+				var linha=document.getElementById(id);
+				var id=linha.cells[0].innerHTML;
+				var nome=linha.cells[1].innerHTML;
+				$("div.modal-body").html("");
+				$("#exampleModalLabel").html("Insira a quantidade.");
+				 $("div.modal-body").append($("<div class=\"mb-2\">"+
+							"<label for=\"idselecionado\" class=\"form-label\">ID</label>" +
+							"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
+							"id=\"idselecionado\" name=\"idselecionado\"></div>"));
+				 $("div.modal-body").append($("<div class=\"mb-2\">"+
+							"<label for=\"nomeselecionado\" class=\"form-label\">NOME</label>" +
+							"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
+							"id=\"nomeselecionado\" name=\"nomeselecionado\"></div>"));
+				 $("div.modal-body").append($("<div class=\"mb-2\">"+
+							"<label for=\"quantidade\" class=\"form-label\">QUANTIDADE</label>" +
+							"<input type=\"text\"  class=\"form-control\" required "+
+							"id=\"quantidade\" name=\"quantidade\"></div>"));
 
-// 						</div><div cl				<div class="mb-2">
-// 							<label for="nomeselecionado" class="form-label">Nome</label> <input
-// 								type="text" class="form-control" readonly="readonly" required
-// 								id="nomeselecionado" name="nomeselecionado">
+				
+				var button="<button type=\"button\" onclick=\"mostrarAlimentoConsumido()\" class=\"btn btn-warning\">Adicionar</button>";
+				 $("div.modal-body").append($(button));
+				document.getElementById("nomeselecionado").value=nome;
+				document.getElementById("idselecionado").value=id;
 
-
-// 						</div>
-// 						<div class="mb-2">
-// 							<label for="quantidade" class="form-label">Quantidade
-// 								Consumida</label> <input type="text" class="form-control" required
-// 								id="quantidade" name="quantidade"
-// 								placeholder="Digite a quantidade...">
-
-
-// 						</div>
-			var button="<button type=\"button\" onclick=\"mostrarAlimentoConsumido()\" class=\"btn btn-warning\">Adicionar</button>";
-			 $("div.modal-body").append($(button));
-			document.getElementById("nomeselecionado").value=nome;
-			document.getElementById("idselecionado").value=id;
-
+			}else{
+				$("#exampleModal").modal('hide');
+				
+			}
+			
 		}
 		function removerAlimento(id,quantidade){
 			 var urlAction = document.getElementById("form-user").action;
@@ -438,7 +434,7 @@
 			  }
 			}
 
-		
+	
 		
 		function exibirModal(paginaAtual){
 			 var urlAction = document.getElementById("form-user").action;
@@ -451,7 +447,9 @@
 			  $("div.modal-body").append($("<table class='table table-striped' id='comi-hoje'></table>"))
 			  $("div.modal-body").append($("<nav aria-label=\"Page navigation example\"><ul id=\"paginacao-modal\" class=\"pagination\"></ul></nav>"))
 			  document.getElementById("comi-hoje").innerHTML=spinner;
-			if (data!="" && data.trim()!=""){
+			if (verificarData()){
+				$('#exampleModal').modal('show');
+
 				$("#exampleModalLabel").html("Todos os alimentos consumidos em :"+data);
 
 				$.ajax({
@@ -525,7 +523,10 @@
 				    });
 
 			}else {
-				$("#exampleModalLabel").html("Nenhum alimento consumido nesta data "+data);
+
+				$('#exampleModal').modal('hide');
+			
+
 
 			}
 			  		}
