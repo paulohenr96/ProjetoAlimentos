@@ -24,7 +24,7 @@ public class ReportUtil implements Serializable
 	
 	
 	
-public byte[] geraRelatorioPdf(List listaDados,String nomeRelatorio,HashMap<String,Object> params,ServletContext servletContext) throws Exception {
+	public byte[] geraRelatorioPdf(List listaDados,String nomeRelatorio,HashMap<String,Object> params,ServletContext servletContext) throws Exception {
 		
 		JRBeanCollectionDataSource dataSource=  new JRBeanCollectionDataSource(listaDados);
 		
@@ -39,6 +39,17 @@ public byte[] geraRelatorioPdf(List listaDados,String nomeRelatorio,HashMap<Stri
 		JRBeanCollectionDataSource dataSource=  new JRBeanCollectionDataSource(listaDados);
 		
 		String caminhoJasper=servletContext.getRealPath("relatorio")+File.separator+nomeRelatorio+".jasper";
+		
+		JasperPrint impressora=JasperFillManager.fillReport(caminhoJasper, new HashMap(), dataSource);
+		
+		return JasperExportManager.exportReportToPdf(impressora);
+	}
+	
+public byte[] geraRelatorioPdfDietas(List listaDados,String nomeRelatorio,ServletContext servletContext) throws Exception {
+		
+		JRBeanCollectionDataSource dataSource=  new JRBeanCollectionDataSource(listaDados);
+		
+		String caminhoJasper=servletContext.getRealPath("rel-dietas")+File.separator+nomeRelatorio+".jasper";
 		
 		JasperPrint impressora=JasperFillManager.fillReport(caminhoJasper, new HashMap(), dataSource);
 		

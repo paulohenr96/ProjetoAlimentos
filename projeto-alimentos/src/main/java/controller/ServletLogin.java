@@ -65,8 +65,6 @@ public class ServletLogin extends HttpServlet {
 		
 		user.setLogin(login);
 		user.setSenha(senha);
-		System.out.println("Usuario tentando logar : "+user);
-		System.out.println("Indo para a pagina : "+request.getContextPath()+" ou "+request.getServletPath());
 		ModelUsuario modelUsuario = dao.autentificar(user);
 		
 		String url=request.getParameter("url");
@@ -77,7 +75,9 @@ public class ServletLogin extends HttpServlet {
 			request.getSession().setAttribute("user", modelUsuario.getLogin());
 			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
 			
-			
+			if (url==null || url.equalsIgnoreCase("null")) {
+				url="/principal/paginainicial.jsp";
+			}
 			
 
 			request.getRequestDispatcher(url).forward(request, response);

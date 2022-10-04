@@ -25,18 +25,19 @@ public class ModelDieta implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO )
 	private Long id;
-	
+	@Column
+	private Long idUsuario;
 	private String nome;
 	private String objetivo;
 	
 	@Column(precision=10, scale=2)
-	private BigDecimal totalCalorias=new BigDecimal(0);;
+	private BigDecimal totalCalorias=new BigDecimal(0);
 	@Column(precision=10, scale=2)
-	private BigDecimal totalProteinas=new BigDecimal(0);;
+	private BigDecimal totalProteinas=new BigDecimal(0);
 	@Column(precision=10, scale=2)
-	private BigDecimal totalCarboidratos=new BigDecimal(0);;
+	private BigDecimal totalCarboidratos=new BigDecimal(0);
 	@Column(precision=10, scale=2)
-	private BigDecimal totalGorduras=new BigDecimal(0);;
+	private BigDecimal totalGorduras=new BigDecimal(0);
 	
 	
 	@JsonIgnore
@@ -112,29 +113,36 @@ public class ModelDieta implements Serializable{
 	}
 	
 	public void adicionarRefeicao(ModelRefeicao ref) {
-		totalCalorias=ref.getCalorias().add(totalCalorias);
-		totalProteinas=ref.getProteinas().add(totalProteinas);
-		totalCarboidratos=ref.getCarboidratos().add(totalCarboidratos);
-		totalGorduras=ref.getGorduras().add(totalGorduras);
+		totalCalorias=totalCalorias.add(ref.getCalorias());
+		totalProteinas=totalProteinas.add(ref.getProteinas());
+		totalCarboidratos=totalCarboidratos.add(ref.getCarboidratos());
+		totalGorduras=totalGorduras.add(ref.getGorduras());
 
 	}
 	
 	
-	public void removerRefeicao(Long  idRef) {
-		
-		listaRefeicoes.forEach((ref)->{
+	public void removerRefeicao(ModelRefeicao  ref) {
 			
-			if (ref.getId()==idRef) {
 				totalCalorias=totalCalorias.subtract(ref.getCalorias());
 				totalProteinas=totalProteinas.subtract(ref.getProteinas());
 				totalCarboidratos=totalCarboidratos.subtract(ref.getCarboidratos());
 				totalGorduras=totalGorduras.subtract(ref.getGorduras());
-			}
+				System.out.println("REMOVERREFEICAO + ID="+ref.getId());
 			
-		});
 		
 
 	}
+
+	public Long getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Long idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	
+	
 	
 	
 	 

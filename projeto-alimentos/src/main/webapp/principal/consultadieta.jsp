@@ -36,7 +36,9 @@
 					<form id="form-user"
 						action="<%=request.getContextPath()%>/ServletDieta" method="get">
 
-						<input type="hidden" id="id-dieta" value="${dieta.id}">
+						<input type="hidden" id="id-dieta" name="iddieta" value="${dieta.id}">
+						<input type="hidden" id="acao" name="acao" value="">
+						
 						<table class="table  table-borderless">
 							<thead>
 
@@ -94,6 +96,9 @@
 						class="btn btn-primary" id="btn-salvar">Salvar</button>
 
 
+
+					<button type="button" onclick="imprimirDieta()"
+						class="btn btn-primary" id="btn-salvar">Imprimir</button>
 
 
 					<div class="refeicoes">
@@ -168,6 +173,15 @@
 
 		}
 
+		
+		function imprimirDieta(){
+			document.getElementById("acao").value="imprimirdieta";
+			
+	    	$("#form-user").submit();
+	    	return false;
+
+			
+		}
 		function salvarRefs() {
 			var aux = $("#horario-novo").val();
 			var hora = aux.replace(":", "-");
@@ -227,6 +241,7 @@
 		
 	var ordem;
 	function montarTabelaRefeicoes(json){
+		
 		$("div.refeicoes>table>thead").html("");
 		$("div.refeicoes>table>tbody").html("");
 		if (json.length==0){
@@ -240,11 +255,29 @@
 			json.forEach((e)=>{
 				var botaoremover="<button type='button' onclick='deletar("+e.id+")' class='btn btn-danger'>REMOVER</button>";
 				var botaover="<button type='button' onclick='ver("+e.id+")' class='btn btn-success'>VER</button>";
-				$("div.refeicoes > table > tbody").append("<tr><td>"+e.nome+"</td><td>"+e.horario+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaover+"</td><td>"+botaoremover+"</td></tr>")
+				$("div.refeicoes > table > tbody").append("<tr id=\""+e.id+"\"><td>"+e.nome+"</td><td>"+e.horario+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaover+"</td><td>"+botaoremover+"</td></tr>")
 			})
 			
 		}
 		
+		
+	}
+	function deletar(idrefeicao){
+		var urlAction=document.getElementById("form-user").action;
+		var id=document.getElementById("id-dieta").value;
+		$.ajax({
+			method:"get",
+			url:urlAction,
+			data:"iddieta="+id+"&acao=removerrefeicao&idrefeicao="+idrefeicao,
+			success:function(response,textStatus,xhr){
+				document.getElementById(idrefeicao).remove();
+				if ($("div.refeicoes>table>tbody").children().length==0){
+					montarTabelaRefeicoes("");
+				}
+			}
+		}).fail(function(xhr,status,erroThrown){
+			alert("Erro : "+xhr.responseText);
+		})
 		
 	}
 	function compare(a, b) {

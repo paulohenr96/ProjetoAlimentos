@@ -91,7 +91,7 @@
 
 					<div class="mb-2">
 						<label for="nome" class="form-label">Pesquisar</label> <input
-							type="text" class="form-control" required id="nome" name="nome"
+							type="text" class="form-control" required id="nome-pesquisa" name="nome"
 							placeholder="Digite o nome...">
 
 
@@ -259,8 +259,8 @@
 	
 		function pesquisar() {
 			var urlAction = document.getElementById("form-user").action;
-			var nome = document.getElementById("nome").value;
-			  alert(urlAction);
+			var nome = document.getElementById("nome-pesquisa").value;
+			  alert(nome);
 
 			if (nome == "") {
 				window.location.href = urlAction
@@ -277,6 +277,7 @@
 			  var quantidade=document.getElementById("quantidade");
 			  var idselecionado = document.getElementById("idselecionado");
 				var data=document.getElementById("data");
+				
 			  if (document.querySelector(".alerta")!=null){
 				  document.querySelector(".alerta").remove();  
 			  }
@@ -421,7 +422,7 @@
 						var json = JSON.parse(response);
 
 						console.log(json);
-						document.getElementById("data-caloria")=nnerHTML=json.calorias;
+						document.getElementById("data-caloria").innerHTML=json.calorias;
 						document.getElementById("data-proteina").innerHTML=json.proteinas;
 						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
 						document.getElementById("data-gordura").innerHTML=json.gordura;

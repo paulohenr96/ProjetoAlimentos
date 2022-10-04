@@ -114,7 +114,7 @@
 
 						<div class="col">
 							<input type="text" class="form-control" placeholder="Nome"
-								aria-label="Last name">
+								aria-label="Last name" id="nome-pesquisa">
 						</div>
 						<div class="col">
 							<button type="button" class="btn btn-secondary "
@@ -228,11 +228,13 @@
 	
 		function mostrarListaAlimentos(paginaatual){
 			var urlAction = document.getElementById("form-user").action;
+			var nome = document.getElementById("nome-pesquisa").value;
+
 			var porpagina=5;
 			$.ajax({
 				method:"get",
 				url:urlAction,
-				data:"porpagina="+porpagina+"&acao=pesquisaralimentorefeicao&paginaatual="+paginaatual,
+				data:"porpagina="+porpagina+"&acao=pesquisaralimentorefeicao&paginaatual="+paginaatual+"&nome="+nome,
 				success:function(response,textStatus,xhr){
 					$("table.todos").show();
 

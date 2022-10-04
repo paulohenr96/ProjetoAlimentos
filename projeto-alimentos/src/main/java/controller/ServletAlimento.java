@@ -106,6 +106,7 @@ public class ServletAlimento extends HttpServlet {
 			if (nome != null) {
 				todos = dao.consultarNomePaginado(ModelAlimento.class, nome, porPagina, paginaAtual);
 				total = (dao.contarTotal(ModelAlimento.class, nome));
+				System.out.println("TOTAL:"+total +"\n");
 			} else {
 				todos = dao.consultarTodosPaginado(ModelAlimento.class, porPagina, paginaAtual);
 				total = (dao.contarTotal(ModelAlimento.class));
@@ -349,11 +350,20 @@ public class ServletAlimento extends HttpServlet {
 		} else if (acao != null && acao.equalsIgnoreCase("pesquisaralimentorefeicao")) {
 			int porPagina=Integer.parseInt(request.getParameter("porpagina"));
 			int paginaAtual=Integer.parseInt(request.getParameter("paginaatual"));
+			String nome=request.getParameter("nome");
+			
+			List<ModelAlimento> lista = new ArrayList<ModelAlimento>();
+			System.out.println(nome+"------------");
+			if(nome==null || nome.equalsIgnoreCase("null")) {
+				lista=dao.consultarTodosPaginado(ModelAlimento.class,porPagina,paginaAtual);
 
-			List<ModelAlimento> lista = dao.consultarTodosPaginado(ModelAlimento.class,porPagina,paginaAtual);
+			}else {
+				lista=dao.consultarNomePaginado(ModelAlimento.class,nome,porPagina,paginaAtual);
+
+			}
 			
 			
-			Long total = dao.contarTotal(ModelAlimento.class);
+			Long total = dao.contarTotal(ModelAlimento.class,nome);
 
 			int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
 

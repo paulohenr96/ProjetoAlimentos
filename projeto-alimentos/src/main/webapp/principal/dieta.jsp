@@ -65,19 +65,7 @@
 
 					<table class="table table-striped">
 						<thead>
-							<tr>
-								<th scope="col">Nome</th>
-								<th scope="col">Objetivo</th>
-
-								<th scope="col">Calorias</th>
-								<th scope="col">Proteinas</th>
-								<th scope="col">Carboidratos</th>
-								<th scope="col">Gorduras</th>
-								<th scope="col">Remover</th>
-								<th scope="col">Ver</th>
-
-
-							</tr>
+							
 						</thead>
 						<tbody></tbody>
 					</table>
@@ -143,6 +131,25 @@
 
 		}
 		function auxMostrarListaDietas(json){
+			if (json.length==0){
+				$("table>thead").html("<th>Sem Dietas.</th>");
+				document.querySelector("table >tbody").innerHTML="";
+
+			}
+			else{
+				$("table>thead").html("");
+				$("table>thead").append($("<tr>"+
+						"<th scope=\"col\">Nome</th>"+
+						"<th scope=\"col\">Objetivo</th>"+
+
+						"<th scope=\"col\">Calorias</th>"+
+						"<th scope=\"col\">Proteinas</th>"+
+						"<th scope=\"col\">Carboidratos</th>"+
+						"<th scope=\"col\">Gorduras</th>"+
+						"<th scope=\"col\">Remover</th>"+
+						"<th scope=\"col\">Ver</th>"+
+					"</tr>"));
+			
 			document.querySelector("table >tbody").innerHTML="";
 
 			json.forEach((e)=>{
@@ -152,6 +159,7 @@
 				document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.nome+"</td><td>"+e.objetivo+"</td><td>"+e.totalCalorias+"</td><td>"+e.totalProteinas+"</td><td>"+e.totalCarboidratos+"</td><td>"+e.totalGorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
 			
 			})
+			}
 		}
 		function removerDieta(id){
 			var urlAction=document.getElementById("form-user").action;
@@ -175,7 +183,11 @@
 		mostrarTodasDietas();
 		function mostrarTodasDietas() {
 			var urlAction=document.getElementById("form-user").action;
-	
+		$("table>thead").html("<div class=\"d-flex justify-content-center\">"+
+				  "<div class=\"spinner-border\" role=\"status\">"+
+	    "<span class=\"sr-only\">Loading...</span>"+
+	  "</div>"+
+	"</div>");
 			$.ajax(
 					{
 						method : "GET",

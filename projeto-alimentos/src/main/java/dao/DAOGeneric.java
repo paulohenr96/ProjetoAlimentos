@@ -15,6 +15,7 @@ import model.ModelAlimento;
 import model.ModelAlimentoConsumido;
 import model.ModelAlimentoRefeicao;
 import model.ModelConsumidoDia;
+import model.ModelDieta;
 import model.ModelRefeicao;
 import model.ModelUsuario;
 import util.JPAUtil;
@@ -190,8 +191,8 @@ public class DAOGeneric<E> {
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where upper(nome)=upper(:name) ")
-				.setParameter("name", nome).setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
+		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where upper(nome) like upper(:name)")
+				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
 		return list;
@@ -274,8 +275,8 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		Long total = (Long) entityManager
-				.createQuery("select count(1) from " + e.getCanonicalName() + " where upper(nome)=upper(:name)")
-				.setParameter("name", nome).getSingleResult();
+				.createQuery("select count(1) from " + e.getCanonicalName() + " where upper(nome) like upper(:name)")
+				.setParameter("name", "%"+nome+"%").getSingleResult();
 		transaction.commit();
 		entityManager.close();
 		return total;
@@ -370,7 +371,7 @@ public class DAOGeneric<E> {
 		return list;
 	}
 
-	public void removerRefeicaoDieta(Long id) {
+	public void removerTodasRefeicaoDieta(Long id) {
 		// TODO Auto-generated method stub
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
@@ -380,6 +381,48 @@ public class DAOGeneric<E> {
 				.executeUpdate();
 		transaction.commit();
 		entityManager.close();
+	}
+	
+	public E consultarDietaPorId(Long id,Long userLogado) {
+		
+		try {
+			EntityManager entityManager = JPAUtil.getEntityManager();
+			EntityTransaction transaction = entityManager.getTransaction();
+
+			transaction.begin();
+			E find = (E) entityManager.createQuery("from "+ModelDieta.class.getCanonicalName()+" where id=:iddieta and idusuario="+userLogado)
+					.setParameter("iddieta", id)
+					.getSingleResult();
+			transaction.commit();
+			entityManager.close();
+			return find;
+		} catch (NoResultException e) {
+			// TODO Auto-generated catch block
+			return null;
+			
+		}
+	}
+
+	public List consultarTodasDietasPorId(Long idUserLogado) {
+		// TODO Auto-generated method stub
+		try {
+			EntityManager entityManager = JPAUtil.getEntityManager();
+			EntityTransaction transaction = entityManager.getTransaction();
+
+			transaction.begin();
+			List<ModelDieta> lista = entityManager.createQuery("from "+ModelDieta.class.getCanonicalName()+" where idusuario="+idUserLogado)
+					.getResultList();
+			transaction.commit();
+			entityManager.close();
+			return lista;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+
+		}	
+		
+	
 	}
 
 }
