@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -161,7 +162,7 @@ public class ServletDieta extends HttpServlet {
 				response.setHeader("Content-Disposition", "attachment;filename=arquivo.pdf");
 				response.getOutputStream().write(relatorio);
 				// TODO Auto-generated catch block
-			}else if (acao != null && acao.equalsIgnoreCase("imprimirdieta")) {
+			}else if (acao != null && acao.equalsIgnoreCase("imprimirdietasemsub")) {
 				Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
 				Long iddieta = Long.parseLong(request.getParameter("iddieta"));
 
@@ -174,7 +175,22 @@ public class ServletDieta extends HttpServlet {
 				response.setHeader("Content-Disposition", "attachment;filename=arquivo.pdf");
 				response.getOutputStream().write(relatorio);
 				// TODO Auto-generated catch block
+			}else if (acao != null && acao.equalsIgnoreCase("imprimirdieta")) {
+				Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
+				Long iddieta = Long.parseLong(request.getParameter("iddieta"));
+
+				List lista = dao.todasRefsDieta(iddieta);
+				System.out.println(lista);
+				System.out.println("ID LOGADO ------ "+idLogado);
+				HashMap<String,Object> params=new HashMap<>();
+				params.put("param_sub_report", request.getServletContext().getRealPath("relatorio")+File.separator);
+				byte[] relatorio = new ReportUtil().geraRelatorioPdf(lista, "rel_dieta",params,
+						request.getServletContext());
+				response.setHeader("Content-Disposition", "attachment;filename=arquivo.pdf");
+				response.getOutputStream().write(relatorio);
+				// TODO Auto-generated catch block
 			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -189,4 +205,7 @@ public class ServletDieta extends HttpServlet {
 	 *      response)
 	 */
 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+		
+	}
 }
