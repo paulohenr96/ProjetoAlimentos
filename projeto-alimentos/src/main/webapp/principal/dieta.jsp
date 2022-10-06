@@ -36,6 +36,7 @@
 							<label for="nome">Nome</label> <input class="form-control"
 								name="nome" required id="nome" type="text"
 								placeholder="Nome da dieta" />
+								<span id="nome-vazio" class="alerta"></span>
 
 
 
@@ -44,11 +45,12 @@
 
 							<select id="obj" class="form-select"
 								aria-label="Default select example">
-								<option selected>Open this select menu</option>
+								<option selected value="">Open this select menu</option>
 								<option value="PERDER_MASSA">Emagrecer</option>
 								<option value="GANHAR_MASSA">Ganho de Massa</option>
 								<option value="MANTER_MASSA">Manter</option>
 							</select>
+								<span id="select-vazio" class="alerta"></span>
 
 						</div>
 
@@ -60,7 +62,10 @@
 								<button type="button" onclick="novaDieta()"
 									class="btn btn-primary btn-block">Nova</button>
 							</div>
+							
 						</div>
+																					<span class="sucesso" ></span>
+						
 					</form>
 
 					<table class="table table-striped">
@@ -106,37 +111,60 @@
 
 
 	<script type="text/javascript">
-
-		function novaDieta() {
+		function verificar(){
 			var nome = document.querySelector("#nome").value;
 			var objetivo = document.querySelector("select").value;
+			$(".alerta").html("");
 
-			var urlAction=document.getElementById("form-user").action;
-			$.ajax(
-					{
-						method : "GET",
-						url : urlAction,
-						data : "acao=novadieta&nome=" + nome+
-								"&objetivo="+objetivo,
-						success : function(response) {
-							var json=JSON.parse(response);
+			if ($("#nome").val()==""){
+				$("#nome-vazio").html("Insira um nome para a dieta.").attr("style","color:red");
+			}
+			if ($("select").val()==""){
+				$("#select-vazio").html("Selecione o objetivo da dieta.").attr("style","color:red");
+			}
+			if (nome!="" && nome.trim!="" && objetivo!=""){
+				return true;
+			}
+			
+			return false;
+		}
+		function novaDieta() {
+			
+			if (verificar()){
+				var nome = document.querySelector("#nome").value;
+				var objetivo = document.querySelector("select").value;
 
-							 document.querySelector("#nome").value="";
-							auxMostrarListaDietas(json);
-						}
+				var urlAction=document.getElementById("form-user").action;
+				$.ajax(
+						{
+							method : "GET",
+							url : urlAction,
+							data : "acao=novadieta&nome=" + nome+
+									"&objetivo="+objetivo,
+							success : function(response) {
+								var json=JSON.parse(response);
 
-					}).fail(function(xhr, status, errorThrown) {
-				alert("Error ao buscar usuário por nome" + xhr.responseText);
-			});
+								 document.querySelector("#nome").value="";
+								auxMostrarListaDietas(json);
+							}
+
+						}).fail(function(xhr, status, errorThrown) {
+					alert("Error ao buscar usuário por nome" + xhr.responseText);
+				});
+			}
+			
 
 		}
 		function auxMostrarListaDietas(json){
 			if (json.length==0){
 				$("table>thead").html("<th>Sem Dietas.</th>");
 				document.querySelector("table >tbody").innerHTML="";
+				$(".sucesso").html("");
 
 			}
 			else{
+				$(".sucesso").html("Você possui "+json.length+" dietas cadastradas.").attr("style","color:green;font-weight:bold");
+
 				$("table>thead").html("");
 				$("table>thead").append($("<tr>"+
 						"<th scope=\"col\">Nome</th>"+
@@ -198,7 +226,6 @@
 						var json=JSON.parse(response);
 						
 						auxMostrarListaDietas(json);
-						
 						
 						
 						}

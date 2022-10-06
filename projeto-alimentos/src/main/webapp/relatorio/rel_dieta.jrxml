@@ -252,17 +252,17 @@
 		<band height="30" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<subreport>
-				<reportElement mode="Opaque" x="10" y="7" width="525" height="17" uuid="970b859d-aa25-4c24-a24a-5235fb660ae9"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listaAlimentos})]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$P{param_sub_report}+"sub_relatorio_dieta.jasper"]]></subreportExpression>
-			</subreport>
 			<rectangle>
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="550" height="30" uuid="e1eee7c9-b8a6-4c66-bf63-e699aa45a925"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="550" height="30" backcolor="#B5B1B1" uuid="e1eee7c9-b8a6-4c66-bf63-e699aa45a925"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#050505"/>
 				</graphicElement>
 			</rectangle>
+			<subreport>
+				<reportElement mode="Transparent" x="0" y="0" width="550" height="30" uuid="970b859d-aa25-4c24-a24a-5235fb660ae9"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listaAlimentos})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{param_sub_report}+"sub_relatorio_dieta.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 </jasperReport>

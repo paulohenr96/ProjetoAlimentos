@@ -2,6 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rel_alimentos_jsp" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3643147e-535b-4c6a-a3ea-550c1c42e124">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -60,27 +61,36 @@
 	<field name="data" class="java.util.Date">
 		<fieldDescription><![CDATA[data]]></fieldDescription>
 	</field>
-	<field name="calorias" class="java.lang.Double">
+	<field name="calorias" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[calorias]]></fieldDescription>
 	</field>
-	<field name="proteinas" class="java.lang.Double">
+	<field name="proteinas" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[proteinas]]></fieldDescription>
 	</field>
-	<field name="gordura" class="java.lang.Double">
+	<field name="idAlimento" class="java.lang.Long">
+		<fieldDescription><![CDATA[idAlimento]]></fieldDescription>
+	</field>
+	<field name="usuario" class="model.ModelUsuario">
+		<fieldDescription><![CDATA[usuario]]></fieldDescription>
+	</field>
+	<field name="gordura" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[gordura]]></fieldDescription>
 	</field>
-	<field name="carboidrato" class="java.lang.Double">
-		<fieldDescription><![CDATA[carboidrato]]></fieldDescription>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[id]]></fieldDescription>
 	</field>
 	<field name="listaAlimentos" class="java.util.List">
 		<fieldDescription><![CDATA[listaAlimentos]]></fieldDescription>
 	</field>
-	<group name="Grupo_Macros">
+	<field name="carboidrato" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[carboidrato]]></fieldDescription>
+	</field>
+	<group name="Grupo_Macros" keepTogether="true">
 		<groupExpression><![CDATA[$F{data}]]></groupExpression>
 		<groupHeader>
-			<band height="20">
+			<band height="81">
 				<textField pattern="d/M/yy">
-					<reportElement x="0" y="0" width="100" height="20" uuid="b3e76b12-8aaf-456d-a403-7c9478949072"/>
+					<reportElement x="0" y="61" width="80" height="20" uuid="b3e76b12-8aaf-456d-a403-7c9478949072"/>
 					<box>
 						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -90,8 +100,8 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement x="100" y="0" width="100" height="20" uuid="20894f38-3289-4ea0-9188-d86368018711">
+				<textField isBlankWhenNull="true">
+					<reportElement x="80" y="61" width="100" height="20" uuid="20894f38-3289-4ea0-9188-d86368018711">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f6178571-5200-4063-9ff7-15e8cbd9e4ff"/>
 					</reportElement>
 					<box>
@@ -104,7 +114,7 @@
 					<textFieldExpression><![CDATA[$F{calorias}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="200" y="0" width="110" height="20" uuid="fc1ec5b4-76e7-4909-933f-374271060e43">
+					<reportElement x="180" y="61" width="130" height="20" uuid="fc1ec5b4-76e7-4909-933f-374271060e43">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="54c876da-f794-4d89-b3a4-8bc157d8ce52"/>
 					</reportElement>
 					<box>
@@ -117,7 +127,7 @@
 					<textFieldExpression><![CDATA[$F{proteinas}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="310" y="0" width="120" height="20" uuid="ae348258-1175-4491-b1dd-1a6a725c7f6d">
+					<reportElement x="310" y="61" width="120" height="20" uuid="ae348258-1175-4491-b1dd-1a6a725c7f6d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="89b34e61-8423-4b7d-85a8-e2c76579a502"/>
 					</reportElement>
 					<box>
@@ -130,7 +140,7 @@
 					<textFieldExpression><![CDATA[$F{carboidrato}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="430" y="0" width="120" height="20" uuid="4d8d6fa3-c89e-4936-be9c-4d29efb2255a">
+					<reportElement x="430" y="61" width="120" height="20" uuid="4d8d6fa3-c89e-4936-be9c-4d29efb2255a">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="482f7b30-081a-4cd7-a71e-f0d3f7f5a61f"/>
 					</reportElement>
 					<box>
@@ -142,12 +152,84 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$F{gordura}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="30" width="80" height="31" backcolor="#BFB4B4" uuid="61357855-b03c-4ef8-9b83-6dbe0b0b4b9f">
+						<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="80" y="30" width="100" height="31" backcolor="#BFB4B4" uuid="a1b23bf0-8250-48cd-9051-30929a0cb6db">
+						<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CALORIAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="180" y="30" width="130" height="31" backcolor="#BFB4B4" uuid="0992d044-88ef-49af-a579-98a666cebf57">
+						<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PROTEINAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="310" y="30" width="120" height="31" backcolor="#BFB4B4" uuid="6439e959-5d1a-4e0e-b5a1-628f3bf663c2">
+						<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CARBOIDRATOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="430" y="30" width="120" height="31" backcolor="#BFB4B4" uuid="18519e23-8b1c-42a3-bd59-19f5c95f7370">
+						<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[GORDURAS]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 	</group>
-	<background>
-		<band height="18" splitType="Stretch"/>
-	</background>
 	<title>
 		<band height="103" splitType="Stretch">
 			<staticText>
@@ -160,94 +242,16 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="56">
-			<staticText>
-				<reportElement x="100" y="0" width="100" height="56" backcolor="#D6D0D0" uuid="be286322-a540-46b5-8078-79f736e4b299">
-					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CALORIAS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="200" y="0" width="110" height="56" backcolor="#D6D0D0" uuid="65394868-6b14-414e-9836-2ec6a8a8c6d3">
-					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PROTEINAS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="310" y="0" width="120" height="56" backcolor="#D6D0D0" uuid="4065ddde-3695-4319-ab70-319aea5e4854">
-					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CARBOIDRATOS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="100" height="56" backcolor="#D6D0D0" uuid="61357855-b03c-4ef8-9b83-6dbe0b0b4b9f">
-					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DATA]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="430" y="0" width="120" height="56" backcolor="#D6D0D0" uuid="5ada418b-310d-4fdd-9216-539b75f43f5c">
-					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[GORDURAS]]></text>
-			</staticText>
-			<line>
-				<reportElement x="0" y="55" width="500" height="1" uuid="5c72c866-4baa-44e0-8a91-0e5e28fa3fde"/>
-			</line>
-			<line>
-				<reportElement x="0" y="55" width="510" height="1" uuid="9bef0b65-4e7f-4187-8bc8-999d541c7169"/>
-			</line>
-		</band>
+		<band height="117"/>
 	</columnHeader>
 	<detail>
-		<band height="40" splitType="Stretch">
+		<band height="53" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<rectangle>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="550" height="53" uuid="c1c131f3-3574-487d-9988-85a4d5f35f6b"/>
+			</rectangle>
 			<subreport>
-				<reportElement x="0" y="0" width="550" height="40" uuid="1090f1b4-97d0-4618-993f-4cbc7e835f2a"/>
+				<reportElement x="2" y="0" width="548" height="53" uuid="1090f1b4-97d0-4618-993f-4cbc7e835f2a"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource ($F{listaAlimentos})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{PARAM_SUB_REPORT}+"sub_report_alimento.jasper"]]></subreportExpression>
 			</subreport>

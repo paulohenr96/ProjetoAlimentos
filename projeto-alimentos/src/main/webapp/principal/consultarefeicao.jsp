@@ -344,9 +344,10 @@
 					var json=JSON.parse(response);
 					if (json.length==0){
 						tbody.innerHTML="LISTA VAZIA";
-						$(".modal .table").hide();
+						$(".modal thead").hide();
 					}else {
 						$(".modal .table").show();
+						$("tbody").empty();
 
 						json.forEach((e)=>{
 							var linha=tbody.insertRow();
@@ -358,7 +359,7 @@
 									url:urlAction,
 									data:"idalimento="+e.id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
 									success:function(response,textStatus,xhr){
-										linha.remove();
+										verAlimentosRefeicao();
 									}
 								}).fail(function(xhr,status,erroThrown){
 									alert("Erro : "+xhr.responseText);
@@ -370,8 +371,6 @@
 							linha.insertCell().innerHTML=e.alimento.nome;
 							linha.insertCell().innerHTML=e.quantidade;
 							linha.insertCell().append(button[0]);
-
-							console.log(e);
 
 
 						});

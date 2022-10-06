@@ -413,9 +413,14 @@ public class ServletAlimento extends HttpServlet {
 			
 			ModelAlimentoRefeicao ali=(ModelAlimentoRefeicao)dao.consultarPorId(ModelAlimentoRefeicao.class, idAlimento);
 			ModelRefeicao ref=(ModelRefeicao)dao.consultarPorId(ModelRefeicao.class, idRefeicao);
-			ref.removeralimento(ali);
-			dao.merge(ref);
-			dao.deletarPorId(ModelAlimentoRefeicao.class, idAlimento);
+			if (ali!=null)
+			{
+				ref.removeralimento(ali);
+				dao.merge(ref);
+				dao.deletarPorId(ModelAlimentoRefeicao.class, idAlimento);
+			}
+			
+				
 			response.getWriter().write("");
 
 		}else if (acao != null && acao.equalsIgnoreCase("removerrefeicao")) {

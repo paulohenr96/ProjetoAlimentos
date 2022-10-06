@@ -28,7 +28,7 @@
 
 			<main>
 				<div class="container-sm px-4">
-					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
+					<h2>Refeições</h2>
 					<form id="form-user" method="get"
 						action="<%=request.getContextPath()%>/ServletAlimento">
 						<input type="hidden" id="acao" value="">
@@ -47,6 +47,7 @@
 									class="btn btn-primary btn-block">Nova</button>
 							</div>
 						</div>
+						<span class="aviso"></span>
 					</form>
 
 					<table class="table table-striped">
@@ -116,6 +117,7 @@
 						data : "acao=novarefeicao&nome=" + nome,
 						success : function(response) {
 							mostrarTodasRefeicoes(1);
+							$(".aviso").html("Refeição "+nome+" adicionada com sucesso.").attr("style","color:green;font-weight:bold;");
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
@@ -200,7 +202,8 @@
 						
 						$("#"+idrefeicao).remove();
 						mostrarTodasRefeicoes(p);
-						
+						$(".aviso").html("Refeição removida com sucesso.").attr("style","color:green;font-weight:bold;");
+
 						
 						}
 
