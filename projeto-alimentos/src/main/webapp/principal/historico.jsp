@@ -12,7 +12,7 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<title>Sidenav Light - SB Admin</title>
+<title>Histórico</title>
 <link href="<%=request.getContextPath()%>/assets/css/styles.css"
 	rel="stylesheet" />
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
@@ -52,6 +52,14 @@ th:hover {
 						<option value="10">10 por pagina</option>
 
 					</select>
+					
+					 <form method="get"
+						action="<%=request.getContextPath()%>/ServletAlimento"
+						id="form-user">
+                        <input type="hidden" name="acao" value="" id="acaoRelatorioImprimirTipo">
+                        <button type="button" onclick="imprimirHtml()" class="btn btn-dark">IMPRIMIR</button>
+                        
+                        </form>
 
 					<table class="table table-striped-columns">
 						<thead>
@@ -131,6 +139,12 @@ th:hover {
 			asc="asc";
 		}
 	}
+	 function imprimirHtml(){
+
+	    	document.getElementById("acaoRelatorioImprimirTipo").value="ImprimirRelatorioMacrosPDF";
+	    	$("#form-user").submit();
+	    	return false;
+	    }
 	function ordenarProteinas(){
 		ordem="proteinas";
 		inverterOrdem();

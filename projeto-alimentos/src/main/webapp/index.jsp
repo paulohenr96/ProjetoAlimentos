@@ -79,6 +79,8 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="<%=request.getContextPath() %>/assets/js/scripts.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath() %>/assets/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath() %>/assets/js/jquery-ui/jquery-ui.min.js "></script>
         
         <script type="text/javascript">
         
@@ -97,7 +99,8 @@
 			})
 			
 			if (erro==0){
-				document.querySelector("button").innerHTML="<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>Loading...";
+				document.querySelector("button").innerHTML="<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>Entrando...";
+				$("button").addClass("disabled");
 				document.getElementById("form-user").submit();
 			}
         }

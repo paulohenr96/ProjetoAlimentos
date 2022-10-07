@@ -11,7 +11,7 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<title>Sidenav Light - SB Admin</title>
+<title>Comi Hoje</title>
 <link href="<%=request.getContextPath()%>/assets/css/styles.css"
 	rel="stylesheet" />
 <link rel="stylesheet"

@@ -72,7 +72,8 @@ public class ServletLogin extends HttpServlet {
 		System.out.println(url+" <--- Url para Autentificar");
 		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && modelUsuario!=null ) {
 			System.out.println("Logado");
-			request.getSession().setAttribute("user", modelUsuario.getLogin());
+			request.getSession().setAttribute("user", modelUsuario);
+
 			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
 			
 			if (url==null || url.equalsIgnoreCase("null")) {
