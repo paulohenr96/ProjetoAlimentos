@@ -34,23 +34,7 @@
 			<main>
 				<div class="container-fluid px-4">
 
-					<table class="table table-borderless">
-						<thead>
-							<tr>
-								<th>Caloria</th>
-								<th>Proteina</th>
-								<th>Carboidrato</th>
-								<th>Gordura</th>
-							</tr>
-						</thead>
-						<tr>
-							<td id="data-caloria">${macros.calorias}</td>
-							<td id="data-proteina">${macros.proteinas}</td>
-							<td id="data-carboidrato">${macros.carboidrato}</td>
-							<td id="data-gordura">${macros.gordura}</td>
-						</tr>
-					</table>
-
+					
 					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
 
 					<form id="form-user"
@@ -112,7 +96,7 @@
 									<th>P</th>
 									<th>C</th>
 									<th>G</th>
-									<th>VER</th>
+									<th>Selecionar</th>
 
 
 								</tr>
@@ -130,7 +114,7 @@
 										<td>${ali.carboidrato}</td>
 										<td>${ali.gordura}</td>
 										<td><button onclick="pegarAlimento(${ali.id})"
-												class="btn btn-success">VER</button></td>
+												class="btn btn-success">Selecionar</button></td>
 
 										</td>
 									</tr>
@@ -315,12 +299,8 @@
 			      success: function (response, textStatus, xhr) {
 			    	  
 			    		var json = JSON.parse(response);
-						document.getElementById("data-caloria").innerHTML=json.calorias;
-						document.getElementById("data-proteina").innerHTML=json.proteinas;
-						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
-						document.getElementById("data-gordura").innerHTML=json.gordura;
+					
 
-						console.log(json);
 			        adicionar();
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
@@ -355,10 +335,7 @@
 				      "&data="+data,
 				      success: function (response, textStatus, xhr) {
 				    	  
-							document.getElementById("data-caloria").innerHTML=0;
-							document.getElementById("data-proteina").innerHTML=0;
-							document.getElementById("data-carboidrato").innerHTML=0;
-							document.getElementById("data-gordura").innerHTML=0;
+							
 
 				      },
 				    }).fail(function (xhr, status, errorThrown) {
@@ -421,11 +398,11 @@
 			      success: function (response, textStatus, xhr) {
 						var json = JSON.parse(response);
 
-						console.log(json);
-						document.getElementById("data-caloria").innerHTML=json.calorias;
-						document.getElementById("data-proteina").innerHTML=json.proteinas;
-						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
-						document.getElementById("data-gordura").innerHTML=json.gordura;
+// 						console.log(json);
+// 						document.getElementById("data-caloria").innerHTML=json.calorias;
+// 						document.getElementById("data-proteina").innerHTML=json.proteinas;
+// 						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
+// 						document.getElementById("data-gordura").innerHTML=json.gordura;
 						
 						exibirModal(1);
 			      },
@@ -434,7 +411,31 @@
 			    });
 			  }
 			}
+		
+		
+		
+		function consultarMacros(){
+			  var data=document.getElementById("data").value;
+				 var urlAction = document.getElementById("form-user").action;
 
+		    $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "acao=consultarmacros&data="+data,
+			      success: function (response, textStatus, xhr) {
+						var json = JSON.parse(response);
+
+//						console.log(json);
+//						document.getElementById("data-caloria").innerHTML=json.calorias;
+//						document.getElementById("data-proteina").innerHTML=json.proteinas;
+//						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
+//						document.getElementById("data-gordura").innerHTML=json.gordura;
+						$("div.modal-body").append("<span>"+json.proteinas+"</span>");			      
+						},
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+		}
 	
 		
 		function exibirModal(paginaAtual){
@@ -451,7 +452,7 @@
 			if (verificarData()){
 				$('#exampleModal').modal('show');
 
-				$("#exampleModalLabel").html("Todos os alimentos consumidos em :"+data);
+				$("#exampleModalLabel").html("Todos os alimentos consumidos "+data);
 
 				$.ajax({
 				      method: "get",
@@ -472,7 +473,7 @@
 
 								for (let i=0;i<json.length;i++){
 									console.log(i);
-									var botao="<button onclick=\"removerAlimento("+json[i].id+","+json[i].quantidade+")\"type=\"button\" class=\"btn btn-danger\">Danger</button>";
+									var botao="<button onclick=\"removerAlimento("+json[i].id+","+json[i].quantidade+")\"type=\"button\" class=\"btn btn-danger\">Remover</button>";
 
 									 tabela +="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+json[i].nome+"</td><td>"+json[i].quantidade+"</td><td>"+botao+"</td></tr>"
 								}
@@ -515,7 +516,7 @@
 								}
 								document.getElementById("paginacao-modal").innerHTML=previous+paginacao+next;
 							}
-							
+							consultarMacros();
 						
 							
 				      },

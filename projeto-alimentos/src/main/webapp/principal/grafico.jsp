@@ -30,7 +30,7 @@
 
 			<main>
 				<div class="container-fluid px-4">
-					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
+					<h2>Gráfico de consumo nutricional</h2>
 
 					<form action="<%=request.getContextPath()%>/ServletAlimento"
 						id="form-macro"
@@ -39,10 +39,10 @@
 						
 						
 						
-						<input type="hidden" id="acao" name="acao" value=""> <select
-							id="macro" class="form-select"
+						<input  type="hidden" id="acao" name="acao" value=""> <select
+							id="macro" class="form-select mb-2"
 							aria-label="Default select example">
-							<option selected>Open this select menu</option>
+							<option selected>Escolha o macronutriente</option>
 							<option value="calorias">Calorias</option>
 
 							<option value="proteina">Proteina</option>
@@ -112,8 +112,6 @@
 
 			var urlAction = document.getElementById("form-macro").action;
 
-			alert(urlAction);
-			console.log("Valor macro=" + macro);
 			if (macro != null && macro != "") {
 				$.ajax({
 					method : "get",
@@ -123,7 +121,6 @@
 
 						var json=JSON.parse(response);
 						
-						console.log(json);
 						var listaMacro;
 						var titulo;
 						var cor;

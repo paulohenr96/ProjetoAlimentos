@@ -151,13 +151,26 @@ public class ServletAlimento extends HttpServlet {
 
 			}
 			dao.salvar(alimentoConsumido);
-			request.getSession().setAttribute("macros", macros);
+//			request.getSession().setAttribute("macros", macros);
 
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(macros);
 			response.getWriter().write(json);
 
-		} else if (acao != null && acao.equalsIgnoreCase("removeralimentoconsumido")) {
+		}else if (acao != null && acao.equalsIgnoreCase("consultarmacros")) {
+			
+			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
+			String data = request.getParameter("data");
+
+			ModelConsumidoDia macros = dao.consultarConsumoDia(editaData(data), idLogado);
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(macros);
+			response.getWriter().write(json);
+
+
+		}
+		
+		else if (acao != null && acao.equalsIgnoreCase("removeralimentoconsumido")) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			int quantidade = Integer.parseInt(request.getParameter("quantidade"));
 			Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
