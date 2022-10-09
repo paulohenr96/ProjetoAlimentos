@@ -424,5 +424,18 @@ public class DAOGeneric<E> {
 		
 	
 	}
+	
+	public List<E> consultarNomePaginado(Class<E> e, String nome, int porPagina, int paginaAtual,Long IDLogado) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		int offset = porPagina * (paginaAtual - 1);
+		int ultimoResultado = porPagina;
+		transaction.begin();
+		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where upper(nome) like upper(:name)")
+				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
 
 }

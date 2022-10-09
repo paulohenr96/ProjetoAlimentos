@@ -34,7 +34,7 @@
 			<main>
 				<div class="container-fluid px-4">
 
-					
+
 					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
 
 					<form id="form-user"
@@ -75,92 +75,65 @@
 
 					<div class="mb-2">
 						<label for="nome" class="form-label">Pesquisar</label> <input
-							type="text" class="form-control" required id="nome-pesquisa" name="nome"
-							placeholder="Digite o nome...">
+							type="text" class="form-control" required id="nome-pesquisa"
+							name="nome" placeholder="Digite o nome...">
 
 
 					</div>
 
+					<div class="mb-2" id="radio-pesquisa">
 
+						<input class="form-check-input" type="radio" id="radio-alimento"
+							name="radio-pesquisa" value="alimento"> <label
+							class="form-check-label" for="radio-alimento">Alimento </label>
+						<input class="form-check-input" type="radio" id="radio-refeicao"
+							value="refeicao" name="radio-pesquisa"> <label
+							class="form-check-label" for="radio-refeicao">Refeição </label>
+
+					</div>
 					<button type="button" onclick="pesquisar()" class="btn btn-dark">Pesquisar</button>
 
 
-					<c:if test="${not empty todos}">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>ID</th>
-									<th>Nome</th>
-									<th>Porcao</th>
-									<th>Calorias</th>
-									<th>P</th>
-									<th>C</th>
-									<th>G</th>
-									<th>Selecionar</th>
+						<table id="tabela-pagina" class="table table-hover">
+							<!-- 							<thead> -->
+							<!-- 								<tr> -->
+							<!-- 									<th>ID</th> -->
+							<!-- 									<th>Nome</th> -->
+							<!-- 									<th>Porcao</th> -->
+							<!-- 									<th>Calorias</th> -->
+							<!-- 									<th>P</th> -->
+							<!-- 									<th>C</th> -->
+							<!-- 									<th>G</th> -->
+							<!-- 									<th>Selecionar</th> -->
 
 
-								</tr>
+							<!-- 								</tr> -->
 
-							</thead>
-							<tbody>
-								<c:forEach items="${todos}" var="ali">
-									<tr id="${ali.id}">
-										<td>${ali.id}</td>
+							<!-- 							</thead> -->
+							<!-- 							<tbody> -->
+							<%-- 								<c:forEach items="${todos}" var="ali"> --%>
+							<%-- 									<tr id="${ali.id}"> --%>
+							<%-- 										<td>${ali.id}</td> --%>
 
-										<td>${ali.nome}</td>
-										<td>${ali.porcao}</td>
-										<td>${ali.caloria }</td>
-										<td>${ali.proteina}</td>
-										<td>${ali.carboidrato}</td>
-										<td>${ali.gordura}</td>
-										<td><button onclick="pegarAlimento(${ali.id})"
-												class="btn btn-success">Selecionar</button></td>
+							<%-- 										<td>${ali.nome}</td> --%>
+							<%-- 										<td>${ali.porcao}</td> --%>
+							<%-- 										<td>${ali.caloria }</td> --%>
+							<%-- 										<td>${ali.proteina}</td> --%>
+							<%-- 										<td>${ali.carboidrato}</td> --%>
+							<%-- 										<td>${ali.gordura}</td> --%>
+							<%-- 										<td><button onclick="pegarAlimento(${ali.id})" --%>
+							<!-- 												class="btn btn-success">Selecionar</button></td> -->
 
-										</td>
-									</tr>
-								</c:forEach>
-							</tbody>
+							<!-- 										</td> -->
+							<!-- 									</tr> -->
+							<%-- 								</c:forEach> --%>
+							<!-- 							</tbody> -->
 						</table>
 						<nav aria-label="Page navigation example">
-							<ul class="pagination justify-content-end">
+							<ul id="paginacao-pagina" class="pagination justify-content-end">
 
-								<c:if test="${paginaatual!=1 }">
-									<li class="page-item ">
-								</c:if>
-								<c:if test="${paginaatual==1 }">
-									<li class="page-item disabled">
-								</c:if>
-								<a
-									href="<%=request.getContextPath()%>/ServletAlimento?acao=pesquisaralimentos&paginaatual=${paginaatual-1}"
-									class="page-link">Previous</a>
-
-								</li>
-
-								<c:forEach begin="1" end="${totalpaginas}" step="1" var="p">
-									<c:if test="${p==paginaatual}">
-										<li class="page-item"><a class="page-link"
-											autofocus="autofocus"
-											href="<%=request.getContextPath()%>/ServletAlimento?acao=pesquisaralimentos&paginaatual=${p}">${p}</a></li>
-									</c:if>
-
-									<c:if test="${p!=paginaatual}">
-										<li class="page-item"><a class="page-link"
-											href="<%=request.getContextPath()%>/ServletAlimento?acao=pesquisaralimentos&paginaatual=${p}">${p}</a></li>
-									</c:if>
-								</c:forEach>
-								<c:if test="${totalpaginas!=paginaatual}">
-									<li class="page-item">
-								</c:if>
-								<c:if test="${totalpaginas==paginaatual}">
-									<li class="page-item disabled">
-								</c:if>
-								<a class="page-link"
-									href="<%=request.getContextPath()%>/ServletAlimento?acao=pesquisaralimentos&paginaatual=${paginaatual+1}">Next</a>
-
-								</li>
 							</ul>
 						</nav>
-					</c:if>
 
 
 
@@ -242,18 +215,129 @@
 	
 	
 		function pesquisar() {
-			var urlAction = document.getElementById("form-user").action;
-			var nome = document.getElementById("nome-pesquisa").value;
-			  alert(nome);
-
-			if (nome == "") {
-				window.location.href = urlAction
-						+ "?acao=pesquisaralimentos&paginaatual=1";
-			} else {
-				window.location.href = urlAction
-						+ "?acao=pesquisaralimentos&paginaatual=1&nome=" + nome;
+			
+			
+			var radio=0;
+			if ($("#radio-alimento").is(":checked")){
+				radio="alimento";
+				pesquisarAlimento(1);
+			}else {
+				radio="refeicao";
+				pesquisarRefeicao(1);
 			}
 
+		
+
+		}
+		function pesquisarAlimento(paginaatual){
+			var urlAction = document.getElementById("form-user").action;
+			var nome = document.getElementById("nome-pesquisa").value;
+
+
+
+		    $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "nome=" + nome  +
+			      "&acao=pesquisaralimentos"+
+			      "&paginaatual="+paginaatual,
+			      success: function (response, textStatus, xhr) {
+			    	  
+			    		var json = JSON.parse(response);
+			    		if (json.length>0){
+			    			var totalPaginas= xhr
+							.getResponseHeader("totalpagina");	
+
+			    		$("#tabela-pagina").empty();
+			    		
+			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>PORÇÃO</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th></tr></thead>")
+			        	$("#tabela-pagina").append("<tbody></tbody>");
+			    		alert($("#tabela-pagina"));
+			    		json.forEach((e)=>{
+			        		var botao="<button onclick='pegarAlimento("+e.id+")' class='btn btn-success'>Selecionar</button>";
+			    			$("#tabela-pagina > tbody").append("<tr id='"+e.id+"'><td>"+e.nome+"</td><td>"+e.porcao+"</td><td>"+e.caloria+"</td><td>"+e.proteina+"</td><td>"+e.carboidrato+"</td><td>"+e.gordura+"</td><td>"+botao+"</td></tr>")
+			    			    		
+			    		
+			    		});
+			    		
+			    		
+			    		$("#paginacao-pagina").empty();
+
+						for (var i=1;i<totalPaginas;i++){
+							
+							var n="";
+							if (i==paginaatual){
+								 n="<li onclick='pesquisarAlimento("+i+")' class='page-item active'> <a  href='#' class='page-link'>"+i+"</a></li> ";
+
+							}else{
+								 n="<li onclick='pesquisarAlimento("+i+")' class='page-item '> <a  href='#' class='page-link'>"+i+"</a></li> ";
+
+							}
+							$("#paginacao-pagina").append(n);
+
+						}			    	
+			        		
+			        	}
+			      },
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+		}
+		
+		
+		function pesquisarRefeicao(paginaatual){
+			var urlAction = document.getElementById("form-user").action;
+			var nome = document.getElementById("nome-pesquisa").value;
+
+
+
+		    $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "nome=" + nome  +
+			      "&acao=pesquisarrefeicao"+
+			      "&paginaatual="+paginaatual,
+			      success: function (response, textStatus, xhr) {
+			    	  
+			    		var json = JSON.parse(response);
+			    		if (json.length>0){
+			    			var totalPaginas= xhr
+							.getResponseHeader("totalpagina");	
+
+			    		$("#tabela-pagina").empty();
+			    		
+			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th></tr></thead>")
+			        	$("#tabela-pagina").append("<tbody></tbody>");
+			    		alert($("#tabela-pagina"));
+			    		json.forEach((e)=>{
+			        		var botao="<button onclick='pegarAlimento("+e.id+")' class='btn btn-success'>Selecionar</button>";
+			    			$("#tabela-pagina > tbody").append("<tr id='"+e.id+"'><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botao+"</td></tr>")
+			    			    		
+			    		
+			    		});
+			    		
+			    		
+			    		$("#paginacao-pagina").empty();
+
+						for (var i=1;i<=totalPaginas;i++){
+							
+							var n="";
+							if (i==paginaatual){
+								 n="<li onclick='pesquisarRefeicao("+i+")' class='page-item active'> <a  href='#' class='page-link'>"+i+"</a></li> ";
+
+							}else{
+								 n="<li onclick='pesquisarRefeicao("+i+")' class='page-item '> <a  href='#' class='page-link'>"+i+"</a></li> ";
+
+							}
+							$("#paginacao-pagina").append(n);
+
+						}			    	
+			        		
+			        	}
+			      },
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
 		}
 		
 		function verificarFormulario(){
@@ -282,7 +366,7 @@
 			return true;
 			
 		}
-		function mostrarAlimentoConsumido() {
+		function adicionarNovoAlimento() {
 			  var idselecionado = document.getElementById("idselecionado").value;
 			  var quantidade=document.getElementById("quantidade").value;
 			  var urlAction = document.getElementById("form-user").action;
@@ -370,7 +454,7 @@
 							"id=\"quantidade\" name=\"quantidade\"></div>"));
 
 				
-				var button="<button type=\"button\" onclick=\"mostrarAlimentoConsumido()\" class=\"btn btn-warning\">Adicionar</button>";
+				var button="<button type=\"button\" onclick=\"adicionarNovoAlimento()\" class=\"btn btn-warning\">Adicionar</button>";
 				 $("div.modal-body").append($(button));
 				document.getElementById("nomeselecionado").value=nome;
 				document.getElementById("idselecionado").value=id;
@@ -430,7 +514,14 @@
 //						document.getElementById("data-proteina").innerHTML=json.proteinas;
 //						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
 //						document.getElementById("data-gordura").innerHTML=json.gordura;
-						$("div.modal-body").append("<span>"+json.proteinas+"</span>");			      
+						$("div.modal-body").append("<table class=\"table info-macros\" style=\"text-align: center;\"></table>");	
+						$("div.modal-body > table.info-macros").append("<thead><th>Calorias</th><th>Proteinas</th><th>Carboidratos</th><th>Gorduras</th></thead>");
+						$("div.modal-body > table.info-macros ").append("<tbody></tbody>");
+						$("div.modal-body > table.info-macros >tbody").append("<td>"+json.calorias+" kcal</td>");	
+						$("div.modal-body > table.info-macros >tbody").append("<td>"+json.proteinas+" g</td>");			      
+						$("div.modal-body > table.info-macros >tbody").append("<td>"+json.carboidrato+" g</td>");			      
+						$("div.modal-body > table.info-macros >tbody").append("<td>"+json.gordura+" g</td>");			      
+
 						},
 			    }).fail(function (xhr, status, errorThrown) {
 			      alert("Error ao buscar usuário por nome" + xhr.responseText);

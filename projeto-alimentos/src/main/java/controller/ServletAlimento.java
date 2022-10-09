@@ -115,13 +115,39 @@ public class ServletAlimento extends HttpServlet {
 
 			int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
 
-			request.setAttribute("todos", todos);
-			request.setAttribute("totalpaginas", totalPaginas);
-			request.setAttribute("paginaatual", paginaAtual);
-			request.setAttribute("msg", "Clique no Alimento para Editar");
+//			request.setAttribute("todos", todos);
+//			request.setAttribute("totalpaginas", totalPaginas);
+//			request.setAttribute("paginaatual", paginaAtual);
+//			request.setAttribute("msg", "Clique no Alimento para Editar");
+//			
+//			request.getRequestDispatcher("/principal/refeicoes.jsp").forward(request, response);
+			
+			
+			response.addHeader("totalPagina", "" + totalPaginas);
 
-			request.getRequestDispatcher("/principal/refeicoes.jsp").forward(request, response);
-		} else if (acao != null && acao.equalsIgnoreCase("alimentoconsumido")) {
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(todos);
+			response.getWriter().write(json);
+		}else if (acao != null && acao.equalsIgnoreCase("pesquisarrefeicao")) {
+			
+			Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
+			int porPagina=5; 
+			int paginaAtual=Integer.parseInt(request.getParameter("paginaatual")); 
+			Long total=dao.contarTotalRefeicoes(userLogado);
+			int totalPaginas=(int) (total%porPagina==0?total/porPagina: 1+total/porPagina);
+			
+			
+			List<ModelRefeicao> lista = dao.consultarTodosRefeicaoPaginado( paginaAtual, porPagina, userLogado);
+
+			
+			response.addHeader("totalPagina",""+ totalPaginas);
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(lista);
+
+			response.getWriter().write(json);
+			
+		}
+		else if (acao != null && acao.equalsIgnoreCase("alimentoconsumido")) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			int quantidade = Integer.parseInt(request.getParameter("quantidade"));
 			ModelAlimento alimento = ((ModelAlimento) dao.buscarUsandoID(id, ModelAlimento.class)).consumir(quantidade);
@@ -189,7 +215,6 @@ public class ServletAlimento extends HttpServlet {
 			dao.merge(consumoDia);
 
 			ObjectMapper mapper = new ObjectMapper();
-			request.getSession().setAttribute("macros", consumoDia);
 			String json = mapper.writeValueAsString(consumoDia);
 			response.getWriter().write(json);
 
