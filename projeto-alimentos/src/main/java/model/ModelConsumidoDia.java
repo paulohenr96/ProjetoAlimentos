@@ -19,6 +19,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -41,8 +44,9 @@ public class ModelConsumidoDia {
 	
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "macros",fetch=FetchType.EAGER)
-	private List<ModelAlimentoConsumido> listaAlimentos;
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "macros")
+	private List<ModelAlimentoConsumido> listaAlimentosConsumidos;
 	
 	
 	@Basic
@@ -60,6 +64,13 @@ public class ModelConsumidoDia {
 
 	@Column(precision=10, scale=2)
 	private BigDecimal gordura;
+	
+
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany (mappedBy = "macros")
+	private List<ModelRefeicao> refeicoes;
+	
 	
 	public Long getId() {
 		return id;
@@ -130,13 +141,13 @@ public class ModelConsumidoDia {
 		proteinas=proteinas.subtract(ref.getProteinas());
 		calorias=calorias.subtract(ref.getCalorias());
 		carboidrato=carboidrato.subtract(ref.getCarboidratos());
-		gordura=gordura.add(ref.getGorduras());
+		gordura=gordura.subtract(ref.getGorduras());
 	}
 	public List<ModelAlimentoConsumido> getListaAlimentos() {
-		return listaAlimentos;
+		return listaAlimentosConsumidos;
 	}
 	public void setListaAlimentos(List<ModelAlimentoConsumido> listaAlimentos) {
-		this.listaAlimentos = listaAlimentos;
+		this.listaAlimentosConsumidos = listaAlimentos;
 	}
 
 	

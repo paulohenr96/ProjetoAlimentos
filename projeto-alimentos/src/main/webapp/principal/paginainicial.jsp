@@ -96,6 +96,70 @@
 							</div>
 						</div>
 
+						<div class="container-fluid px-4">
+							<select onchange="mostrarHistorico(1)"
+								class="custom-select custom-select-lg mb-3">
+								<option value="2">2 por pagina</option>
+								<option value="4">4 por pagina</option>
+								<option selected value="5">5 por pagina</option>
+								<option value="10">10 por pagina</option>
+
+							</select>
+							<form action="<%=request.getContextPath()%>/ServletAlimento"
+								id="form-macro" method="get">
+								<input type="hidden" name="acao" value=""
+									id="acaoRelatorioImprimirTipo">
+								<button type="button" onclick="imprimirHtml()"
+									class="btn btn-dark  btn-sm">Imprimir Histórico</button>
+
+
+<table class="table table-striped-columns">
+						<thead>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<nav aria-label="Page navigation example">
+						<ul class="pagination">
+						</ul>
+					</nav>
+
+
+
+
+
+
+
+
+
+
+
+
+								<input type="hidden" id="acao" name="acao" value=""> <select
+									id="macro" class="form-select mb-2"
+									aria-label="Default select example">
+									<option selected value="todos">Todos</option>
+									<option value="calorias">Calorias</option>
+
+									<option value="proteina">Proteina</option>
+									<option value="gordura">Gordura</option>
+									<option value="carboidrato">Carboidrato</option>
+								</select>
+
+								<button type="button" onclick="mostrarGrafico()"
+									class="btn btn-dark">Pesquisar</button>
+
+
+
+
+								<div>
+									<canvas id="myChart"></canvas>
+								</div>
+
+							</form>
+						</div>
+
+
 					</div>
 				</div>
 
@@ -126,9 +190,300 @@
 			</footer>
 		</div>
 	</div>
+	<jsp:include page="javascript-files.jsp"></jsp:include>
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
-	<script src="assets/js/scripts.js"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
+
+	<script type="text/javascript">
+		var myChart = new Chart(document.getElementById("myChart"));
+
+		mostrarGrafico();
+		function mostrarGrafico() {
+			var macro = document.getElementById("macro").value;
+
+			var urlAction = document.getElementById("form-macro").action;
+
+			if (macro != null && macro != "") {
+				$.ajax(
+						{
+							method : "get",
+							url : urlAction,
+							data : "acao=mostrargrafico&macro=" + macro,
+							success : function(response, textStatus, xhr) {
+
+								var json = JSON.parse(response);
+
+								var listaMacro;
+								var titulo;
+								var cor;
+								if (macro != 'todos') {
+									if (macro == 'calorias') {
+										listaMacro = json.listaCalorias;
+										titulo = "Calorias";
+										cor = "brown";
+									}
+									if (macro == 'proteina') {
+										listaMacro = json.listaProteinas;
+										titulo = "Proteinas";
+										cor = "blue";
+
+									}
+									if (macro == 'carboidrato') {
+										listaMacro = json.listaCarboidratos;
+										titulo = "Carboidratos";
+										cor = "green";
+
+									}
+									if (macro == 'gordura') {
+										listaMacro = json.listaGorduras;
+										titulo = "Gorduras";
+										cor = "orangered";
+
+									}
+									var vetor = [ {
+										label : titulo,
+										backgroundColor : cor,
+										borderColor : cor,
+										data : listaMacro,
+									} ];
+								} else {
+									var vetor = [ {
+										label : 'Proteinas',
+										backgroundColor : 'blue',
+										borderColor : 'blue',
+										data : json.listaProteinas,
+									}, {
+										label : 'Carboidratos',
+										backgroundColor : 'red',
+										borderColor : 'red',
+										data : json.listaCarboidratos,
+									}, {
+										label : 'Gorduras',
+										backgroundColor : 'green',
+										borderColor : 'green',
+										data : json.listaGorduras,
+									}, {
+										label : 'Calorias',
+										backgroundColor : 'black',
+										borderColor : 'black',
+										data : json.listaCalorias,
+									} ];
+								}
+
+								myChart.destroy();
+
+								myChart = new Chart(document
+										.getElementById('myChart'), {
+									type : 'line',
+									data : {
+										labels : json.listaData,
+										datasets : vetor
+									},
+									options : {
+										scales : {
+											x : {
+												type : 'time',
+												time : {
+													unit : 'day'
+												}
+											}
+										}
+									}
+								});
+								console.log(response);
+							},
+						}).fail(
+						function(xhr, status, errothrown) {
+							alert("Error ao buscar dados para o gráfico"
+									+ xhr.responseText);
+
+						});
+
+			}
+
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+// 		Historico --------------------------------------------------------
+		var ordem="data";
+		var asc="desc";
+		document.querySelector(".table > tbody").innerHTML="<div class=\"spinner-border\" role=\"status\">  <span class=\"sr-only\">Loading...</span>  </div>";
+
+		function ordenarData(){
+			ordem="data";
+			inverterOrdem();
+			mostrarHistorico(1);
+
+		}
+		function inverterOrdem(){
+			if (asc=="asc"){
+				asc="desc";
+			}else {
+				asc="asc";
+			}
+		}
+		 function imprimirHtml(){
+
+		    	document.getElementById("acaoRelatorioImprimirTipo").value="ImprimirRelatorioMacrosPDF";
+		    	$("#form-user").submit();
+		    	return false;
+		    }
+		function ordenarProteinas(){
+			ordem="proteinas";
+			inverterOrdem();
+
+			mostrarHistorico(1);
+
+		}
+		function ordenarCalorias(){
+			ordem="calorias";
+			inverterOrdem();
+
+			mostrarHistorico(1);
+
+		}
+		function ordenarCarboidrato(){
+			ordem="carboidrato";
+			inverterOrdem();
+
+			mostrarHistorico(1);
+
+		}
+		function ordenarGordura(){
+			ordem="gordura";
+			inverterOrdem();
+
+			mostrarHistorico(1);
+
+		}
+		mostrarHistorico(1);
+			function mostrarHistorico(paginaatual) {
+				var porpagina=document.querySelector("select").value;
+				$.ajax({
+					method : "get",
+					url : window.location.pathname.substring(0, window.location.pathname.indexOf("/",2))+ "/ServletAlimento",
+					data : "paginaatual=" + paginaatual + "&porpagina=" + porpagina
+							+ "&acao=historico&ordem="+ordem+"&asc="+asc,
+					success : function(response, textStatus, xhr) {
+						
+						console.log(response);
+						var json=JSON.parse(response);
+						if (json.length!=0){
+							$(".table").empty();
+							$(".table").append("<thead></thead>");
+
+							$(".table>thead").append("<tr>"+
+									"<th onclick=\"ordenarData()\">Data</th>"+
+									"<th onclick=\"ordenarCalorias()\">Calorias</th>"+
+									"<th onclick=\"ordenarProteinas()\">Proteina</th>"+
+									"<th onclick=\"ordenarGordura()\">Gordura</th>"+
+									"<th onclick=\"ordenarCarboidrato()\">Carboidrato</th>"+
+								"</tr>");
+							$(".table").append("<tbody></tbody>");
+
+						json.forEach((e)=>{
+							var minhaData=new Date(e.data);
+							console.log();
+							document.querySelector(".table > tbody").innerHTML+="<tr><td>"+minhaData.getUTCDate()+"/"+(minhaData.getUTCMonth() + 1)+"/"+(minhaData.getUTCFullYear())+"</td>"+"<td>"+e.calorias+" g</td>"+"<td>"+e.proteinas+" g</td>"+"<td>"+e.carboidrato+" g</td>"+"<td>"+e.gordura+" g</td>"+"</tr>";
+							
+							
+							
+							
+							
+							
+						})
+						
+						
+						
+						var paginacao="";
+						var previous="";
+						var next="";
+						var totalElementos = xhr
+						.getResponseHeader("totalPagina");
+						console.log("TOTAL : "+totalElementos);
+						const quotient = Math.floor(totalElementos/porpagina);
+						const remainder = totalElementos % porpagina;
+						var totalPagina=quotient;
+						if (remainder!=0){
+							totalPagina++;
+						}
+						for (var i=1;i<=totalPagina;i++){
+							
+							
+							if (paginaatual==i){
+								
+									paginacao+="<li class=\"page-item active\"  onclick=\"mostrarHistorico("+i+")\"><a  class=\"page-link\" >"+i+"</a></li>";
+							}
+							else {
+								paginacao+="<li class=\"page-item\" onclick=\"mostrarHistorico("+i+")\"><a class=\"page-link\"  >"+i+"</a></li>";
+
+							}
+						}
+						if  (totalPagina>1){
+							previous="<li class=\"page-item\" onclick=\"mostrarHistorico("+(paginaatual-1)+")\"><a class=\"page-link\"  ><</a></li>";
+							next="<li class=\"page-item\" onclick=\"mostrarHistorico("+(paginaatual+1)+")\"><a class=\"page-link\"  >></a></li>";
+
+							if (paginaatual==1){
+								previous="<li class=\"page-item disabled\" ><a class=\"page-link\"  ><</a></li>";
+
+							}
+							if (paginaatual==totalPagina){
+								next="<li class=\"page-item disabled\" ><a class=\"page-link\"  >></a></li>";
+
+							}
+
+						}
+						document.querySelector("ul.pagination").innerHTML=previous+paginacao+next;
+
+						
+						
+						}else{
+							$(".spinner-border").remove();
+							$("main > div.container-fluid").html("<h2>O seu histórico está vazio.</h2>");
+						}
+						
+					}
+
+				}).fail(function (xhr, status, errorThrown) {
+					
+				      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+
+			}
+		
+	</script>
 </body>
 </html>

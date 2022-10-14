@@ -43,7 +43,7 @@
 						id="form-user">
 						<input type="hidden" id="acao" name="acao" value="">
 
-						<h1>Alimentos</h1>
+						<h2>Alimentos</h2>
 						<div class="mb-2 col-2">
 							<label for="id" class="form-label">ID</label> <input type="text"
 								readonly="readonly" class="form-control" id="id" name="id"

@@ -34,7 +34,18 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
-
+	public List<E> consultarAlimentosEmRefeicoes(Long idAlimento) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		List<E> list = entityManager
+				.createQuery(
+						"from " + ModelAlimentoRefeicao.class.getCanonicalName() + " where alimento_id=" + idAlimento)
+				.getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
 	public void salvar(E entidade) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
@@ -124,7 +135,7 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		List<E> list = entityManager
-				.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado=" + userLogado)
+				.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado=" + userLogado+" and macros_id=null")
 				.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
@@ -323,6 +334,7 @@ public class DAOGeneric<E> {
 
 		} catch (NoResultException e) {
 			System.out.println("sem resultado:" + e.getMessage());
+			
 			return null;
 		} catch (NonUniqueResultException e) {
 			System.out.println("Multiplo resultados :" + e.getMessage());
@@ -438,4 +450,34 @@ public class DAOGeneric<E> {
 		return list;
 	}
 
+	public List<ModelRefeicao> consultarRefsMacros(int porPagina, int paginaAtual, Long macrosId) {
+		try {
+			EntityManager entityManager = JPAUtil.getEntityManager();
+			EntityTransaction transaction = entityManager.getTransaction();
+			int offset = porPagina * (paginaAtual - 1);
+			int ultimoResultado = porPagina;
+			transaction.begin();
+			List<E> list = entityManager
+					.createQuery(
+							"from " + ModelRefeicao.class.getCanonicalName() + " where macros_id=" + macrosId)
+					.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
+			transaction.commit();
+			entityManager.close();
+			return (List<ModelRefeicao>) list;
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+
+	public Long contarTotalRefeicoesConsumidas(Long idUserLogado,Long macros) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		Long total = (Long) entityManager.createQuery("select count(1) from " + ModelRefeicao.class.getCanonicalName()
+				+ " where idUserLogado=" + idUserLogado +" and macros_id="+macros).getSingleResult();
+		transaction.commit();
+		entityManager.close();
+		return total;
+	}
 }

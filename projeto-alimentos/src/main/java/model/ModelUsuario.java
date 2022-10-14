@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
@@ -33,9 +36,9 @@ public class ModelUsuario implements Serializable{
 	private String senha;
 	
 	
-	
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonIgnore
-	@OneToMany(mappedBy = "usuario",fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "usuario")
 	private List<ModelConsumidoDia> alimentos;
 	public Long getId() {
 		return id;

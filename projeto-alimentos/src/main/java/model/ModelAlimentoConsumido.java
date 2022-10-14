@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,6 +42,8 @@ public class ModelAlimentoConsumido implements Serializable {
     @JsonIgnore
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private ModelConsumidoDia macros;
+    
+    
 	private String nome;
 	public void setNome(String nome) {
 		this.nome = nome;

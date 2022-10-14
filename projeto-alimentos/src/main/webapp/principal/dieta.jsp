@@ -28,7 +28,7 @@
 
 			<main>
 				<div class="container-sm px-4">
-					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
+					<h2>Minhas Dietas</h2>
 					<form id="form-user"
 						action="<%=request.getContextPath()%>/ServletDieta" method="get">
 						<input type="hidden" id="acao" value="">

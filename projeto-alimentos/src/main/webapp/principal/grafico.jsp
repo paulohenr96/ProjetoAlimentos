@@ -157,11 +157,26 @@
 								    data:  {
 									    labels:json.listaData  ,
 									    datasets: [{
-									      label: 'Gráfico de '+titulo,
-									      backgroundColor: cor,
-									      borderColor: cor,
-									      data: listaMacro,
-									    }]
+									      label: 'Proteinas',
+									      backgroundColor: 'blue',
+									      borderColor: 'blue',
+									      data: json.listaProteinas,
+									    },
+									    {
+										      label: 'Gorduras',
+										      backgroundColor: 'orangered',
+										      borderColor: 'orangered',
+										      data: json.listaGorduras,
+										},
+										{
+										      label: 'Carboidratos',
+										      backgroundColor: 'green',
+										      borderColor: 'green',
+										      data: json.listaCarboidratos,
+										}
+									    
+									    
+									    ]
 									  },
 								    options: {
 								        scales: {

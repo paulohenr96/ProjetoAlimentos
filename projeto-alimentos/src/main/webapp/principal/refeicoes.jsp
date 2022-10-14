@@ -35,7 +35,7 @@
 				<div class="container-fluid px-4">
 
 
-					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
+					<h2>Meu Consumo Calórico</h2>
 
 					<form id="form-user"
 						action="<%=request.getContextPath()%>/ServletAlimento"
@@ -65,7 +65,8 @@
 
 					<button type="button" class="btn btn-info" onclick="exibirModal(1)">Ver
 						Alimentos</button>
-
+<button type="button" class="btn btn-info" onclick="exibirModalRefs(1)">Ver
+						Refeições</button>
 
 
 
@@ -85,8 +86,8 @@
 
 						<input class="form-check-input" type="radio" id="radio-alimento"
 							name="radio-pesquisa" value="alimento"> <label
-							class="form-check-label" for="radio-alimento">Alimento </label>
-						<input class="form-check-input" type="radio" id="radio-refeicao"
+							class="form-check-label" for="radio-alimento">Alimento </label> <input
+							class="form-check-input" type="radio" id="radio-refeicao"
 							value="refeicao" name="radio-pesquisa"> <label
 							class="form-check-label" for="radio-refeicao">Refeição </label>
 
@@ -94,46 +95,14 @@
 					<button type="button" onclick="pesquisar()" class="btn btn-dark">Pesquisar</button>
 
 
-						<table id="tabela-pagina" class="table table-hover">
-							<!-- 							<thead> -->
-							<!-- 								<tr> -->
-							<!-- 									<th>ID</th> -->
-							<!-- 									<th>Nome</th> -->
-							<!-- 									<th>Porcao</th> -->
-							<!-- 									<th>Calorias</th> -->
-							<!-- 									<th>P</th> -->
-							<!-- 									<th>C</th> -->
-							<!-- 									<th>G</th> -->
-							<!-- 									<th>Selecionar</th> -->
+					<table id="tabela-pagina" class="table table-hover">
 
+					</table>
+					<nav aria-label="Page navigation example">
+						<ul id="paginacao-pagina" class="pagination justify-content-end">
 
-							<!-- 								</tr> -->
-
-							<!-- 							</thead> -->
-							<!-- 							<tbody> -->
-							<%-- 								<c:forEach items="${todos}" var="ali"> --%>
-							<%-- 									<tr id="${ali.id}"> --%>
-							<%-- 										<td>${ali.id}</td> --%>
-
-							<%-- 										<td>${ali.nome}</td> --%>
-							<%-- 										<td>${ali.porcao}</td> --%>
-							<%-- 										<td>${ali.caloria }</td> --%>
-							<%-- 										<td>${ali.proteina}</td> --%>
-							<%-- 										<td>${ali.carboidrato}</td> --%>
-							<%-- 										<td>${ali.gordura}</td> --%>
-							<%-- 										<td><button onclick="pegarAlimento(${ali.id})" --%>
-							<!-- 												class="btn btn-success">Selecionar</button></td> -->
-
-							<!-- 										</td> -->
-							<!-- 									</tr> -->
-							<%-- 								</c:forEach> --%>
-							<!-- 							</tbody> -->
-						</table>
-						<nav aria-label="Page navigation example">
-							<ul id="paginacao-pagina" class="pagination justify-content-end">
-
-							</ul>
-						</nav>
+						</ul>
+					</nav>
 
 
 
@@ -284,7 +253,58 @@
 			    });
 		}
 		
+		function verAlimentosRefeicao(idrefeicao){
+			alert("Vendo alimentos refeicao");
+			
+			$("div.modal-body").html("");
+			$("#exampleModal").modal('show');
+
+			$("div.modal-body").append("<table class='table' style='text-align:center;'> </table>");
+			$("div.modal-body > table").append("<thead></thead>");
+			$("div.modal-body > table > thead").append ("<th scope='col'>#</th>");
+			$("div.modal-body > table > thead").append ("<th scope='col'>Nome</th>");
+			$("div.modal-body > table > thead").append ("<th scope='col'>Quantidade</th>");
+			
+			$("div.modal-body > table").append("<tbody></tbody>");
+			
+			
+			
+			var urlAction=document.getElementById("form-user").action;
+			$.ajax({
+				method:"get",
+				url:urlAction,
+				data:"idrefeicao="+idrefeicao+"&acao=alimentosrefeicao",
+				success:function(response,textStatus,xhr){
+					var json=JSON.parse(response);
+					if (json.length==0){
+						$(".modal thead").hide();
+					}else {
+						$(".modal .table").show();
+						$("div.modal-body>table>tbody").empty();
+
+						json.forEach((e)=>{
+							$("div.modal-body>table>tbody").append("<tr id='"+e.id+"'> </tr>");
+
+							$("#"+e.id).append("<td>"+e.id+"</td>");
+							$("#"+e.id).append("<td>"+e.alimento.nome+"</td>");
+							$("#"+e.id).append("<td>"+e.quantidade+" gramas</td>");
+
+						
+
+						});
+						
+						
+						
+
+					}
+					}
+				
+			}).fail(function(xhr,status,erroThrown){
+				alert("Erro : "+xhr.responseText);
+			})
 		
+
+		}
 		function pesquisarRefeicao(paginaatual){
 			var urlAction = document.getElementById("form-user").action;
 			var nome = document.getElementById("nome-pesquisa").value;
@@ -306,12 +326,22 @@
 
 			    		$("#tabela-pagina").empty();
 			    		
-			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th></tr></thead>")
+			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th><th>VER</th></tr></thead>")
 			        	$("#tabela-pagina").append("<tbody></tbody>");
 			    		alert($("#tabela-pagina"));
 			    		json.forEach((e)=>{
-			        		var botao="<button onclick='pegarAlimento("+e.id+")' class='btn btn-success'>Selecionar</button>";
-			    			$("#tabela-pagina > tbody").append("<tr id='"+e.id+"'><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botao+"</td></tr>")
+			        		var botao="<button onclick='addRefeicao("+e.id+")' class='btn btn-success'>Adicionar</button>";
+			        		var botaoVerAlimentos="<button onclick='verAlimentosRefeicao("+e.id+")' class='btn btn-primary'>Ver Alimentos</button>";
+
+			    			$("#tabela-pagina > tbody").append("<tr id='"+e.id+"'></tr>");
+			    			$("#"+e.id).append("<td>"+e.nome+"</td>")
+			    			$("#"+e.id).append("<td>"+e.calorias+"</td>");
+			    			$("#"+e.id).append("<td>"+e.proteinas+"</td>");
+			    			$("#"+e.id).append("<td>"+e.carboidratos+"</td>");
+			    			$("#"+e.id).append("<td>"+e.gorduras+"</td>");
+			    			$("#"+e.id).append("<td>"+botao+"</td>");
+			    			$("#"+e.id).append("<td>"+botaoVerAlimentos+"</td>");
+
 			    			    		
 			    		
 			    		});
@@ -366,6 +396,27 @@
 			return true;
 			
 		}
+		
+		function addRefeicao(idrefeicao) {
+			  var urlAction = document.getElementById("form-user").action;
+			  var data=document.getElementById("data").value;
+			    $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "id=" + idrefeicao +
+			      "&acao=adicionarrefeicaomacros"+
+			      "&data="+data,
+			      success: function (response, textStatus, xhr) {
+			    	  
+						alert('refeicao adicionada.')	;				
+
+			      },
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+			  }
+		
+		
 		function adicionarNovoAlimento() {
 			  var idselecionado = document.getElementById("idselecionado").value;
 			  var quantidade=document.getElementById("quantidade").value;
@@ -436,8 +487,7 @@
 				$("#exampleModal").modal('show');
 
 				var linha=document.getElementById(id);
-				var id=linha.cells[0].innerHTML;
-				var nome=linha.cells[1].innerHTML;
+				var nome=linha.cells[0].innerHTML;
 				$("div.modal-body").html("");
 				$("#exampleModalLabel").html("Insira a quantidade.");
 				 $("div.modal-body").append($("<div class=\"mb-2\">"+
@@ -553,23 +603,39 @@
 				      success: function (response, textStatus, xhr) {
 							var json = JSON.parse(response);
 							if (json.length==0){
-								document.getElementById("comi-hoje").innerHTML="<tr>Sem Alimentos</tr>";
+								$("#comi-hoje").html("Sem Alimentos");
 							}
 							else {
 								var tabela="";
 								var previous="";
 								var next="";
 								var paginacao="";
-								var titulo="<thead><tr><th>#</th><th>Nome</th><th>Quantidade</th></tr></thead>";
+								$("#comi-hoje").empty();
+								$("#comi-hoje").append("<thead></thead>");
+								$("#comi-hoje > thead").append("<th>id</th");
 
+								$("#comi-hoje > thead").append("<th>Nome</th");
+								$("#comi-hoje > thead").append("<th>Quantidade</th");
+								$("#comi-hoje > thead").append("<th>Tipo</th");
+								$("#comi-hoje > thead").append("<th>Remover</th");
+
+								
+								
+								$("#comi-hoje").append("<tbody></tbody>");
 								for (let i=0;i<json.length;i++){
 									console.log(i);
 									var botao="<button onclick=\"removerAlimento("+json[i].id+","+json[i].quantidade+")\"type=\"button\" class=\"btn btn-danger\">Remover</button>";
-
-									 tabela +="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+json[i].nome+"</td><td>"+json[i].quantidade+"</td><td>"+botao+"</td></tr>"
-								}
-								document.getElementById("comi-hoje").innerHTML=titulo+tabela;
+									
+									
+									
+									
+									
+									
+									 var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+json[i].nome+"</td><td>"+json[i].quantidade+"</td><td>Alimento</td><td>"+botao+"</td></tr>"
 								
+										$("#comi-hoje > tbody").append(linha)
+
+								}
 								
 								var totalElementos = xhr
 								.getResponseHeader("totalPagina");
@@ -606,8 +672,9 @@
 
 								}
 								document.getElementById("paginacao-modal").innerHTML=previous+paginacao+next;
+								consultarMacros();
+
 							}
-							consultarMacros();
 						
 							
 				      },
@@ -623,6 +690,150 @@
 
 			}
 			  		}
+		
+		
+		
+		
+		
+		function exibirModalRefs(paginaAtual){
+			 var urlAction = document.getElementById("form-user").action;
+			  var data=document.getElementById("data").value;
+				$("div.modal-body").html("");
+				console.log(data);
+			  var spinner="<div class=\"spinner-border text-primary\" role=\"status\">"+
+			  "<span class=\"sr-only\">Loading...</span>"+
+			  "</div>";
+			  $("div.modal-body").append($("<table class='table table-striped' id='comi-hoje'></table>"))
+			  $("div.modal-body").append($("<nav aria-label=\"Page navigation example\"><ul id=\"paginacao-modal\" class=\"pagination\"></ul></nav>"))
+			  document.getElementById("comi-hoje").innerHTML=spinner;
+			if (verificarData()){
+				$('#exampleModal').modal('show');
+
+				$("#exampleModalLabel").html("Todos os alimentos consumidos "+data);
+
+				$.ajax({
+				      method: "get",
+				      url: urlAction,
+				      data: "acao=refeicoesmodal&paginaatual="+paginaAtual+
+				      		"&data="+data,
+				      success: function (response, textStatus, xhr) {
+							var json = JSON.parse(response);
+							if (json.length==0){
+								$("#comi-hoje").html("Sem Refeicoes");
+							}
+							else {
+								var tabela="";
+								var previous="";
+								var next="";
+								var paginacao="";
+								$("#comi-hoje").empty();
+								$("#comi-hoje").append("<thead></thead>");
+								$("#comi-hoje > thead").append("<th>id</th");
+
+								$("#comi-hoje > thead").append("<th>Nome</th");
+								$("#comi-hoje > thead").append("<th>Remover</th");
+
+								
+								
+								$("#comi-hoje").append("<tbody></tbody>");
+								for (let i=0;i<json.length;i++){
+									console.log(i);
+									var botao="<button onclick=\"removerRefeicao("+json[i].id+","+json[i].quantidade+")\"type=\"button\" class=\"btn btn-danger\">Remover</button>";
+									
+									
+									
+									
+									
+									
+									 var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].id+"</td><td>"+json[i].nome+"</td><td>"+botao+"</td></tr>"
+								
+										$("#comi-hoje > tbody").append(linha)
+
+								}
+								
+								var totalElementos = xhr
+								.getResponseHeader("totalPagina");
+								const quotient = Math.floor(totalElementos/5);
+								const remainder = totalElementos % 5;
+								var totalPagina=quotient;
+								if (remainder!=0){
+									totalPagina++;
+								}
+								for (var i=1;i<=totalPagina;i++){
+									
+									
+									if (paginaAtual==i){
+										
+											paginacao+="<li class=\"page-item active\"  onclick=\"exibirModal("+i+")\"><a  class=\"page-link\" >"+i+"</a></li>";
+									}
+									else {
+										paginacao+="<li class=\"page-item\" onclick=\"exibirModal("+i+")\"><a class=\"page-link\" href=\"#\" >"+i+"</a></li>";
+
+									}
+								}
+								if  (totalPagina>1){
+									previous="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual-1)+")\"><a class=\"page-link\" href=\"#\" ><</a></li>";
+									next="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual+1)+")\"><a class=\"page-link\" href=\"#\" >></a></li>";
+
+									if (paginaAtual==1){
+										previous="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" ><</a></li>";
+
+									}
+									if (paginaAtual==totalPagina){
+										next="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" >></a></li>";
+
+									}
+
+								}
+								document.getElementById("paginacao-modal").innerHTML=previous+paginacao+next;
+								consultarMacros();
+
+							}
+						
+							
+				      },
+				    }).fail(function (xhr, status, errorThrown) {
+				      alert("Error ao buscar usuário por nome" + xhr.responseText);
+				    });
+
+			}else {
+
+				$('#exampleModal').modal('hide');
+			
+
+
+			}
+			  		}
+		
+		
+		
+		function removerRefeicao(idrefeicao){
+			 var urlAction = document.getElementById("form-user").action;
+			  var data=document.getElementById("data").value;
+			  
+			    $.ajax({
+			      method: "get",
+			      url: urlAction,
+			      data: "id=" + idrefeicao +
+			      "&acao=removerrefeicaoconsumida"+
+			      "&data="+data,
+			      success: function (response, textStatus, xhr) {
+						var json = JSON.parse(response);
+
+//						console.log(json);
+//						document.getElementById("data-caloria").innerHTML=json.calorias;
+//						document.getElementById("data-proteina").innerHTML=json.proteinas;
+//						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
+//						document.getElementById("data-gordura").innerHTML=json.gordura;
+						
+						exibirModalRefs(1);
+			      },
+			    }).fail(function (xhr, status, errorThrown) {
+			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			    });
+			  
+		}
+		
 		function adicionar(){
 			var nome=document.getElementById("nomeselecionado").value;
 			var id=document.getElementById("idselecionado").value;

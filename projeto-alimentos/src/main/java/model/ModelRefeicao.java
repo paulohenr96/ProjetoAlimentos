@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -49,9 +50,12 @@ public class ModelRefeicao implements Serializable{
 	private BigDecimal gorduras=new BigDecimal(0);
 	
 	
-	
 	@ManyToOne  (optional=true)
 	private ModelDieta dieta;
+	
+	@ManyToOne (optional=true)
+	private ModelConsumidoDia macros;
+		
 	public void setDieta(ModelDieta dieta) {
 		this.dieta = dieta;
 	}
@@ -142,5 +146,11 @@ public class ModelRefeicao implements Serializable{
 	}
 	public void setHorario(Date horario) {
 		this.horario = horario;
+	}
+	public ModelConsumidoDia getMacros() {
+		return macros;
+	}
+	public void setMacros(ModelConsumidoDia macros) {
+		this.macros = macros;
 	}
 }
