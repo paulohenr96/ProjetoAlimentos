@@ -58,6 +58,33 @@
 	<queryString language="hql">
 		<![CDATA[]]>
 	</queryString>
+	<field name="data" class="java.util.Date">
+		<fieldDescription><![CDATA[data]]></fieldDescription>
+	</field>
+	<field name="calorias" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[calorias]]></fieldDescription>
+	</field>
+	<field name="proteinas" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[proteinas]]></fieldDescription>
+	</field>
+	<field name="idAlimento" class="java.lang.Long">
+		<fieldDescription><![CDATA[idAlimento]]></fieldDescription>
+	</field>
+	<field name="refeicoes" class="java.util.List">
+		<fieldDescription><![CDATA[refeicoes]]></fieldDescription>
+	</field>
+	<field name="gordura" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[gordura]]></fieldDescription>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[id]]></fieldDescription>
+	</field>
+	<field name="listaAlimentos" class="java.util.List">
+		<fieldDescription><![CDATA[listaAlimentos]]></fieldDescription>
+	</field>
+	<field name="carboidrato" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[carboidrato]]></fieldDescription>
+	</field>
 	<group name="Grupo_Macros" keepTogether="true">
 		<groupExpression><![CDATA[$F{data}]]></groupExpression>
 		<groupHeader>
@@ -218,20 +245,23 @@
 		<band height="117"/>
 	</columnHeader>
 	<detail>
-		<band height="118" splitType="Stretch">
+		<band height="111" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<rectangle>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="550" height="53" uuid="c1c131f3-3574-487d-9988-85a4d5f35f6b"/>
 			</rectangle>
 			<subreport>
-				<reportElement x="2" y="0" width="548" height="53" uuid="1090f1b4-97d0-4618-993f-4cbc7e835f2a"/>
+				<reportElement stretchType="ContainerHeight" x="2" y="0" width="548" height="53" uuid="1090f1b4-97d0-4618-993f-4cbc7e835f2a"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource ($F{listaAlimentos})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{PARAM_SUB_REPORT}+"sub_report_alimento.jasper"]]></subreportExpression>
 			</subreport>
+			<rectangle>
+				<reportElement stretchType="ContainerHeight" x="0" y="53" width="551" height="58" uuid="95316e9f-6b16-4ba1-b1b7-3164f0c044ab"/>
+			</rectangle>
 			<subreport>
-				<reportElement x="0" y="49" width="551" height="61" uuid="6a23d442-63d3-4243-b783-16e1822cc756"/>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["sub_ref_consumida.jasper"]]></subreportExpression>
+				<reportElement x="0" y="53" width="551" height="58" isRemoveLineWhenBlank="true" uuid="64489092-5c5c-42e5-9d54-0f00f210ed9e"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource ($F{refeicoes})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{PARAM_SUB_REPORT}+"sub_relatorio_refeicoes.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

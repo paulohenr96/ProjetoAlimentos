@@ -54,19 +54,19 @@ public class ModelConsumidoDia {
 	private Date data;
 	
 	@Column(precision=10, scale=2)
-	private BigDecimal calorias;
+	private BigDecimal calorias=new BigDecimal(0);
 	
 	@Column(precision=10, scale=2)
-	private BigDecimal proteinas;
+	private BigDecimal proteinas=new BigDecimal(0);;
 	
 	@Column(precision=10, scale=2)
-	private BigDecimal carboidrato;
+	private BigDecimal carboidrato=new BigDecimal(0);;
 
 	@Column(precision=10, scale=2)
-	private BigDecimal gordura;
+	private BigDecimal gordura=new BigDecimal(0);;
 	
 
-	
+	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany (mappedBy = "macros")
 	private List<ModelRefeicao> refeicoes;
@@ -174,6 +174,12 @@ public class ModelConsumidoDia {
 	}
 	public void setGordura(BigDecimal gordura) {
 		this.gordura = gordura;
+	}
+	public List<ModelRefeicao> getRefeicoes() {
+		return refeicoes;
+	}
+	public void setRefeicoes(List<ModelRefeicao> refeicoes) {
+		this.refeicoes = refeicoes;
 	}
 	
 	

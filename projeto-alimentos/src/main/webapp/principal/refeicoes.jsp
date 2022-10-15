@@ -69,7 +69,7 @@
 						Refeições</button>
 
 
-
+					<div id="aviso_1"></div>
 
 
 
@@ -407,8 +407,15 @@
 			      "&acao=adicionarrefeicaomacros"+
 			      "&data="+data,
 			      success: function (response, textStatus, xhr) {
-			    	  
-						alert('refeicao adicionada.')	;				
+			    	  var json=JSON.parse(response);
+			    	  console.log(json);
+
+// 			    	  var ali_n=json.listaAlimentos.length;
+// 			    	  var ref_n=json.refeicoes.length;
+			    	  $("#aviso_1").empty()
+			    	  $("#aviso_1").append("<span style='color:green'>Refeicao adicionada.</span>")
+			    	
+
 
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
@@ -469,8 +476,9 @@
 				      data: "acao=limparmacros"+
 				      "&data="+data,
 				      success: function (response, textStatus, xhr) {
-				    	  
-							
+				    	  $("#aviso_1").empty()
+
+						$("#aviso_1").append("<span style='color:green'>Consumos da data "+data+" foram zerados.</span>")
 
 				      },
 				    }).fail(function (xhr, status, errorThrown) {

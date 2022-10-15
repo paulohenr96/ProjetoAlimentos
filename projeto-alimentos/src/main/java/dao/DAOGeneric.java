@@ -389,7 +389,7 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		entityManager.createQuery(
-				"delete from " + ModelRefeicao.class.getCanonicalName() + " where  dieta_id=" + id)
+				"delete from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=" + id)
 				.executeUpdate();
 		transaction.commit();
 		entityManager.close();
@@ -479,5 +479,18 @@ public class DAOGeneric<E> {
 		transaction.commit();
 		entityManager.close();
 		return total;
+	}
+	public void deletarRefeicoesConsumidas(Long id) {
+		// TODO Auto-generated method stub
+		
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.createQuery(
+				"delete from " + ModelRefeicao.class.getCanonicalName() + " where macros_id=" + id)
+				.executeUpdate();
+		transaction.commit();
+		entityManager.close();
+		
 	}
 }

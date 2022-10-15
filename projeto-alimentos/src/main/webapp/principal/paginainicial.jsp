@@ -358,7 +358,7 @@
 		 function imprimirHtml(){
 
 		    	document.getElementById("acaoRelatorioImprimirTipo").value="ImprimirRelatorioMacrosPDF";
-		    	$("#form-user").submit();
+		    	$("#form-macro").submit();
 		    	return false;
 		    }
 		function ordenarProteinas(){

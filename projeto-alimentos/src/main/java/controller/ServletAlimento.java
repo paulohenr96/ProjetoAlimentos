@@ -249,7 +249,14 @@ public class ServletAlimento extends HttpServlet {
 			String data = request.getParameter("data");
 			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(editaData(data), idLogado);
 			consumoDia.retirarAlimento(alimento);
-			dao.merge(consumoDia);
+			if (consumoDia.getProteinas().doubleValue()<0.1 && consumoDia.getCalorias().doubleValue()<0.1 && consumoDia.getCarboidrato().doubleValue()<0.1 && consumoDia.getGordura().doubleValue()<0.1) {
+				dao.deletarPorId(ModelConsumidoDia.class, consumoDia.getId());
+			}else {
+				dao.merge(consumoDia);
+
+			}
+			
+			System.out.println(consumoDia.getProteinas().doubleValue());
 
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(consumoDia);
@@ -267,7 +274,13 @@ public class ServletAlimento extends HttpServlet {
 			String data = request.getParameter("data");
 			ModelConsumidoDia consumoDia = dao.consultarConsumoDia(editaData(data), idLogado);
 			consumoDia.removerRefeicao(ref);
-			dao.merge(consumoDia);
+			
+			if (consumoDia.getProteinas().doubleValue()<0.1 && consumoDia.getCalorias().doubleValue()<0.1 && consumoDia.getCarboidrato().doubleValue()<0.1 && consumoDia.getGordura().doubleValue()<0.1) {
+				dao.deletarPorId(ModelConsumidoDia.class, consumoDia.getId());
+			}else {
+				dao.merge(consumoDia);
+
+			}
 
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(consumoDia);
@@ -341,10 +354,9 @@ public class ServletAlimento extends HttpServlet {
 			consumoDia.setProteinas(new BigDecimal(0));
 			consumoDia.setCarboidrato(new BigDecimal(0));
 			consumoDia.setGordura(new BigDecimal(0));
-
-			dao.merge(consumoDia);
 			dao.deletarAlimentoConsumidoPorId(ModelAlimentoConsumido.class, consumoDia.getId());
-			request.getSession().setAttribute("macros", consumoDia);
+			dao.deletarRefeicoesConsumidas(consumoDia.getId());
+			dao.deletarPorId(ModelConsumidoDia.class,consumoDia.getId());
 
 			response.getWriter().write("");
 
@@ -431,9 +443,9 @@ public class ServletAlimento extends HttpServlet {
 
 			HashMap<String, Object> params = new HashMap<String, Object>();
 
-			params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("relatorio") + File.separator);
+			params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("Consumidos") + File.separator);
 			try {
-				byte[] relatorio = new ReportUtil().geraRelatorioPdf(lista, "rel_alimentos_jsp", params,
+				byte[] relatorio = new ReportUtil().geraRelatorioPdf(lista, "rel_alimentos_jsp_5", params,
 						request.getServletContext());
 				response.setHeader("Content-Disposition", "attachment;filename=arquivo.pdf");
 				response.getOutputStream().write(relatorio);
