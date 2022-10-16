@@ -29,7 +29,9 @@
 		<band height="41">
 			<staticText>
 				<reportElement x="0" y="0" width="561" height="41" uuid="825cedc1-07e2-414d-b4db-bd47406347de"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Refeições]]></text>
 			</staticText>
 		</band>
@@ -40,31 +42,46 @@
 				<reportElement x="0" y="1" width="100" height="30" uuid="e66c8c08-594a-4ea4-af5c-28c95e9e6396">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d9d1f14-2315-42c8-9e7f-8e6ae921f866"/>
 				</reportElement>
-				<text><![CDATA[nome]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="100" y="0" width="100" height="30" uuid="d8710031-459a-4028-a7e6-c7cfc8cca58a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6abe80aa-9f6d-4a83-81d3-bbdf2d16745c"/>
 				</reportElement>
-				<text><![CDATA[calorias]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CALORIAS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="200" y="0" width="100" height="30" uuid="c5680134-7efe-488f-a708-f9f27bb0995b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5c95b7f-2885-4001-b695-8d8465494edc"/>
 				</reportElement>
-				<text><![CDATA[proteinas]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROTEINAS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="300" y="0" width="100" height="30" uuid="4f4404af-b6a0-42bf-8c89-c89ac4b0c88d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c8af146-7f98-4e85-ab83-8f713bb563b5"/>
 				</reportElement>
-				<text><![CDATA[carboidratos]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARBOIDRATOS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="400" y="0" width="100" height="30" uuid="8b66f901-3d13-44bf-a89b-82bd4f486232">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="146c3e53-26f6-4dbb-862d-98db17b00135"/>
 				</reportElement>
-				<text><![CDATA[gorduras]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[GORDURAS]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -74,31 +91,32 @@
 				<reportElement x="0" y="0" width="100" height="30" uuid="390f5456-fec2-4b1c-9e73-c5ccd646e8e9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d9d1f14-2315-42c8-9e7f-8e6ae921f866"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nome}
+]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="100" y="0" width="100" height="30" uuid="2f2fae6b-276d-4786-8a1d-59087667eba6">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6abe80aa-9f6d-4a83-81d3-bbdf2d16745c"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{calorias}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{calorias}+" kcal"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="200" y="0" width="100" height="30" uuid="9f17c43e-3ae5-4317-92ee-78eb6ab83de4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5c95b7f-2885-4001-b695-8d8465494edc"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{proteinas}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{proteinas}+" g"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="300" y="0" width="100" height="30" uuid="b055184e-edac-44ef-9295-5e0a3d333466">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c8af146-7f98-4e85-ab83-8f713bb563b5"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{carboidratos}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{carboidratos}+" g"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="400" y="0" width="100" height="30" uuid="7ffcef70-a770-4001-8445-745017aa0c1f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="146c3e53-26f6-4dbb-862d-98db17b00135"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{gorduras}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{gorduras}+" g"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

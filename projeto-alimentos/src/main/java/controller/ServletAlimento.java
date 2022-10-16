@@ -489,7 +489,18 @@ public class ServletAlimento extends HttpServlet {
 			ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
 			request.setAttribute("ref", ref);
 			request.getRequestDispatcher("principal/consultarefeicao.jsp").forward(request, response);
-		} else if (acao != null && acao.equalsIgnoreCase("pesquisaralimentorefeicao")) {
+		}else if (acao != null && acao.equalsIgnoreCase("mediamacros")) {
+			Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
+
+			List mediaMacros = dao.mediaMacros(userLogado);
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(mediaMacros);
+			response.getWriter().write(json);
+			
+			
+		}
+		
+		else if (acao != null && acao.equalsIgnoreCase("pesquisaralimentorefeicao")) {
 			int porPagina=Integer.parseInt(request.getParameter("porpagina"));
 			int paginaAtual=Integer.parseInt(request.getParameter("paginaatual"));
 			String nome=request.getParameter("nome");

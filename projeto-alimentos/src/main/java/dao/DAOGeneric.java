@@ -1,5 +1,6 @@
 package dao;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -370,6 +371,7 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return total;
 	}
+	
 
 	// TODO Auto-generated method stub
 
@@ -493,4 +495,19 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		
 	}
+	
+	public List<Double> mediaMacros(Long userId) {
+		// TODO Auto-generated method stub
+		EntityManager entityManager = JPAUtil.getEntityManager();
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		List<Double> proteinas =   entityManager
+				.createQuery("select avg(calorias),avg(proteinas),avg(carboidrato),avg(gordura) from " + ModelConsumidoDia.class.getCanonicalName() + " where usuario_id =:id")
+				.setParameter("id", userId).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return proteinas;
+	}
+
 }

@@ -31,72 +31,57 @@
 
 			<main>
 				<div class="container-fluid px-4">
-					<h2>${user.nome}${user.sobreNome}</h2>
+					<h2>Consumo Médio</h2>
 				</div>
-
-
-
 				<div class="container-fluid px-4">
 
 					<div class="row">
 
-						<div class="col-xl-3 col-md-6">
+						<div class="col-sm-1 col-md-2">
 							<div class="card bg-primary text-white mb-4">
-								<div class="card-body">Primary Card</div>
+								<div class="card-body">Calorias</div>
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link" href="#">View
-										Details</a>
-									<div class="small text-white">
-										<i class="fas fa-angle-right"></i>
-									</div>
+									<span id="media-calorias"></span>
+									
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-3 col-md-6">
+						<div class="col-sm-3 col-md-2">
 							<div class="card bg-warning text-white mb-4">
-								<div class="card-body">Warning Card</div>
+								<div class="card-body">Proteínas</div>
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link" href="#">View
-										Details</a>
-									<div class="small text-white">
-										<i class="fas fa-angle-right"></i>
-									</div>
+									<span id="media-proteinas"></span>
+									
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row">
+				
 
-						<div class="col-xl-3 col-md-6">
+						<div class="col-sm-3 col-md-2">
 							<div class="card bg-success text-white mb-4">
-								<div class="card-body">Success Card</div>
+								<div class="card-body">Carboidratos</div>
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link" href="#">View
-										Details</a>
-									<div class="small text-white">
-										<i class="fas fa-angle-right"></i>
-									</div>
+																		<span id="media-carboidratos"></span>
+
 								</div>
 							</div>
 						</div>
-						<div class="col-xl-3 col-md-6">
+						<div class="col-sm-3 col-md-2">
 							<div class="card bg-danger text-white mb-4">
-								<div class="card-body">Danger Card</div>
+								<div class="card-body">Gorduras</div>
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
-									<a class="small text-white stretched-link" href="#">View
-										Details</a>
-									<div class="small text-white">
-										<i class="fas fa-angle-right"></i>
-									</div>
+																		<span id="media-gorduras"></span>
+
 								</div>
 							</div>
 						</div>
 
 						<div class="container-fluid px-4">
+						<h2>Histórico</h2>
 							<select onchange="mostrarHistorico(1)"
 								class="custom-select custom-select-lg mb-3">
 								<option value="2">2 por pagina</option>
@@ -133,7 +118,7 @@
 
 
 
-
+								<h2>Gráfico de Macronutrientes Consumidos</h2>
 
 								<input type="hidden" id="acao" name="acao" value=""> <select
 									id="macro" class="form-select mb-2"
@@ -211,6 +196,9 @@
 
 			var urlAction = document.getElementById("form-macro").action;
 
+			
+			
+			
 			if (macro != null && macro != "") {
 				$.ajax(
 						{
@@ -482,6 +470,29 @@
 				      alert("Error ao buscar usuário por nome" + xhr.responseText);
 			    });
 
+			}
+			
+			mediasMacros();
+			function mediasMacros(){
+				  var urlAction = document.getElementById("form-macro").action;
+					
+
+					  $.ajax({
+					      method: "get",
+					      url: urlAction,
+					      data: "acao=mediamacros",
+					      success: function (response, textStatus, xhr) {
+					    	 var json=JSON.parse(response);
+					    	 $("#media-calorias").html(Number(json[0][0]).toFixed(2)+" Kcal");
+					    	 $("#media-proteinas").html(Number(json[0][1]).toFixed(2)+" gramas");
+					    	 $("#media-carboidratos").html(Number(json[0][2]).toFixed(2)+" gramas");
+					    	 $("#media-gorduras").html(Number(json[0][3]).toFixed(2)+" gramas");
+
+					      },
+					    }).fail(function (xhr, status, errorThrown) {
+					      alert("Error ao buscar usuário por nome" + xhr.responseText);
+					    });
+				 
 			}
 		
 	</script>

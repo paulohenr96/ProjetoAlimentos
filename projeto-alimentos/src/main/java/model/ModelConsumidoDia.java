@@ -57,13 +57,13 @@ public class ModelConsumidoDia {
 	private BigDecimal calorias=new BigDecimal(0);
 	
 	@Column(precision=10, scale=2)
-	private BigDecimal proteinas=new BigDecimal(0);;
+	private BigDecimal proteinas=new BigDecimal(0);
 	
 	@Column(precision=10, scale=2)
-	private BigDecimal carboidrato=new BigDecimal(0);;
+	private BigDecimal carboidrato=new BigDecimal(0);
 
 	@Column(precision=10, scale=2)
-	private BigDecimal gordura=new BigDecimal(0);;
+	private BigDecimal gordura=new BigDecimal(0);
 	
 
 	@JsonIgnore
