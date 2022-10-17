@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_relatorio_refeicoes" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="34c75d8f-a4a6-416c-91bc-82bec0029917">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_relatorio_refeicoes" columnCount="5" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="111" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="34c75d8f-a4a6-416c-91bc-82bec0029917">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -39,7 +48,7 @@
 	<columnHeader>
 		<band height="31" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="1" width="100" height="30" uuid="e66c8c08-594a-4ea4-af5c-28c95e9e6396">
+				<reportElement x="0" y="1" width="110" height="30" uuid="e66c8c08-594a-4ea4-af5c-28c95e9e6396">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d9d1f14-2315-42c8-9e7f-8e6ae921f866"/>
 				</reportElement>
 				<textElement>
@@ -48,7 +57,7 @@
 				<text><![CDATA[NOME]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="100" y="0" width="100" height="30" uuid="d8710031-459a-4028-a7e6-c7cfc8cca58a">
+				<reportElement x="110" y="0" width="110" height="30" uuid="d8710031-459a-4028-a7e6-c7cfc8cca58a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6abe80aa-9f6d-4a83-81d3-bbdf2d16745c"/>
 				</reportElement>
 				<textElement>
@@ -57,7 +66,7 @@
 				<text><![CDATA[CALORIAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="200" y="0" width="100" height="30" uuid="c5680134-7efe-488f-a708-f9f27bb0995b">
+				<reportElement x="220" y="0" width="115" height="30" uuid="c5680134-7efe-488f-a708-f9f27bb0995b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5c95b7f-2885-4001-b695-8d8465494edc"/>
 				</reportElement>
 				<textElement>
@@ -66,7 +75,7 @@
 				<text><![CDATA[PROTEINAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="0" width="100" height="30" uuid="4f4404af-b6a0-42bf-8c89-c89ac4b0c88d">
+				<reportElement x="335" y="0" width="109" height="30" uuid="4f4404af-b6a0-42bf-8c89-c89ac4b0c88d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c8af146-7f98-4e85-ab83-8f713bb563b5"/>
 				</reportElement>
 				<textElement>
@@ -75,7 +84,7 @@
 				<text><![CDATA[CARBOIDRATOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="400" y="0" width="100" height="30" uuid="8b66f901-3d13-44bf-a89b-82bd4f486232">
+				<reportElement x="444" y="1" width="106" height="30" uuid="8b66f901-3d13-44bf-a89b-82bd4f486232">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="146c3e53-26f6-4dbb-862d-98db17b00135"/>
 				</reportElement>
 				<textElement>
@@ -86,34 +95,33 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="30" splitType="Stretch">
+		<band height="33" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="100" height="30" uuid="390f5456-fec2-4b1c-9e73-c5ccd646e8e9">
+				<reportElement x="0" y="0" width="110" height="30" uuid="390f5456-fec2-4b1c-9e73-c5ccd646e8e9">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d9d1f14-2315-42c8-9e7f-8e6ae921f866"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{nome}
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="0" width="100" height="30" uuid="2f2fae6b-276d-4786-8a1d-59087667eba6">
+				<reportElement x="110" y="0" width="110" height="30" uuid="2f2fae6b-276d-4786-8a1d-59087667eba6">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6abe80aa-9f6d-4a83-81d3-bbdf2d16745c"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{calorias}+" kcal"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="0" width="100" height="30" uuid="9f17c43e-3ae5-4317-92ee-78eb6ab83de4">
+				<reportElement x="220" y="0" width="115" height="30" uuid="9f17c43e-3ae5-4317-92ee-78eb6ab83de4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5c95b7f-2885-4001-b695-8d8465494edc"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{proteinas}+" g"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="300" y="0" width="100" height="30" uuid="b055184e-edac-44ef-9295-5e0a3d333466">
+				<reportElement x="335" y="0" width="109" height="30" uuid="b055184e-edac-44ef-9295-5e0a3d333466">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c8af146-7f98-4e85-ab83-8f713bb563b5"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{carboidratos}+" g"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="400" y="0" width="100" height="30" uuid="7ffcef70-a770-4001-8445-745017aa0c1f">
+				<reportElement x="444" y="0" width="106" height="30" uuid="7ffcef70-a770-4001-8445-745017aa0c1f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="146c3e53-26f6-4dbb-862d-98db17b00135"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{gorduras}+" g"]]></textFieldExpression>

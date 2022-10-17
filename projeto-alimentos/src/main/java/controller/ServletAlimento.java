@@ -89,8 +89,18 @@ public class ServletAlimento extends HttpServlet {
 		if (acao != null && acao.equalsIgnoreCase("mostrartodosalimentospaginados")) {
 			paginar(request, response, "Clique no Alimento para Editar");
 		} else if (acao != null && acao.equalsIgnoreCase("editar")) {
-			dao.merge(gerarAlimento(request, response));
-			paginar(request, response, "Alimento Editado");
+			ModelAlimento alimento = gerarAlimento(request, response);
+			List consultarAlimentosEmRefeicoes = dao.consultarAlimentosEmRefeicoes(alimento.getId());
+			int tamanho=consultarAlimentosEmRefeicoes.size();
+
+			if (tamanho==0) {
+				dao.merge(alimento);
+				paginar(request, response, "Alimento Editado");
+			}else {
+				paginar(request, response, "Não foi possivel pois há "+tamanho+" refeições com este alimento.");
+
+			}
+		
 
 		} else if (acao != null && acao.equalsIgnoreCase("deletarId")) {
 			Long id = Long.parseLong(request.getParameter("idalimento"));
