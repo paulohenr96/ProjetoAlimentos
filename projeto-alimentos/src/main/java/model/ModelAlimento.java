@@ -46,6 +46,10 @@ private BigDecimal carboidrato;
 
 @Column(precision=10, scale=2)
 private BigDecimal gordura;
+
+private Long idUser;
+
+
 public Long getId() {
 	return id;
 }
@@ -110,6 +114,12 @@ public BigDecimal getGordura() {
 }
 public void setGordura(BigDecimal gordura) {
 	this.gordura = gordura;
+}
+public Long getIdUser() {
+	return idUser;
+}
+public void setIdUser(Long idUser) {
+	this.idUser = idUser;
 }
 	
 }

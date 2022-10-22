@@ -8,7 +8,7 @@
 		id="sidenavAccordion">
 		<div class="sb-sidenav-menu">
 			<div class="nav">
-				<div class="sb-sidenav-menu-heading">Core</div>
+				<div class="sb-sidenav-menu-heading">MENU</div>
 				<a class="nav-link"
 					href="<%=request.getContextPath()%>/principal/alimentos.jsp">
 					<div class="sb-nav-link-icon">

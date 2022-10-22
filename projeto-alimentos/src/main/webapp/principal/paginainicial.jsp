@@ -460,7 +460,11 @@
 						
 						}else{
 							$(".spinner-border").remove();
-							$("main > div.container-fluid").html("<h2>O seu histórico está vazio.</h2>");
+							
+							$("table.table").empty();
+							$(".table").append("<thead></thead>");
+
+							$("table.table>thead ").html("<span>O seu histórico está vazio.</span>");
 						}
 						
 					}

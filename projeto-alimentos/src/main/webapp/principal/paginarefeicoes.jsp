@@ -108,8 +108,12 @@
 		}
 		function novaRefeicao() {
 			var nome = document.querySelector("#nome").value;
-			document.querySelector("#nome").value="";
 			var urlAction=document.getElementById("form-user").action;
+				
+			if ($("#nome").val()!="" && $("#nome").val().trim!=""){
+				document.querySelector("#nome").value="";
+
+			
 			$.ajax(
 					{
 						method : "GET",
@@ -123,7 +127,11 @@
 					}).fail(function(xhr, status, errorThrown) {
 				alert("Error ao buscar usuário por nome" + xhr.responseText);
 			});
+			
+			}else {
+				$(".aviso").html("Insira um nome.").attr("style","color:red;font-weight:bold;");
 
+			}
 		}
 		var p=1;
 		mostrarTodasRefeicoes(1);
@@ -179,12 +187,17 @@
 						
 						}else {
 							$("table>thead").html("Você não possui refeições cadastradas.");
+							$("table>tbody").empty();
+							$("ul.pagination").empty();
+
 						}
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
 				alert("Error ao buscar usuário por nome" + xhr.responseText);
 			});
+			
+		
 		}
 		
 		function excluirRefeicao(idrefeicao){

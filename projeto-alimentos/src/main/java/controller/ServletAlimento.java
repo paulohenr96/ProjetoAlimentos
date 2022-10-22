@@ -57,15 +57,17 @@ public class ServletAlimento extends HttpServlet {
 
 	public void paginar(HttpServletRequest request, HttpServletResponse response, String msg)
 			throws ServletException, IOException {
+		Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
+
 		int porPagina = 5;
 		int paginaAtual = 1;
 		if (request.getParameter("paginaatual") != null) {
 			paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
 		}
 
-		Long total = (dao.contarTotal(ModelAlimento.class));
+		Long total = (dao.contarTotalAlimentos(userLogado));
 		int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
-		List<ModelAlimento> todos = dao.consultarTodosPaginado(ModelAlimento.class, porPagina, paginaAtual);
+		List<ModelAlimento> todos = dao.consultarTodosPaginado(userLogado, porPagina, paginaAtual);
 
 		request.setAttribute("todos", todos);
 		request.setAttribute("totalpaginas", totalPaginas);
@@ -87,6 +89,7 @@ public class ServletAlimento extends HttpServlet {
 		String msg = "";
 
 		if (acao != null && acao.equalsIgnoreCase("mostrartodosalimentospaginados")) {
+
 			paginar(request, response, "Clique no Alimento para Editar");
 		} else if (acao != null && acao.equalsIgnoreCase("editar")) {
 			ModelAlimento alimento = gerarAlimento(request, response);
@@ -116,6 +119,8 @@ public class ServletAlimento extends HttpServlet {
 			
 
 		} else if (acao != null && acao.equalsIgnoreCase("pesquisaralimentos")) {
+			Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
+
 			int porPagina = 5;
 			String nome = request.getParameter("nome");
 			int paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
@@ -126,7 +131,7 @@ public class ServletAlimento extends HttpServlet {
 				total = (dao.contarTotal(ModelAlimento.class, nome));
 				System.out.println("TOTAL:"+total +"\n");
 			} else {
-				todos = dao.consultarTodosPaginado(ModelAlimento.class, porPagina, paginaAtual);
+				todos = dao.consultarTodosPaginado(userLogado, porPagina, paginaAtual);
 				total = (dao.contarTotal(ModelAlimento.class));
 
 			}
@@ -511,6 +516,8 @@ public class ServletAlimento extends HttpServlet {
 		}
 		
 		else if (acao != null && acao.equalsIgnoreCase("pesquisaralimentorefeicao")) {
+			Long userLogado=(Long)request.getSession().getAttribute("IDLogado");
+
 			int porPagina=Integer.parseInt(request.getParameter("porpagina"));
 			int paginaAtual=Integer.parseInt(request.getParameter("paginaatual"));
 			String nome=request.getParameter("nome");
@@ -518,7 +525,7 @@ public class ServletAlimento extends HttpServlet {
 			List<ModelAlimento> lista = new ArrayList<ModelAlimento>();
 			System.out.println(nome+"------------");
 			if(nome==null || nome.equalsIgnoreCase("null")) {
-				lista=dao.consultarTodosPaginado(ModelAlimento.class,porPagina,paginaAtual);
+				lista=dao.consultarTodosPaginado(userLogado,porPagina,paginaAtual);
 
 			}else {
 				lista=dao.consultarNomePaginado(ModelAlimento.class,nome,porPagina,paginaAtual);
@@ -631,7 +638,7 @@ public class ServletAlimento extends HttpServlet {
 		double proteina = Double.parseDouble(request.getParameter("proteina"));
 		double carboidrato = Double.parseDouble(request.getParameter("carboidrato"));
 		double gordura = Double.parseDouble(request.getParameter("gordura"));
-
+		
 		ModelAlimento modelAlimento = new ModelAlimento();
 
 		modelAlimento.setCaloria(new BigDecimal(caloria));
@@ -640,7 +647,7 @@ public class ServletAlimento extends HttpServlet {
 		modelAlimento.setPorcao(porcao);
 		modelAlimento.setNome(nome);
 		modelAlimento.setProteina(new BigDecimal(proteina));
-
+		modelAlimento.setIdUser((Long)request.getSession().getAttribute("IDLogado"));
 		return modelAlimento;
 	}
 
