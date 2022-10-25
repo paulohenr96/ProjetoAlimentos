@@ -58,7 +58,6 @@ public class ServletAlimento extends HttpServlet {
 	public void paginar(HttpServletRequest request, HttpServletResponse response, String msg)
 			throws ServletException, IOException {
 		Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
-
 		int porPagina = 5;
 		int paginaAtual = 1;
 		if (request.getParameter("paginaatual") != null) {
@@ -66,9 +65,11 @@ public class ServletAlimento extends HttpServlet {
 		}
 
 		Long total = (dao.contarTotalAlimentos(userLogado));
+		if (total==0) {
+			msg="Sem alimentos cadastrados.";
+		}
 		int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
 		List<ModelAlimento> todos = dao.consultarTodosPaginado(userLogado, porPagina, paginaAtual);
-
 		request.setAttribute("todos", todos);
 		request.setAttribute("totalpaginas", totalPaginas);
 		request.setAttribute("paginaatual", paginaAtual);
@@ -127,12 +128,12 @@ public class ServletAlimento extends HttpServlet {
 			List<ModelAlimento> todos = new ArrayList<ModelAlimento>();
 			Long total = 0L;
 			if (nome != null) {
-				todos = dao.consultarNomePaginado(ModelAlimento.class, nome, porPagina, paginaAtual);
-				total = (dao.contarTotal(ModelAlimento.class, nome));
+				todos = dao.consultarNomePaginado(ModelAlimento.class, nome, porPagina, paginaAtual,userLogado);
+				total = (dao.contarTotal(ModelAlimento.class, nome,userLogado));
 				System.out.println("TOTAL:"+total +"\n");
 			} else {
 				todos = dao.consultarTodosPaginado(userLogado, porPagina, paginaAtual);
-				total = (dao.contarTotal(ModelAlimento.class));
+				total = (dao.contarTotalAlimentos(userLogado));
 
 			}
 
@@ -152,20 +153,29 @@ public class ServletAlimento extends HttpServlet {
 			String json = mapper.writeValueAsString(todos);
 			response.getWriter().write(json);
 		}else if (acao != null && acao.equalsIgnoreCase("pesquisarrefeicao")) {
-			
+			String nome = request.getParameter("nome");
 			Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
 			int porPagina=5; 
 			int paginaAtual=Integer.parseInt(request.getParameter("paginaatual")); 
-			Long total=dao.contarTotalRefeicoes(userLogado);
-			int totalPaginas=(int) (total%porPagina==0?total/porPagina: 1+total/porPagina);
 			
+	
 			
-			List<ModelRefeicao> lista = dao.consultarTodosRefeicaoPaginado( paginaAtual, porPagina, userLogado);
+			List<ModelRefeicao> todos = new ArrayList<ModelRefeicao>();
+			Long total = 0L;
+			if (nome != null) {
+				todos = dao.consultarRefeicaoPaginado(nome, porPagina, paginaAtual,userLogado);
+				total = dao.contarTotalRefeicoes(nome,userLogado);
+				System.out.println("TOTAL:"+total +"\n");
+			} else {
+				todos = dao.consultarTodosRefeicaoPaginado( paginaAtual, porPagina, userLogado);
+				total = dao.contarTotalRefeicoes(userLogado);
 
+			}
+			int totalPaginas=(int) (total%porPagina==0?total/porPagina: 1+total/porPagina);
 			
 			response.addHeader("totalPagina",""+ totalPaginas);
 			ObjectMapper mapper = new ObjectMapper();
-			String json = mapper.writeValueAsString(lista);
+			String json = mapper.writeValueAsString(todos);
 
 			response.getWriter().write(json);
 			
@@ -524,17 +534,17 @@ public class ServletAlimento extends HttpServlet {
 			
 			List<ModelAlimento> lista = new ArrayList<ModelAlimento>();
 			System.out.println(nome+"------------");
+			Long total=0L;
 			if(nome==null || nome.equalsIgnoreCase("null")) {
 				lista=dao.consultarTodosPaginado(userLogado,porPagina,paginaAtual);
-
+				total=dao.contarTotalAlimentos(userLogado);
 			}else {
-				lista=dao.consultarNomePaginado(ModelAlimento.class,nome,porPagina,paginaAtual);
+				lista=dao.consultarNomePaginado(ModelAlimento.class,nome,porPagina,paginaAtual,userLogado);
+				total = dao.contarTotal(ModelAlimento.class, nome,userLogado);
 
 			}
 			
 			
-			Long total = dao.contarTotal(ModelAlimento.class,nome);
-
 			int totalPaginas = (int) (total % porPagina != 0 ? total / porPagina + 1 : total / porPagina);
 
 			response.addHeader("totalPagina", "" + total);

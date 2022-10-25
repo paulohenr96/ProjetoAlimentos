@@ -33,7 +33,7 @@
 						action="<%=request.getContextPath()%>/ServletAlimento">
 						<input type="hidden" id="acao" value="">
 						<div class="mb-2">
-							<label for="nome">Nome</label> <input class="form-control"
+							<label for="nome">Nova Refeição</label> <input class="form-control"
 								name="nome" required id="nome" type="text"
 								placeholder="Nome da refeição" />
 						</div>
@@ -44,7 +44,7 @@
 						<div class="mt-4 mb-0 col-3">
 							<div class="d-grid">
 								<button type="button" onclick="novaRefeicao()"
-									class="btn btn-primary btn-block">Nova</button>
+									class="btn btn-primary btn-block">Criar</button>
 							</div>
 						</div>
 						<span class="aviso"></span>
@@ -74,18 +74,8 @@
 
 
 
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-						class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2022</div>
-						<div>
-							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-								&amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
+									                           <jsp:include page="/footer.jsp"></jsp:include>
+
 		</div>
 	</div>
 

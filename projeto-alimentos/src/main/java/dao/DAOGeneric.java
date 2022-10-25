@@ -136,7 +136,7 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		List<E> list = entityManager
-				.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado=" + userLogado+" and macros_id=null")
+				.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado=" + userLogado+" and macros_id=null ORDER BY id DESC")
 				.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
@@ -182,7 +182,7 @@ public class DAOGeneric<E> {
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + ModelAlimento.class.getCanonicalName()+" iduser="+idUser).setFirstResult(offset)
+		List<E> list = entityManager.createQuery("from " + ModelAlimento.class.getCanonicalName()+" where iduser="+idUser +" ORDER BY id DESC").setFirstResult(offset)
 				.setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
@@ -209,13 +209,13 @@ public class DAOGeneric<E> {
 
 	}
 
-	public List<E> consultarNomePaginado(Class<E> e, String nome, int porPagina, int paginaAtual) {
+	public List<E> consultarNomePaginado(Class<E> e, String nome, int porPagina, int paginaAtual,Long user) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where upper(nome) like upper(:name)")
+		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where idUser="+user+" and upper(nome) like upper(:name)")
 				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
@@ -234,12 +234,12 @@ public class DAOGeneric<E> {
 		return total;
 	}
 
-	public Long contarTotal(Class<E> e) {
+	public Long contarTotal(Class<E> e,Long user) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		Long total = (Long) entityManager.createQuery("select count(1) from " + e.getCanonicalName()).getSingleResult();
+		Long total = (Long) entityManager.createQuery("select count(1) from " + e.getCanonicalName()+" idUser="+user).getSingleResult();
 		transaction.commit();
 		entityManager.close();
 		return total;
@@ -303,14 +303,14 @@ public class DAOGeneric<E> {
 
 	}
 
-	public Long contarTotal(Class<E> e, String nome) {
+	public Long contarTotal(Class<E> e, String nome,Long user) {
 		// TODO Auto-generated method stub
 		EntityManager entityManager = JPAUtil.getEntityManager();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		Long total = (Long) entityManager
-				.createQuery("select count(1) from " + e.getCanonicalName() + " where upper(nome) like upper(:name)")
+				.createQuery("select count(1) from " + e.getCanonicalName() + " where idUser="+user +" and upper(nome) like upper(:name)")
 				.setParameter("name", "%"+nome+"%").getSingleResult();
 		transaction.commit();
 		entityManager.close();
@@ -462,18 +462,6 @@ public class DAOGeneric<E> {
 	
 	}
 	
-	public List<E> consultarNomePaginado(Class<E> e, String nome, int porPagina, int paginaAtual,Long IDLogado) {
-		EntityManager entityManager = JPAUtil.getEntityManager();
-		EntityTransaction transaction = entityManager.getTransaction();
-		int offset = porPagina * (paginaAtual - 1);
-		int ultimoResultado = porPagina;
-		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where upper(nome) like upper(:name)")
-				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
-		transaction.commit();
-		entityManager.close();
-		return list;
-	}
 
 	public List<ModelRefeicao> consultarRefsMacros(int porPagina, int paginaAtual, Long macrosId) {
 		try {
@@ -531,6 +519,34 @@ public class DAOGeneric<E> {
 		transaction.commit();
 		entityManager.close();
 		return proteinas;
+	}
+	public Long contarTotalRefeicoes(String nome, Long userLogado) {
+		// TODO Auto-generated method stub
+		EntityManager entityManager = JPAUtil.getEntityManager();
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		Long total = (Long) entityManager
+				.createQuery("select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="+userLogado +" AND upper(nome) like upper(:name)")
+				.setParameter("name", "%"+nome+"%").getSingleResult();
+		transaction.commit();
+		entityManager.close();
+		return total;	
+		
+	}
+	public List<ModelRefeicao> consultarRefeicaoPaginado(String nome, int porPagina, int paginaAtual,
+			Long userLogado) {
+		// TODO Auto-generated method stub
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		int offset = porPagina * (paginaAtual - 1);
+		int ultimoResultado = porPagina;
+		transaction.begin();
+		List<ModelRefeicao> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="+userLogado+" AND upper(nome) like upper(:name)")
+				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
 	}
 
 }

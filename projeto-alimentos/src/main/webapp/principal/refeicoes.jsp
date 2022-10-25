@@ -63,9 +63,9 @@
 					<button type="button" onclick="limparMacros()"
 						class="btn btn-primary">Limpar</button>
 
-					<button type="button" class="btn btn-info" onclick="exibirModal(1)">Ver
+					<button type="button" class="btn btn-primary" onclick="exibirModal(1)">Ver
 						Alimentos</button>
-<button type="button" class="btn btn-info" onclick="exibirModalRefs(1)">Ver
+<button type="button" class="btn btn-primary" onclick="exibirModalRefs(1)">Ver
 						Refeições</button>
 
 
@@ -85,8 +85,8 @@
 					<div class="mb-2" id="radio-pesquisa">
 
 						<input class="form-check-input" type="radio" id="radio-alimento"
-							name="radio-pesquisa" value="alimento"> <label
-							class="form-check-label" for="radio-alimento">Alimento </label> <input
+							name="radio-pesquisa" value="alimento" checked> <label
+							class="form-check-label"  for="radio-alimento">Alimento </label> <input
 							class="form-check-input" type="radio" id="radio-refeicao"
 							value="refeicao" name="radio-pesquisa"> <label
 							class="form-check-label" for="radio-refeicao">Refeição </label>
@@ -154,18 +154,8 @@
 
 
 
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-						class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2022</div>
-						<div>
-							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-								&amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
+								                           <jsp:include page="/footer.jsp"></jsp:include>
+
 		</div>
 	</div>
 
@@ -221,7 +211,6 @@
 			    		
 			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>PORÇÃO</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th></tr></thead>")
 			        	$("#tabela-pagina").append("<tbody></tbody>");
-			    		alert($("#tabela-pagina"));
 			    		json.forEach((e)=>{
 			        		var botao="<button onclick='pegarAlimento("+e.id+")' class='btn btn-success'>Selecionar</button>";
 			    			$("#tabela-pagina > tbody").append("<tr id='"+e.id+"'><td>"+e.nome+"</td><td>"+e.porcao+"</td><td>"+e.caloria+"</td><td>"+e.proteina+"</td><td>"+e.carboidrato+"</td><td>"+e.gordura+"</td><td>"+botao+"</td></tr>")
@@ -246,15 +235,19 @@
 
 						}			    	
 			        		
+			        	}else {
+				    		$("#tabela-pagina").empty();
+				    		$("#tabela-pagina").append("<th>Nenhum alimento encontrado.</th>");
+
+
 			        	}
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error ao pesquisar alimento " + xhr.responseText);
 			    });
 		}
 		
 		function verAlimentosRefeicao(idrefeicao){
-			alert("Vendo alimentos refeicao");
 			
 			$("div.modal-body").html("");
 			$("#exampleModal").modal('show');
@@ -328,7 +321,6 @@
 			    		
 			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th><th>VER</th></tr></thead>")
 			        	$("#tabela-pagina").append("<tbody></tbody>");
-			    		alert($("#tabela-pagina"));
 			    		json.forEach((e)=>{
 			        		var botao="<button onclick='addRefeicao("+e.id+")' class='btn btn-success'>Adicionar</button>";
 			        		var botaoVerAlimentos="<button onclick='verAlimentosRefeicao("+e.id+")' class='btn btn-primary'>Ver Alimentos</button>";
@@ -363,10 +355,15 @@
 
 						}			    	
 			        		
+			        	}else {
+				    		$("#tabela-pagina").empty();
+				    		$("#tabela-pagina").append("<th>Nenhuma refeição encontrada.</th>");
+
+
 			        	}
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error pesquisar refeicao " + xhr.responseText);
 			    });
 		}
 		
@@ -419,7 +416,7 @@
 
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error ao adicionar refeicao " + xhr.responseText);
 			    });
 			  }
 		
@@ -428,7 +425,6 @@
 			  var idselecionado = document.getElementById("idselecionado").value;
 			  var quantidade=document.getElementById("quantidade").value;
 			  var urlAction = document.getElementById("form-user").action;
-			  alert(urlAction);
 			  var data=document.getElementById("data").value;
 			  if (verificarFormulario()) {
 			    $.ajax({
@@ -446,7 +442,7 @@
 			        adicionar();
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error ao adicionar novo alimento " + xhr.responseText);
 			    });
 			  }
 			}
@@ -482,7 +478,7 @@
 
 				      },
 				    }).fail(function (xhr, status, errorThrown) {
-				      alert("Error ao buscar usuário por nome" + xhr.responseText);
+				      alert("Error ao resetar " + xhr.responseText);
 				    });
 			  }
 			 
@@ -549,7 +545,7 @@
 						exibirModal(1);
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error ao remover alimento " + xhr.responseText);
 			    });
 			  }
 			}
@@ -582,7 +578,7 @@
 
 						},
 			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error ao consultar os macros " + xhr.responseText);
 			    });
 		}
 	
@@ -687,7 +683,7 @@
 							
 				      },
 				    }).fail(function (xhr, status, errorThrown) {
-				      alert("Error ao buscar usuário por nome" + xhr.responseText);
+				      alert("Error ao mostrar o modal" + xhr.responseText);
 				    });
 
 			}else {
@@ -801,7 +797,7 @@
 							
 				      },
 				    }).fail(function (xhr, status, errorThrown) {
-				      alert("Error ao buscar usuário por nome" + xhr.responseText);
+				      alert("Error ao mostrar refeições " + xhr.responseText);
 				    });
 
 			}else {
@@ -837,7 +833,7 @@
 						exibirModalRefs(1);
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error ao remover refeição " + xhr.responseText);
 			    });
 			  
 		}

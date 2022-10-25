@@ -101,7 +101,6 @@
 
 							<button type="button" onclick="adicionarAlimento()"
 								class="btn btn-primary ">Adicionar Alimento</button>
-							<button type="button" class="btn btn-secondary ">Secondary</button>
 							<button type="button" class="btn btn-success "
 								data-toggle="modal" data-target="#exampleModal"
 								onclick="verAlimentosRefeicao()">Ver Todos os Alimentos</button>
@@ -125,23 +124,8 @@
 					</div>
 
 					<table class="table todos">
-						<thead>
-							<tr>
-								<th scope="col">#</th>
-								<th scope="col">Nome</th>
-								<th scope="col">Porcao</th>
-								<th scope="col">Calorias</th>
-
-								<th scope="col">P</th>
-								<th scope="col">C</th>
-								<th scope="col">G</th>
-								<th scope="col">Selecionar</th>
-
-
-							</tr>
-						</thead>
-						<tbody class="todos-alimentos">
-						</tbody>
+						
+						
 
 					</table>
 					<nav aria-label="Page navigation example">
@@ -197,18 +181,8 @@
 
 
 
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-						class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2022</div>
-						<div>
-							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-								&amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
+								                           <jsp:include page="/footer.jsp"></jsp:include>
+
 		</div>
 	</div>
 
@@ -236,9 +210,29 @@
 				url:urlAction,
 				data:"porpagina="+porpagina+"&acao=pesquisaralimentorefeicao&paginaatual="+paginaatual+"&nome="+nome,
 				success:function(response,textStatus,xhr){
-					$("table.todos").show();
-
 					var json=JSON.parse(response);
+
+					if (json.length>0){
+						
+					
+					$("table.todos").show();
+					$("table.todos").empty();
+
+					$("table.todos").append("<thead></thead>");
+					$("table.todos >thead").append("<tr></tr>");
+					$("table.todos >thead >tr").append("<th scope='col'>#</th>");
+					$("table.todos >thead >tr").append("<th scope='col'>Nome</th>");
+					$("table.todos >thead >tr").append("<th scope='col'>Porção</th>");
+					$("table.todos >thead >tr").append("<th scope='col'>Calorias</th>");
+					$("table.todos >thead >tr").append("<th scope='col'>P</th>");
+					$("table.todos >thead >tr").append("<th scope='col'>C</th>");
+					$("table.todos >thead >tr").append("<th scope='col'>G</th>");
+					$("table.todos >thead >tr").append("<th scope='col'>Selecionar</th>");
+
+					$("table.todos").append("<tbody class='todos-alimentos'></tbody>");
+
+					
+
 					var total=xhr.getResponseHeader("totalPagina");
 
 					var quociente=Math.floor(total/porpagina);
@@ -280,7 +274,6 @@
 // 						document.querySelector("ul.pagination").innerHTML="<li class=\"page-item\"><a class=\"page-link\" onclick=\"mostrarListaAlimentos("+(paginaatual-1)+")\" href=\"#\">Anterior</a></li>";
 						var anterior=$("<li>").addClass("page-item");
 						var link=$("<a>").addClass("page-link").attr("href","#").attr("onclick","mostrarListaAlimentos("+(paginaatual-1)+")").html("Anterior").click(function (){
-								alert("Oi");
 						});
 						console.log(link[0]);
 						anterior.append(link[0])
@@ -305,9 +298,15 @@
 					}
 					
 					
+				}else {
+					$("table.todos").show();
+					$("table.todos").empty();
+					$("table.todos").append("<th>Sem alimentos cadastrados</th>")
 				}
+				}
+			
 			}).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao buscar usuário por nome" + xhr.responseText);
+			      alert("Error ao mostrar lista de alimentos " + xhr.responseText);
 		    });
 			
 		}
@@ -315,7 +314,6 @@
 			var id=$("#id");
 			var quantidade=$("#quantidade");
 			if ( $.trim(id.val())==''){
-				alert(id.html());
 				$("p.alerta").remove();
 				var aviso=$("<p>").addClass("alerta").css("color","red").html("selecione um elemento");
 				$("#id").parent().append(aviso[0]);

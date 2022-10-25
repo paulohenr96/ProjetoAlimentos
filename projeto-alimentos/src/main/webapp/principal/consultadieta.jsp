@@ -77,19 +77,21 @@
 					</form>
 
 
-					<div class="mb-2 ">
+					<div id="campo_nome" class="mb-2 ">
 						<label for="nome-novo" class="col-sm-2 col-form-label">Nome</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="nome-novo"
-								value="Nome">
+								>
 						</div>
+						<span style='color:red;'></span>
 					</div>
-					<div class="mb-2">
+					<div id="campo_horario" class="mb-2">
 						<label for="horario-novo" class="col-sm-2 col-form-label">Horário</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="horario-novo"
 								placeholder="Horario">
 						</div>
+						<span style='color:red;'></span>
 					</div>
 
 					<button type="button" onclick="salvarRefs()"
@@ -123,18 +125,8 @@
 
 
 
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-						class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2022</div>
-						<div>
-							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-								&amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
+									                           <jsp:include page="/footer.jsp"></jsp:include>
+
 		</div>
 	</div>
 
@@ -189,28 +181,50 @@
 			var id = $("#id-dieta").val();
 			$("btn-salvar").addClass("disabled");
 			var urlAction = document.getElementById("form-user").action;
-			$.ajax(
-					{
-						
-						method : "GET",
-						url : urlAction,
-						data : "acao=novaref&hora=" + hora + "&nome=" + nome
-								+ "&id=" + id,
-						success : function(response) {
-							alert(response);
+			verificarForm();
+			if (verificarForm()){
+				$.ajax(
+						{
 							
-							
-							var json=JSON.parse(response);
-							
-							montarTabelaRefeicoes(json);
+							method : "GET",
+							url : urlAction,
+							data : "acao=novaref&hora=" + hora + "&nome=" + nome
+									+ "&id=" + id,
+							success : function(response) {
+								
+								
+								var json=JSON.parse(response);
+								
+								montarTabelaRefeicoes(json);
 
-							$("btn-salvar").removeClass("disabled");
+								$("btn-salvar").removeClass("disabled");
 
-						}
+							}
 
-					}).fail(function(xhr, status, errorThrown) {
-				alert("Error ao buscar usuário por nome" + xhr.responseText);
-			});
+						}).fail(function(xhr, status, errorThrown) {
+					alert("Error ao salvar a refeicao" + xhr.responseText);
+				});
+			}
+		
+		}
+		function verificarForm(){
+			var nome = $("#nome-novo").val();
+			var aux = $("#horario-novo").val();
+			var hora = aux.replace(":", "-");
+			$("span").empty();
+			if (nome=="" || nome.trim==""){
+				$("#campo_nome > span").append("Insira o nome");
+				return false;
+
+			}if (hora==""){
+				$("#campo_horario > span").append("Insira o horario");
+				return false;
+
+			}
+			
+			
+			return true;
+			
 		}
 		mostrarRefs();
 		function mostrarRefs(){
@@ -225,7 +239,6 @@
 						url : urlAction,
 						data : "acao=mostrarrefeicoes&id=" + id,
 						success : function(response) {
-							alert(response);
 							
 							
 							var json=JSON.parse(response);
@@ -234,7 +247,7 @@
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
-				alert("Error ao buscar usuário por nome" + xhr.responseText);
+				alert("Error ao mostrar refeicoes" + xhr.responseText);
 			});
 			
 		}
@@ -276,7 +289,7 @@
 				}
 			}
 		}).fail(function(xhr,status,erroThrown){
-			alert("Erro : "+xhr.responseText);
+			alert("Erro ao deletar : "+xhr.responseText);
 		})
 		
 	}

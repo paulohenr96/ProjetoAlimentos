@@ -86,18 +86,8 @@
 
 
 
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-						class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2022</div>
-						<div>
-							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-								&amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
+								                           <jsp:include page="/footer.jsp"></jsp:include>
+
 		</div>
 	</div>
 
@@ -149,7 +139,7 @@
 							}
 
 						}).fail(function(xhr, status, errorThrown) {
-					alert("Error ao buscar usuário por nome" + xhr.responseText);
+					alert("Error criar nova dieta " + xhr.responseText);
 				});
 			}
 			
@@ -205,7 +195,7 @@
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
-				alert("Error ao buscar usuário por nome" + xhr.responseText);
+				alert("Erro ao remover dieta " + xhr.responseText);
 			});
 		}
 		mostrarTodasDietas();
@@ -231,7 +221,7 @@
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
-				alert("Error ao buscar usuário por nome" + xhr.responseText);
+				alert("Erro ao mostrar as dietas " + xhr.responseText);
 			});
 		}
 		

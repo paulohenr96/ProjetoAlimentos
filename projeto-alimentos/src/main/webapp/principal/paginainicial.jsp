@@ -82,7 +82,7 @@
 
 						<div class="container-fluid px-4">
 						<h2>Histórico</h2>
-							<select onchange="mostrarHistorico(1)"
+							<select id="select_historico" onchange="mostrarHistorico(1)"
 								class="custom-select custom-select-lg mb-3">
 								<option value="2">2 por pagina</option>
 								<option value="4">4 por pagina</option>
@@ -94,7 +94,7 @@
 								id="form-macro" method="get">
 								<input type="hidden" name="acao" value=""
 									id="acaoRelatorioImprimirTipo">
-								<button type="button" onclick="imprimirHtml()"
+								<button type="button" id="btn_historico" onclick="imprimirHtml()"
 									class="btn btn-dark  btn-sm">Imprimir Histórico</button>
 
 
@@ -161,18 +161,8 @@
 
 
 
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-						class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2022</div>
-						<div>
-							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-								&amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
+									                           <jsp:include page="/footer.jsp"></jsp:include>
+
 		</div>
 	</div>
 	<jsp:include page="javascript-files.jsp"></jsp:include>
@@ -190,6 +180,8 @@
 	<script type="text/javascript">
 		var myChart = new Chart(document.getElementById("myChart"));
 
+		$("#select_historico").hide();
+		$("#btn_historico").hide();
 		mostrarGrafico();
 		function mostrarGrafico() {
 			var macro = document.getElementById("macro").value;
@@ -456,10 +448,13 @@
 						}
 						document.querySelector("ul.pagination").innerHTML=previous+paginacao+next;
 
-						
+						$("#select_historico").show();
+						$("#btn_historico").show();
 						
 						}else{
 							$(".spinner-border").remove();
+						
+
 							
 							$("table.table").empty();
 							$(".table").append("<thead></thead>");
