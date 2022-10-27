@@ -220,8 +220,7 @@
 			    		
 			    		
 			    		$("#paginacao-pagina").empty();
-
-						for (var i=1;i<totalPaginas;i++){
+						for (var i=1;i<=totalPaginas;i++){
 							
 							var n="";
 							if (i==paginaatual){
@@ -713,7 +712,7 @@
 			if (verificarData()){
 				$('#exampleModal').modal('show');
 
-				$("#exampleModalLabel").html("Todos os alimentos consumidos "+data);
+				$("#exampleModalLabel").html("Todos as refeicoes consumidas "+data);
 
 				$.ajax({
 				      method: "get",

@@ -345,7 +345,7 @@
 						$(".modal thead").hide();
 					}else {
 						$(".modal .table").show();
-						$("tbody").empty();
+						$(".modal .table>tbody").empty();
 
 						json.forEach((e)=>{
 							var linha=tbody.insertRow();
@@ -357,6 +357,7 @@
 									url:urlAction,
 									data:"idalimento="+e.id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
 									success:function(response,textStatus,xhr){
+										infoRefeicao();
 										verAlimentosRefeicao();
 									}
 								}).fail(function(xhr,status,erroThrown){
@@ -385,6 +386,31 @@
 			
 			
 		}
+		function infoRefeicao(){
+			
+			
+			var urlAction=document.getElementById("form-user").action;
+			var idrefeicao=document.getElementById("idrefeicao").value;
+			
+			$.ajax({
+				method:"get",
+				url:urlAction,
+				data:"idrefeicao="+idrefeicao+"&acao=informacaodarefeicao",
+				success:function(response,textStatus,xhr){
+					var json=JSON.parse(response);
+					$("#proteinatotal").attr("value",json.proteinas);
+					$("#caloriatotal").attr("value",json.calorias);
+					$("#gorduratotal").attr("value",json.gorduras);
+					$("#carboidratototal").attr("value",json.carboidratos);
+
+				}
+			}).fail(function(xhr,status,erroThrown){
+				alert("Erro : "+xhr.responseText);
+			})
+			
+			
+		}
+		
 		function adicionarAlimento(){
 			if (verificarFormulario()){
 				
@@ -398,7 +424,6 @@
 					data:"idrefeicao="+idrefeicao+"&acao=adicionaralimentorefeicao&id="+id+"&quantidade="+quantidade,
 					success:function(response,textStatus,xhr){
 						var json=JSON.parse(response);
-						console.log(json);
 						$("#proteinatotal").attr("value",json.proteinas);
 						$("#caloriatotal").attr("value",json.calorias);
 						$("#gorduratotal").attr("value",json.gorduras);

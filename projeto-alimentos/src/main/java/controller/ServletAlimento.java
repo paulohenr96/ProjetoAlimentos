@@ -579,7 +579,15 @@ public class ServletAlimento extends HttpServlet {
 			String json = mapper.writeValueAsString(ref);
 			response.getWriter().write(json);
 
-		}else if (acao != null && acao.equalsIgnoreCase("alimentosrefeicao")) {
+		}else if (acao != null && acao.equalsIgnoreCase("informacaodarefeicao")) {
+			Long idRefeicao=Long.parseLong(request.getParameter("idrefeicao"));
+			ModelRefeicao ref=(ModelRefeicao)dao.consultarPorId(ModelRefeicao.class, idRefeicao);
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(ref);
+			response.getWriter().write(json);
+
+		}
+		else if (acao != null && acao.equalsIgnoreCase("alimentosrefeicao")) {
 			Long idRefeicao=Long.parseLong(request.getParameter("idrefeicao"));
 			
 			
@@ -602,8 +610,9 @@ public class ServletAlimento extends HttpServlet {
 				dao.deletarPorId(ModelAlimentoRefeicao.class, idAlimento);
 			}
 			
-				
-			response.getWriter().write("");
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(ref);
+			response.getWriter().write(json);
 
 		}else if (acao != null && acao.equalsIgnoreCase("removerrefeicao")) {
 			Long idrefeicao=Long.parseLong(request.getParameter("idrefeicao"));

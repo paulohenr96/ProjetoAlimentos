@@ -136,7 +136,7 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		List<E> list = entityManager
-				.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado=" + userLogado+" and macros_id=null ORDER BY id DESC")
+				.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=null and macros_id=null and idUserLogado=" + userLogado+" ORDER BY id DESC")
 				.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
@@ -215,7 +215,7 @@ public class DAOGeneric<E> {
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where idUser="+user+" and upper(nome) like upper(:name)")
+		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where iduser="+user+" and upper(nome) like upper(:name)")
 				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
@@ -310,7 +310,7 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		Long total = (Long) entityManager
-				.createQuery("select count(1) from " + e.getCanonicalName() + " where idUser="+user +" and upper(nome) like upper(:name)")
+				.createQuery("select count(1) from " + e.getCanonicalName() + " where iduser="+user +" and upper(nome) like upper(:name)")
 				.setParameter("name", "%"+nome+"%").getSingleResult();
 		transaction.commit();
 		entityManager.close();
@@ -542,7 +542,7 @@ public class DAOGeneric<E> {
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<ModelRefeicao> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="+userLogado+" AND upper(nome) like upper(:name)")
+		List<ModelRefeicao> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=null and  macros_id=null and idUserLogado="+userLogado+" AND upper(nome) like upper(:name)")
 				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
