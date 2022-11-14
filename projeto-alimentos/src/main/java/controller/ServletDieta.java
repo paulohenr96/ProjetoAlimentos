@@ -61,11 +61,8 @@ public class ServletDieta extends HttpServlet {
 				dieta.setIdUsuario(idUserLogado);
 
 				dao.salvar(dieta);
-				List lista = dao.consultarTodasDietasPorId(idUserLogado);
-
-				ObjectMapper mapper = new ObjectMapper();
-				String json = mapper.writeValueAsString(lista);
-				response.getWriter().write(json);
+			
+				response.getWriter().write("");
 
 			} else if (acao != null && acao.equalsIgnoreCase("removerdieta")) {
 				Long id = Long.parseLong(request.getParameter("id"));
@@ -79,11 +76,8 @@ public class ServletDieta extends HttpServlet {
 				});
 				dao.removerTodasRefeicaoDieta(id);
 				dao.deletarPorId(ModelDieta.class, id);
-				List lista = dao.consultarTodos(ModelDieta.class);
-
-				ObjectMapper mapper = new ObjectMapper();
-				String json = mapper.writeValueAsString(lista);
-				response.getWriter().write(json);
+				
+				response.getWriter().write("");
 			} else if (acao != null && acao.equalsIgnoreCase("todasdietas")) {
 				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 
@@ -92,7 +86,24 @@ public class ServletDieta extends HttpServlet {
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(lista);
 				response.getWriter().write(json);
-			} else if (acao != null && acao.equalsIgnoreCase("verdieta")) {
+			}  else if (acao != null && acao.equalsIgnoreCase("todasdietaspaginadas")) {
+				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
+				int paginaAtual=Integer.parseInt(request.getParameter("paginaatual"));
+				int porpagina=5;
+				List lista = dao.consultarTodasDietasPorIdPaginado(idUserLogado,paginaAtual,porpagina);
+				Long total=dao.contarDietas(idUserLogado);
+				
+				int paginas=(int) (total%porpagina==0 ? total/porpagina : total/porpagina+1);
+				
+				
+				ObjectMapper mapper = new ObjectMapper();
+				String json = mapper.writeValueAsString(lista);
+				response.setHeader("total",""+paginas);
+				response.getWriter().write(json);
+			}
+			
+			
+			else if (acao != null && acao.equalsIgnoreCase("verdieta")) {
 				Long id = Long.parseLong(request.getParameter("id"));
 
 				ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);

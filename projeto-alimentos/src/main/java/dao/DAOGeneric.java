@@ -35,6 +35,7 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
+
 	public List<E> consultarAlimentosEmRefeicoes(Long idAlimento) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
@@ -47,6 +48,7 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return list;
 	}
+
 	public void salvar(E entidade) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
@@ -135,8 +137,8 @@ public class DAOGeneric<E> {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		List<E> list = entityManager
-				.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=null and macros_id=null and idUserLogado=" + userLogado+" ORDER BY id DESC")
+		List<E> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName()
+				+ " where dieta_id=null and macros_id=null and idUserLogado=" + userLogado + " ORDER BY id DESC")
 				.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
@@ -182,8 +184,9 @@ public class DAOGeneric<E> {
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + ModelAlimento.class.getCanonicalName()+" where iduser="+idUser +" ORDER BY id DESC").setFirstResult(offset)
-				.setMaxResults(ultimoResultado).getResultList();
+		List<E> list = entityManager.createQuery(
+				"from " + ModelAlimento.class.getCanonicalName() + " where iduser=" + idUser + " ORDER BY id DESC")
+				.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 		transaction.commit();
 		entityManager.close();
 		return list;
@@ -209,14 +212,17 @@ public class DAOGeneric<E> {
 
 	}
 
-	public List<E> consultarNomePaginado(Class<E> e, String nome, int porPagina, int paginaAtual,Long user) {
+	public List<E> consultarNomePaginado(Class<E> e, String nome, int porPagina, int paginaAtual, Long user) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + e.getCanonicalName() + " where iduser="+user+" and upper(nome) like upper(:name)")
-				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
+		List<E> list = entityManager
+				.createQuery(
+						"from " + e.getCanonicalName() + " where iduser=" + user + " and upper(nome) like upper(:name)")
+				.setParameter("name", "%" + nome + "%").setFirstResult(offset).setMaxResults(ultimoResultado)
+				.getResultList();
 		transaction.commit();
 		entityManager.close();
 		return list;
@@ -234,27 +240,30 @@ public class DAOGeneric<E> {
 		return total;
 	}
 
-	public Long contarTotal(Class<E> e,Long user) {
+	public Long contarTotal(Class<E> e, Long user) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		Long total = (Long) entityManager.createQuery("select count(1) from " + e.getCanonicalName()+" idUser="+user).getSingleResult();
+		Long total = (Long) entityManager
+				.createQuery("select count(1) from " + e.getCanonicalName() + " idUser=" + user).getSingleResult();
 		transaction.commit();
 		entityManager.close();
 		return total;
 	}
+
 	public Long contarTotalAlimentos(Long user) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		Long total = (Long) entityManager.createQuery("select count(1) from " + ModelAlimento.class.getCanonicalName()+" where iduser="+user).getSingleResult();
+		Long total = (Long) entityManager
+				.createQuery("select count(1) from " + ModelAlimento.class.getCanonicalName() + " where iduser=" + user)
+				.getSingleResult();
 		transaction.commit();
 		entityManager.close();
 		return total;
 	}
-
 
 	public Long contarTotalMacros(Long user) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
@@ -303,15 +312,16 @@ public class DAOGeneric<E> {
 
 	}
 
-	public Long contarTotal(Class<E> e, String nome,Long user) {
+	public Long contarTotal(Class<E> e, String nome, Long user) {
 		// TODO Auto-generated method stub
 		EntityManager entityManager = JPAUtil.getEntityManager();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		Long total = (Long) entityManager
-				.createQuery("select count(1) from " + e.getCanonicalName() + " where iduser="+user +" and upper(nome) like upper(:name)")
-				.setParameter("name", "%"+nome+"%").getSingleResult();
+				.createQuery("select count(1) from " + e.getCanonicalName() + " where iduser=" + user
+						+ " and upper(nome) like upper(:name)")
+				.setParameter("name", "%" + nome + "%").getSingleResult();
 		transaction.commit();
 		entityManager.close();
 		return total;
@@ -358,7 +368,7 @@ public class DAOGeneric<E> {
 
 		} catch (NoResultException e) {
 			System.out.println("sem resultado:" + e.getMessage());
-			
+
 			return null;
 		} catch (NonUniqueResultException e) {
 			System.out.println("Multiplo resultados :" + e.getMessage());
@@ -394,7 +404,6 @@ public class DAOGeneric<E> {
 		entityManager.close();
 		return total;
 	}
-	
 
 	// TODO Auto-generated method stub
 
@@ -402,7 +411,9 @@ public class DAOGeneric<E> {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		List<E> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName()+" where dieta_id="+id +" order by horario").getResultList();
+		List<E> list = entityManager.createQuery(
+				"from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=" + id + " order by horario")
+				.getResultList();
 		transaction.commit();
 		entityManager.close();
 		return list;
@@ -413,30 +424,29 @@ public class DAOGeneric<E> {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		entityManager.createQuery(
-				"delete from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=" + id)
+		entityManager.createQuery("delete from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=" + id)
 				.executeUpdate();
 		transaction.commit();
 		entityManager.close();
 	}
-	
-	public E consultarDietaPorId(Long id,Long userLogado) {
-		
+
+	public E consultarDietaPorId(Long id, Long userLogado) {
+
 		try {
 			EntityManager entityManager = JPAUtil.getEntityManager();
 			EntityTransaction transaction = entityManager.getTransaction();
 
 			transaction.begin();
-			E find = (E) entityManager.createQuery("from "+ModelDieta.class.getCanonicalName()+" where id=:iddieta and idusuario="+userLogado)
-					.setParameter("iddieta", id)
-					.getSingleResult();
+			E find = (E) entityManager.createQuery(
+					"from " + ModelDieta.class.getCanonicalName() + " where id=:iddieta and idusuario=" + userLogado)
+					.setParameter("iddieta", id).getSingleResult();
 			transaction.commit();
 			entityManager.close();
 			return find;
 		} catch (NoResultException e) {
 			// TODO Auto-generated catch block
 			return null;
-			
+
 		}
 	}
 
@@ -447,7 +457,8 @@ public class DAOGeneric<E> {
 			EntityTransaction transaction = entityManager.getTransaction();
 
 			transaction.begin();
-			List<ModelDieta> lista = entityManager.createQuery("from "+ModelDieta.class.getCanonicalName()+" where idusuario="+idUserLogado)
+			List<ModelDieta> lista = entityManager
+					.createQuery("from " + ModelDieta.class.getCanonicalName() + " where idusuario=" + idUserLogado)
 					.getResultList();
 			transaction.commit();
 			entityManager.close();
@@ -457,11 +468,9 @@ public class DAOGeneric<E> {
 			e.printStackTrace();
 			return null;
 
-		}	
-		
-	
+		}
+
 	}
-	
 
 	public List<ModelRefeicao> consultarRefsMacros(int porPagina, int paginaAtual, Long macrosId) {
 		try {
@@ -471,8 +480,7 @@ public class DAOGeneric<E> {
 			int ultimoResultado = porPagina;
 			transaction.begin();
 			List<E> list = entityManager
-					.createQuery(
-							"from " + ModelRefeicao.class.getCanonicalName() + " where macros_id=" + macrosId)
+					.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where macros_id=" + macrosId)
 					.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
 			transaction.commit();
 			entityManager.close();
@@ -482,44 +490,46 @@ public class DAOGeneric<E> {
 		}
 	}
 
-	public Long contarTotalRefeicoesConsumidas(Long idUserLogado,Long macros) {
+	public Long contarTotalRefeicoesConsumidas(Long idUserLogado, Long macros) {
 		EntityManager entityManager = JPAUtil.getEntityManager();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		Long total = (Long) entityManager.createQuery("select count(1) from " + ModelRefeicao.class.getCanonicalName()
-				+ " where idUserLogado=" + idUserLogado +" and macros_id="+macros).getSingleResult();
+				+ " where idUserLogado=" + idUserLogado + " and macros_id=" + macros).getSingleResult();
 		transaction.commit();
 		entityManager.close();
 		return total;
 	}
+
 	public void deletarRefeicoesConsumidas(Long id) {
 		// TODO Auto-generated method stub
-		
+
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		entityManager.createQuery(
-				"delete from " + ModelRefeicao.class.getCanonicalName() + " where macros_id=" + id)
+		entityManager.createQuery("delete from " + ModelRefeicao.class.getCanonicalName() + " where macros_id=" + id)
 				.executeUpdate();
 		transaction.commit();
 		entityManager.close();
-		
+
 	}
-	
+
 	public List<Double> mediaMacros(Long userId) {
 		// TODO Auto-generated method stub
 		EntityManager entityManager = JPAUtil.getEntityManager();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		List<Double> proteinas =   entityManager
-				.createQuery("select avg(calorias),avg(proteinas),avg(carboidrato),avg(gordura) from " + ModelConsumidoDia.class.getCanonicalName() + " where usuario_id =:id")
+		List<Double> proteinas = entityManager
+				.createQuery("select avg(calorias),avg(proteinas),avg(carboidrato),avg(gordura) from "
+						+ ModelConsumidoDia.class.getCanonicalName() + " where usuario_id =:id")
 				.setParameter("id", userId).getResultList();
 		transaction.commit();
 		entityManager.close();
 		return proteinas;
 	}
+
 	public Long contarTotalRefeicoes(String nome, Long userLogado) {
 		// TODO Auto-generated method stub
 		EntityManager entityManager = JPAUtil.getEntityManager();
@@ -527,26 +537,60 @@ public class DAOGeneric<E> {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		Long total = (Long) entityManager
-				.createQuery("select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="+userLogado +" AND upper(nome) like upper(:name)")
-				.setParameter("name", "%"+nome+"%").getSingleResult();
+				.createQuery("select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="
+						+ userLogado + " AND upper(nome) like upper(:name)")
+				.setParameter("name", "%" + nome + "%").getSingleResult();
 		transaction.commit();
 		entityManager.close();
-		return total;	
-		
+		return total;
+
 	}
-	public List<ModelRefeicao> consultarRefeicaoPaginado(String nome, int porPagina, int paginaAtual,
-			Long userLogado) {
+
+	public List<ModelRefeicao> consultarRefeicaoPaginado(String nome, int porPagina, int paginaAtual, Long userLogado) {
 		// TODO Auto-generated method stub
 		EntityManager entityManager = JPAUtil.getEntityManager();
 		EntityTransaction transaction = entityManager.getTransaction();
 		int offset = porPagina * (paginaAtual - 1);
 		int ultimoResultado = porPagina;
 		transaction.begin();
-		List<ModelRefeicao> list = entityManager.createQuery("from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=null and  macros_id=null and idUserLogado="+userLogado+" AND upper(nome) like upper(:name)")
-				.setParameter("name","%"+nome+"%").setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
+		List<ModelRefeicao> list = entityManager
+				.createQuery("from " + ModelRefeicao.class.getCanonicalName()
+						+ " where dieta_id=null and  macros_id=null and idUserLogado=" + userLogado
+						+ " AND upper(nome) like upper(:name)")
+				.setParameter("name", "%" + nome + "%").setFirstResult(offset).setMaxResults(ultimoResultado)
+				.getResultList();
 		transaction.commit();
 		entityManager.close();
 		return list;
 	}
+
+	public List consultarTodasDietasPorIdPaginado(Long idUserLogado, int paginaAtual, int porPagina) {
+		// TODO Auto-generated method stub
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		int offset = porPagina * (paginaAtual - 1);
+		int ultimoResultado = porPagina;
+		transaction.begin();
+		List<ModelDieta> list = entityManager
+				.createQuery("from " + ModelDieta.class.getCanonicalName() + " where idUsuario=" + idUserLogado)
+				.setFirstResult(offset).setMaxResults(ultimoResultado).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
+
+	public Long contarDietas(Long idUserLogado) {
+		// TODO Auto-generated method stub
+		EntityManager entityManager = JPAUtil.getEntityManager();
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		Long total = (Long) entityManager
+				.createQuery("select count(1) from " + ModelDieta.class.getCanonicalName() + " where idUsuario="
+						+ idUserLogado )
+				.getSingleResult();
+		transaction.commit();
+		entityManager.close();
+		return total;	}
 
 }

@@ -35,8 +35,8 @@
 						<div class="mb-2">
 							<label for="nome">Nome</label> <input class="form-control"
 								name="nome" required id="nome" type="text"
-								placeholder="Nome da dieta" />
-								<span id="nome-vazio" class="alerta"></span>
+								placeholder="Nome da dieta" /> <span id="nome-vazio"
+								class="alerta"></span>
 
 
 
@@ -49,8 +49,7 @@
 								<option value="PERDER_MASSA">Emagrecer</option>
 								<option value="GANHAR_MASSA">Ganho de Massa</option>
 								<option value="MANTER_MASSA">Manter</option>
-							</select>
-								<span id="select-vazio" class="alerta"></span>
+							</select> <span id="select-vazio" class="alerta"></span>
 
 						</div>
 
@@ -62,18 +61,22 @@
 								<button type="button" onclick="novaDieta()"
 									class="btn btn-primary btn-block">Nova</button>
 							</div>
-							
-						</div>
-																					<span class="sucesso" ></span>
-						
-					</form>
 
-					<table class="table table-striped">
-						<thead>
-							
-						</thead>
-						<tbody></tbody>
-					</table>
+						</div>
+						<span class="sucesso"></span>
+
+					</form>
+					<div id="todas_dietas">
+
+						<table class="table table-striped">
+							<thead>
+
+							</thead>
+							<tbody></tbody>
+						</table>
+
+					</div>
+
 				</div>
 			</main>
 
@@ -86,7 +89,7 @@
 
 
 
-								                           <jsp:include page="/footer.jsp"></jsp:include>
+			<jsp:include page="/footer.jsp"></jsp:include>
 
 		</div>
 	</div>
@@ -135,7 +138,10 @@
 								var json=JSON.parse(response);
 
 								 document.querySelector("#nome").value="";
-								auxMostrarListaDietas(json);
+								mostrarTodasDietas(1);
+
+								$(".sucesso").html("Dieta Adicionada ").attr("style","color:green;font-weight:bold");
+
 							}
 
 						}).fail(function(xhr, status, errorThrown) {
@@ -153,7 +159,6 @@
 
 			}
 			else{
-				$(".sucesso").html("Você possui "+json.length+" dietas cadastradas.").attr("style","color:green;font-weight:bold");
 
 				$("table>thead").html("");
 				$("table>thead").append($("<tr>"+
@@ -189,17 +194,20 @@
 						data : "acao=removerdieta&id="+id,
 						success : function(response) {
 								
-							var json=JSON.parse(response);
-							auxMostrarListaDietas(json);
-							
+							mostrarTodasDietas(1);
+
+
+							$(".sucesso").html("Dieta Removida ").attr("style","color:green;font-weight:bold");
+
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
 				alert("Erro ao remover dieta " + xhr.responseText);
 			});
 		}
-		mostrarTodasDietas();
-		function mostrarTodasDietas() {
+		mostrarTodasDietas(1);
+		function mostrarTodasDietas(paginaatual) {
+			var porpagina=5;
 			var urlAction=document.getElementById("form-user").action;
 		$("table>thead").html("<div class=\"d-flex justify-content-center\">"+
 				  "<div class=\"spinner-border\" role=\"status\">"+
@@ -210,19 +218,30 @@
 					{
 						method : "GET",
 						url :urlAction,
-						data : "acao=todasdietas",
-						success : function(response) {
+						data : "acao=todasdietaspaginadas&paginaatual="+paginaatual,
+						success : function(response,textStatus,xhr) {
 
 						var json=JSON.parse(response);
 						
 						auxMostrarListaDietas(json);
 						
-						
+						paginacao(xhr.getResponseHeader("total"));
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
 				alert("Erro ao mostrar as dietas " + xhr.responseText);
 			});
+		}
+		
+		function paginacao (paginas){
+			$("#todas_dietas>ul").remove();
+			$("#todas_dietas").append("<ul class='pagination'></ul>");
+
+		for (var i=1;i<=paginas;i++){
+			$("ul.pagination").append("<li class='page-item' onclick='mostrarTodasDietas("+i+")'><a class='page-link' href='#'>"+i+"</a></li>")
+		}
+		
+			
 		}
 		
 		function verDieta(dieta){
