@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DAOGeneric;
+import dao.DAOUsuario;
 import model.ModelConsumidoDia;
 import model.ModelUsuario;
 
@@ -22,7 +23,8 @@ import model.ModelUsuario;
 @WebServlet(urlPatterns = { "/ServletLogin", "/principal/ServletLogin" })
 public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private DAOGeneric<ModelUsuario> dao=new DAOGeneric<>();
+	
+	private DAOUsuario daoUsuario=new DAOUsuario();
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -65,7 +67,7 @@ public class ServletLogin extends HttpServlet {
 		
 		user.setLogin(login);
 		user.setSenha(senha);
-		ModelUsuario modelUsuario = dao.autentificar(user);
+		ModelUsuario modelUsuario = daoUsuario.autentificar(user);
 		
 		String url=request.getParameter("url");
 		
@@ -85,7 +87,7 @@ public class ServletLogin extends HttpServlet {
 
 		} else {
 
-			msg = "Usuario e senopkpokha incorretos.";
+			msg = "Usuario e senha incorretos.";
 			request.setAttribute("msg", msg);
 			request.getRequestDispatcher("/index.jsp").forward(request, response);
 

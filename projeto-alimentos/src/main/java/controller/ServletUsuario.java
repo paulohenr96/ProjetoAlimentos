@@ -7,18 +7,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.ContextoBean;
 import dao.DAOGeneric;
+import dao.DAOUsuario;
 import model.ModelUsuario;
+import util.Mensagem;
 
 /**
  * Servlet implementation class ServletUsuario
  */
 @WebServlet("/ServletUsuario")
-public class ServletUsuario extends HttpServlet {
+public class ServletUsuario extends ContextoBean {
 	private static final long serialVersionUID = 1L;
 	
-	DAOGeneric dao=new DAOGeneric<>();
-	
+	private DAOGeneric dao=new DAOGeneric<>();
+	private DAOUsuario daoUsuario= new DAOUsuario();
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -35,32 +38,58 @@ public class ServletUsuario extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		
+		
+		
+	}
+	
+	
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
-	
-		System.out.println(request.getParameter("nome"));
-		Long id=Long.parseLong(request.getParameter("id"));
+ModelUsuario user = super.getUserLogado(request);
+		
+		
 		String login=request.getParameter("login");
 		String nome=request.getParameter("nome");
 		String sobrenome=request.getParameter("sobrenome");
 		String email=request.getParameter("email");
-		String senha=request.getParameter("senha");
 		
+		ModelUsuario m=new ModelUsuario();
+		m.setLogin(login);
 		
-		ModelUsuario user=new ModelUsuario();
-		user.setNome(nome);
-		user.setLogin(login);
-		user.setId(id);
-		user.setSobreNome(sobrenome);
-		user.setEmail(email);
-		user.setSenha(senha);
-		
-		
-		dao.merge(user);
-		request.getSession().setAttribute("user", user);
+		if ((daoUsuario.contarLogin(m)==0 && !login.equals(user.getLogin()))) {
+			user.setNome(nome);
+			user.setLogin(login);
+			user.setSobreNome(sobrenome);
+			user.setEmail(email);
+			request.getSession().setAttribute("user", daoUsuario.merge(user));
+			response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 
-		request.getRequestDispatcher("principal/perfil.jsp").forward(request, response);
+
+		}else if (login.equals(user.getLogin()))
+		{
+			user.setNome(nome);
+			user.setLogin(login);
+			user.setSobreNome(sobrenome);
+			user.setEmail(email);
+			request.getSession().setAttribute("user", daoUsuario.merge(user));
+			response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
+		}
+		else{
+			response.getWriter().write(Mensagem.MENSAGEM_ERRO);
+
+		}
+		
+		
+		
+		
+		
+		
+	
 	}
 
 }

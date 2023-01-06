@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-	
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,38 +33,50 @@
 					<h2>Perfil</h2>
 
 
-					<form id="form-user" action="<%=request.getContextPath() %>/ServletUsuario" method="post">
+					<form id="form-user"
+						action="<%=request.getContextPath()%>/ServletUsuario"
+						method="post">
 
 						<div class="mb-2 col-2">
 							<label for="id">ID</label> <input type="text"
-								class="form-control" name="id" id="id" value="${user.id}" readonly>
+								class="form-control" name="id" id="id" value="${user.id}"
+								readonly>
 						</div>
-						<div class="form-group col-4 mb-2">
+						<div class="form-group col-4 mb-2 editavel">
 							<label for="nome">Nome</label> <input type="text"
-								class="form-control" id="nome" name="nome"  value="${user.nome}" readonly>
+								class="form-control" id="nome" name="nome" value="${user.nome}"
+								readonly>
 						</div>
-						<div class="form-group col-4 mb-2">
+						<div class="form-group col-4 mb-2 editavel">
 							<label for="sobrenome">Sobrenome</label> <input type="text"
-								class="form-control" id="sobrenome" name="sobrenome"  value="${user.sobreNome}" readonly>
+								class="form-control" id="sobrenome" name="sobrenome"
+								value="${user.sobreNome}" readonly>
 						</div>
-						<div class="form-group col-4 mb-2">
+						<div class="form-group col-4 mb-2 editavel">
 							<label for="email">Email</label> <input type="email"
-								class="form-control" id="email" name="email"  value="${user.email}" readonly>
+								class="form-control" id="email" name="email"
+								value="${user.email}" readonly>
 						</div>
-						<div class="form-group col-4 mb-2">
+						<div class="form-group editavel col-4 mb-2">
 							<label for="login">Login</label> <input type="text"
-								class="form-control" id="login" name="login"  value="${user.login}" readonly>
+								class="form-control" id="login" name="login"
+								value="${user.login}" readonly>
 						</div>
-						
+
 						<div class="form-group col-4 mb-2">
 							<label for="senha">Senha</label> <input type="password"
-								class="form-control" id="senha" name="senha"  value="${user.senha}" readonly>
+								class="form-control" id="senha" name="senha"
+								value="${user.senha}" readonly>
 						</div>
-						
-						
+
 					</form>
-											<button type="button" class="btn btn-primary" onclick="editarPerfil()">Editar</button>
-					
+
+
+					<button type="button" class="btn btn-primary btn-editar"
+						onclick="editarPerfil()">Editar</button>
+					<button data-toggle="modal" data-target="#modalsenha" type="button"
+						class="btn btn-primary">Alterar Senha</button>
+
 
 				</div>
 			</main>
@@ -73,7 +85,48 @@
 
 
 
+			<div class="modal" id="modalsenha" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content ">
+						<div class="modal-header">
+							<h5 class="modal-title">Altere a senha</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
 
+							<form id="form-senha"
+								action="<%=request.getContextPath()%>/ServletSenha">
+								<div class="form-group">
+									<label for="senhaantiga" class="col-form-label">Senha
+										Antiga:</label> <input type="password" class="form-control"
+										id="senhaantiga">
+								</div>
+
+								<div class="form-group">
+									<label for="senhanova" class="col-form-label">Nova
+										Senha:</label> <input type="password" class="form-control"
+										id="senhanova">
+								</div>
+
+								<div class="form-group">
+									<label for="confirmasenha" class="col-form-label">Confirma
+										Senha:</label> <input type="password" class="form-control"
+										id="confirmasenha">
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								onclick="alterarsenha()">Save changes</button>
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
 
 
@@ -99,22 +152,63 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
-	
-	<script type="text/javascript">
-	
-	function editarPerfil(){
 
-		$(".form-group > input").attr("readonly",false);
-		$("button").remove();
-		$("main > div.container-fluid").append($("<button type=\"button\" class=\"btn btn-success\" onclick=\"salvar()\">Salvar</button>"));
-	}
-	
-	function salvar(){
-		
-		$("#form-user").submit();
-		return false;
-	
-	}
+	<script type="text/javascript">
+		function editarPerfil() {
+
+			$(".editavel > input").attr("readonly", false);
+			$(".btn-editar").remove();
+			$("main > div.container-fluid")
+					.append(
+							$("<button type=\"button\" class=\"btn btn-success\" onclick=\"salvar()\">Salvar</button>"));
+		}
+
+		function salvar() {
+
+			var urlAction = document.getElementById("form-user").action;
+			var data = "nome=" + $('#nome').val();
+			data += "&";
+			data += "sobrenome=" + $('#sobrenome').val();
+			data += "&";
+			data += "email=" + $('#email').val();
+			data += "&";
+			data += "login=" + $('#login').val();
+			$.post(urlAction, data, function(response) {
+				if (response === 'ERRO') {
+					alert(response);
+
+				} else {
+				
+
+					location.reload(true);
+
+				}
+			});
+			
+		}
+
+		function alterarsenha() {
+			var urlAction = document.getElementById("form-senha").action;
+			var data = "senha=" + $('#senha').val();
+			data += "&";
+			data += "senhanova=" + $('#senhanova').val();
+			data += "&";
+			data += "confirmasenha=" + $('#confirmasenha').val();
+
+			$.post(urlAction, data, function(response) {
+				if (response === 'ERRO') {
+					alert(response);
+
+				} else {
+					$('#form-senha').each(function() {
+						this.reset();
+					});
+
+					location.reload(true);
+
+				}
+			});
+		}
 	</script>
 </body>
 </html>

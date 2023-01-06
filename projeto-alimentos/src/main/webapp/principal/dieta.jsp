@@ -134,8 +134,7 @@
 							url : urlAction,
 							data : "acao=novadieta&nome=" + nome+
 									"&objetivo="+objetivo,
-							success : function(response) {
-								var json=JSON.parse(response);
+							success : function(response,textStatus,xhr) {
 
 								 document.querySelector("#nome").value="";
 								mostrarTodasDietas(1);
@@ -220,12 +219,12 @@
 						url :urlAction,
 						data : "acao=todasdietaspaginadas&paginaatual="+paginaatual,
 						success : function(response,textStatus,xhr) {
-
+						console.log(response);
 						var json=JSON.parse(response);
 						
 						auxMostrarListaDietas(json);
 						
-						paginacao(xhr.getResponseHeader("total"));
+						paginacao(xhr.getResponseHeader("totalPagina"));
 						}
 
 					}).fail(function(xhr, status, errorThrown) {

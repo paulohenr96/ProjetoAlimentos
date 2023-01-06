@@ -159,7 +159,7 @@
 							document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
 						
 						})
-						var totalPaginas=request.getResponseHeader("totalPaginas");
+						var totalPaginas=request.getResponseHeader("totalPagina");
 						for (var i=0;i<totalPaginas;i++){
 							if (paginaatual==(i+1)){
 								document.querySelector("ul.pagination").innerHTML+="<li onclick=\"mostrarTodasRefeicoes("+(i+1)+")\" class=\"page-item active\"><a class=\"page-link\" href=\"#\">"+(i+1)+"</a></li>"			

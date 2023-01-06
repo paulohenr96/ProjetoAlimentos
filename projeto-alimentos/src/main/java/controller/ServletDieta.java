@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import bean.ContextoBean;
+import dao.DAODieta;
 import dao.DAOGeneric;
+import dao.DAORefeicao;
 import model.ModelConsumidoDia;
 import model.ModelDieta;
 import model.ModelRefeicao;
@@ -28,10 +31,11 @@ import util.ReportUtil;
  * Servlet implementation class ServletDieta
  */
 @WebServlet("/ServletDieta")
-public class ServletDieta extends HttpServlet {
+public class ServletDieta extends ContextoBean {
 	private static final long serialVersionUID = 1L;
 	private DAOGeneric dao = new DAOGeneric<>();
-
+	private DAODieta daoDieta=new DAODieta();
+	private DAORefeicao daoRefeicao=new DAORefeicao();
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -47,18 +51,18 @@ public class ServletDieta extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		Long idLogado = super.getUserLogado(request).getId();
 		try {
 			String acao = request.getParameter("acao");
 
 			if (acao != null && acao.equalsIgnoreCase("novadieta")) {
 				String nome = request.getParameter("nome");
 				String objetivo = request.getParameter("objetivo");
-				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 
 				ModelDieta dieta = new ModelDieta();
 				dieta.setNome(nome);
 				dieta.setObjetivo(objetivo);
-				dieta.setIdUsuario(idUserLogado);
+				dieta.setIdUsuario(idLogado);
 
 				dao.salvar(dieta);
 			
@@ -66,22 +70,19 @@ public class ServletDieta extends HttpServlet {
 
 			} else if (acao != null && acao.equalsIgnoreCase("removerdieta")) {
 				Long id = Long.parseLong(request.getParameter("id"));
-				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 
-//				ModelDieta dieta = (ModelDieta) dao.consultarDietaPorId(id,idUserLogado);
 				ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);
 
 				dieta.getListaRefeicoes().forEach((e) -> {
-					dao.removerAlimentoRefeicao(e.getId());
+					daoRefeicao.removerAlimentoRefeicao(e.getId());
 				});
-				dao.removerTodasRefeicaoDieta(id);
+				daoDieta.removerTodasRefeicaoDieta(id);
 				dao.deletarPorId(ModelDieta.class, id);
 				
 				response.getWriter().write("");
 			} else if (acao != null && acao.equalsIgnoreCase("todasdietas")) {
-				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 
-				List lista = dao.consultarTodasDietasPorId(idUserLogado);
+				List lista = daoDieta.consultarTodasDietasPorId(idLogado);
 
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(lista);
@@ -90,16 +91,11 @@ public class ServletDieta extends HttpServlet {
 				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 				int paginaAtual=Integer.parseInt(request.getParameter("paginaatual"));
 				int porpagina=5;
-				List lista = dao.consultarTodasDietasPorIdPaginado(idUserLogado,paginaAtual,porpagina);
-				Long total=dao.contarDietas(idUserLogado);
-				
-				int paginas=(int) (total%porpagina==0 ? total/porpagina : total/porpagina+1);
+				List todos = daoDieta.consultarTodasDietasPorIdPaginado(idUserLogado,paginaAtual,porpagina);
+				Long total=daoDieta.contarDietas(idUserLogado);
 				
 				
-				ObjectMapper mapper = new ObjectMapper();
-				String json = mapper.writeValueAsString(lista);
-				response.setHeader("total",""+paginas);
-				response.getWriter().write(json);
+				super.realizaPaginacao(response, todos, porpagina, total);
 			}
 			
 			
@@ -114,11 +110,10 @@ public class ServletDieta extends HttpServlet {
 				Long id = Long.parseLong(request.getParameter("id"));
 				String horario = request.getParameter("hora");
 				String nome = request.getParameter("nome");
-				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 				String hora = horario.replace("-", ":");
 				System.out.println(hora);
 
-				ModelDieta dieta = (ModelDieta) dao.consultarDietaPorId(id, idUserLogado);
+				ModelDieta dieta = (ModelDieta) daoDieta.consultarDietaPorId(id, idLogado);
 				ModelRefeicao ref = new ModelRefeicao();
 
 				ref.setNome(nome);
@@ -133,7 +128,7 @@ public class ServletDieta extends HttpServlet {
 				dao.salvar(ref);
 				dao.merge(dieta);
 
-				List<ModelRefeicao> lista = dao.todasRefsDieta(id);
+				List<ModelRefeicao> lista = daoDieta.todasRefsDieta(id);
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(lista);
 				response.getWriter().write(json);
@@ -141,30 +136,28 @@ public class ServletDieta extends HttpServlet {
 			} else if (acao != null && acao.equalsIgnoreCase("mostrarrefeicoes")) {
 				Long id = Long.parseLong(request.getParameter("id"));
 
-				List<ModelRefeicao> lista = dao.todasRefsDieta(id);
+				List<ModelRefeicao> lista = daoDieta.todasRefsDieta(id);
 
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(lista);
 				response.getWriter().write(json);
 			} else if (acao != null && acao.equalsIgnoreCase("removerrefeicao")) {
-				Long userLogado = (Long) request.getSession().getAttribute("IDLogado");
 				Long idRefeicao = Long.parseLong(request.getParameter("idrefeicao"));
 				Long idDieta = Long.parseLong(request.getParameter("iddieta"));
 
-				ModelDieta dieta = (ModelDieta) dao.consultarDietaPorId(idDieta, userLogado);
+				ModelDieta dieta = (ModelDieta) daoDieta.consultarDietaPorId(idDieta, idLogado);
 				ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
 
 				dieta.removerRefeicao(ref);
 				dao.merge(dieta);
 
-				dao.removerAlimentoRefeicao(idRefeicao);
+				daoRefeicao.removerAlimentoRefeicao(idRefeicao);
 				dao.deletarPorId(ModelRefeicao.class, idRefeicao);
 
 				response.getWriter().write("");
 
 			} else if (acao != null && acao.equalsIgnoreCase("imprimirtodasdietas")) {
-				Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
-				List lista = dao.consultarTodasDietasPorId(idLogado);
+				List lista = daoDieta.consultarTodasDietasPorId(idLogado);
 				System.out.println(lista);
 				System.out.println("ID LOGADO ------ "+idLogado);
 
@@ -174,10 +167,9 @@ public class ServletDieta extends HttpServlet {
 				response.getOutputStream().write(relatorio);
 				// TODO Auto-generated catch block
 			}else if (acao != null && acao.equalsIgnoreCase("imprimirdietasemsub")) {
-				Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
 				Long iddieta = Long.parseLong(request.getParameter("iddieta"));
 
-				List lista = dao.todasRefsDieta(iddieta);
+				List lista = daoDieta.todasRefsDieta(iddieta);
 				System.out.println(lista);
 				System.out.println("ID LOGADO ------ "+idLogado);
 
@@ -187,10 +179,9 @@ public class ServletDieta extends HttpServlet {
 				response.getOutputStream().write(relatorio);
 				// TODO Auto-generated catch block
 			}else if (acao != null && acao.equalsIgnoreCase("imprimirdieta")) {
-				Long idLogado = (Long) request.getSession().getAttribute("IDLogado");
 				Long iddieta = Long.parseLong(request.getParameter("iddieta"));
 
-				List lista = dao.todasRefsDieta(iddieta);
+				List lista = daoDieta.todasRefsDieta(iddieta);
 				System.out.println(lista);
 				System.out.println("ID LOGADO ------ "+idLogado);
 				HashMap<String,Object> params=new HashMap<>();

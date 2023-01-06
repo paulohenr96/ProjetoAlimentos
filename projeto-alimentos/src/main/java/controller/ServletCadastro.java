@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DAOGeneric;
+import dao.DAOUsuario;
 import model.ModelUsuario;
+import util.Mensagem;
 
 /**
  * Servlet implementation class ServletCadastro
@@ -16,71 +18,63 @@ import model.ModelUsuario;
 @WebServlet("/ServletCadastro")
 public class ServletCadastro extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ServletCadastro() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private DAOUsuario daoUsuario = new DAOUsuario();
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	public ServletCadastro() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+		String login = request.getParameter("login");
+		ModelUsuario model = new ModelUsuario();
+		model.setLogin(login);
+
+		if (daoUsuario.contarLogin(model) > 0) {
+			response.getWriter().write(Mensagem.MENSAGEM_ERRO);
+
+		}
+
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+
 		String nome = request.getParameter("nome");
 		String sobreNome = request.getParameter("sobrenome");
 		String login = request.getParameter("login");
 		String email = request.getParameter("email");
 		String senha = request.getParameter("senha");
 		String confirmaSenha = request.getParameter("confirmasenha");
-		
-		if (!senha.equals(confirmaSenha)) {
-			request.getRequestDispatcher("registrar.jsp").forward(request, response);
-		}
-		
-		
-		else {
-			ModelUsuario model=new ModelUsuario();
-			model.setEmail(email);
-			model.setNome(nome);
-			model.setSobreNome(sobreNome);
-			model.setLogin(login);
-			model.setSenha(senha);
-			DAOGeneric<ModelUsuario> dao=new DAOGeneric<ModelUsuario>();
-			if (dao.contarLogin(model)>0) {
-				
-				
-				request.getRequestDispatcher("registrar.jsp").forward(request, response);
 
-				
-			}else {
-				dao.salvar(model);
-				request.getRequestDispatcher("index.jsp").forward(request, response);
-	
-			}
-			
+		ModelUsuario model = new ModelUsuario();
+		model.setEmail(email);
+		model.setNome(nome);
+		model.setSobreNome(sobreNome);
+		model.setLogin(login);
+		model.setSenha(senha);
+		if (daoUsuario.contarLogin(model) > 0) {
+			response.getWriter().write(Mensagem.MENSAGEM_ERRO);
+
+		} else {
+			daoUsuario.salvar(model);
+			response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
+
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
 
 	}
 
