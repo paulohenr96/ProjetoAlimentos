@@ -66,7 +66,8 @@
 						<span class="sucesso"></span>
 
 					</form>
-					<div id="todas_dietas">
+					<div id="todas_dietas" style="height:400px;">
+						<ul id="paginacaodietas" class='pagination'></ul>
 
 						<table class="table table-striped">
 							<thead>
@@ -74,7 +75,6 @@
 							</thead>
 							<tbody></tbody>
 						</table>
-
 					</div>
 
 				</div>
@@ -168,17 +168,16 @@
 						"<th scope=\"col\">Proteinas</th>"+
 						"<th scope=\"col\">Carboidratos</th>"+
 						"<th scope=\"col\">Gorduras</th>"+
-						"<th scope=\"col\">Remover</th>"+
-						"<th scope=\"col\">Ver</th>"+
+						"<th scope=\"col\">AÇÃO</th>"+
 					"</tr>"));
 			
 			document.querySelector("table >tbody").innerHTML="";
 
 			json.forEach((e)=>{
-				var botaoremover="<button type=\"button\" onclick=\"removerDieta("+e.id+")\" class=\"btn btn-danger\">EXCLUIR</button>";
-				var botaover="<button type=\"button\" onclick=\"verDieta("+e.id+")\" class=\"btn btn-success\">VER</button>";
+				var botaoremover=icone("deletar.png","removerDieta("+e.id+")","Remover");
+				var botaover=icone("ver.png","verDieta("+e.id+")","VER");
 
-				document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.nome+"</td><td>"+e.objetivo+"</td><td>"+e.totalCalorias+"</td><td>"+e.totalProteinas+"</td><td>"+e.totalCarboidratos+"</td><td>"+e.totalGorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
+				document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.nome+"</td><td>"+e.objetivo+"</td><td>"+e.totalCalorias+"</td><td>"+e.totalProteinas+"</td><td>"+e.totalCarboidratos+"</td><td>"+e.totalGorduras+"</td><td>"+botaoremover+""+botaover+"</td></tr>"
 			
 			})
 			}
@@ -223,8 +222,8 @@
 						var json=JSON.parse(response);
 						
 						auxMostrarListaDietas(json);
-						
-						paginacao(xhr.getResponseHeader("totalPagina"));
+						var totalPaginas=xhr.getResponseHeader("totalPagina")
+						paginarTabelas("paginacaodietas", totalPaginas, paginaatual, "mostrarTodasDietas");
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
@@ -232,16 +231,7 @@
 			});
 		}
 		
-		function paginacao (paginas){
-			$("#todas_dietas>ul").remove();
-			$("#todas_dietas").append("<ul class='pagination'></ul>");
-
-		for (var i=1;i<=paginas;i++){
-			$("ul.pagination").append("<li class='page-item' onclick='mostrarTodasDietas("+i+")'><a class='page-link' href='#'>"+i+"</a></li>")
-		}
-		
-			
-		}
+	
 		
 		function verDieta(dieta){
 

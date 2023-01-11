@@ -89,6 +89,17 @@ public class DAOGeneric<E> implements Serializable {
 		entityManager.close();
 		return list;
 	}
+	
+	public List retornaListaEntidadesINNERJOIN(String sql) {
+		EntityManager entityManager = JPAUtil.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+
+		List<E> list = entityManager.createNativeQuery(sql).getResultList();
+		transaction.commit();
+		entityManager.close();
+		return list;
+	}
 
 	public List retornaListaEntidadesPaginadas(String sql, int offset, int porPagina) {
 

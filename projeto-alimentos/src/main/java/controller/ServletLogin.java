@@ -6,25 +6,27 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.ContextoBean;
 import dao.DAOGeneric;
 import dao.DAOUsuario;
 import model.ModelConsumidoDia;
 import model.ModelUsuario;
+import util.Mensagem;
 
 /**
  * Servlet implementation class ServletLogin
  */
-@WebServlet(urlPatterns = { "/ServletLogin", "/principal/ServletLogin" })
-public class ServletLogin extends HttpServlet {
+@WebServlet(urlPatterns = { "/ServletLogin", "/principal/ServletLogin","/ServletLogin?acao=logout" })
+public class ServletLogin extends ContextoBean {
 	private static final long serialVersionUID = 1L;
-	
-	private DAOUsuario daoUsuario=new DAOUsuario();
+	private DAOUsuario daoUsuario;
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -45,7 +47,8 @@ public class ServletLogin extends HttpServlet {
 		if (acao != null && acao.equals("logout")) {
 			System.out.println("logout");
 			request.getSession().invalidate();
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+			request.getSession().setAttribute("aviso", Mensagem.LOGOUT);
+			request.getRequestDispatcher("logout.jsp").forward(request, response);
 		}
 	}
 
@@ -56,12 +59,10 @@ public class ServletLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+		super.requestEncoding(request);
 		String login = request.getParameter("login");
 		String senha = request.getParameter("senha");
 
-		System.out.println("Login : " + login);
-		System.out.println("Senha : " + senha);
 		String msg = "";
 		ModelUsuario user=new ModelUsuario();
 		
@@ -71,12 +72,10 @@ public class ServletLogin extends HttpServlet {
 		
 		String url=request.getParameter("url");
 		
-		System.out.println(url+" <--- Url para Autentificar");
 		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && modelUsuario!=null ) {
-			System.out.println(modelUsuario);
 			request.getSession().setAttribute("user", modelUsuario);
-
 			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
+			
 			
 			if (url==null || url.equalsIgnoreCase("null")) {
 				url="/principal/paginainicial.jsp";
@@ -92,6 +91,14 @@ public class ServletLogin extends HttpServlet {
 			request.getRequestDispatcher("/index.jsp").forward(request, response);
 
 		}
+	}
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+		daoUsuario=new DAOUsuario();
+
+		super.init(config);
 	}
 
 }

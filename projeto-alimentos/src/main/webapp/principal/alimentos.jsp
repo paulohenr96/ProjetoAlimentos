@@ -15,9 +15,15 @@
 <title>Alimentos</title>
 <link href="<%=request.getContextPath()%>/assets/css/styles.css"
 	rel="stylesheet" />
+	
+<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
+	crossorigin="anonymous"></script>
 <style>
-.table tr:hover {
-	cursor: pointer;
+
+td,th{
+width:10px;
+text-align: center;
+
 }
 </style>
 
@@ -31,14 +37,12 @@
 
 
 
-
-
-
+<input type="hidden" id="caminhocontexto" value="<%=request.getContextPath()%>"/>
 			<main>
 
-				<div class="container-sm px-4" >
+				<div class="container-sm px-4">
 
-					<form method="post"
+					<form method="get"
 						action="<%=request.getContextPath()%>/ServletAlimento"
 						id="form-user">
 						<input type="hidden" id="acao" name="acao" value="">
@@ -59,152 +63,82 @@
 							<div class="numeros">
 								<div class="mb-2">
 									<label for="porcao" class="form-label">Porção</label> <input
-										type="number" min="0" step=".1" class="form-control" required
-										id="porcao" name="porcao"
-										placeholder="">
+										type="number" min="0" step=".1" class="form-control" 
+										id="porcao" name="porcao" placeholder="">
 								</div>
 
 								<div class="mb-2">
 									<label for="caloria" class="form-label">Caloria</label> <input
-										type="number" class="form-control" required id="caloria"
+										type="number" class="form-control"  id="caloria"
 										name="caloria" placeholder="">
 								</div>
 
 
 								<div class="mb-2">
 									<label for="proteina" class="form-label">Proteina</label> <input
-										type="number" class="form-control" required id="proteina"
+										type="number" class="form-control"  id="proteina"
 										name="proteina" placeholder="">
 								</div>
 
 
 								<div class="mb-2">
 									<label for="carboidrato" class="form-label">Carboidrato</label>
-									<input type="number" class="form-control" required
-										id="carboidrato" name="carboidrato"
-										placeholder="">
+									<input type="number" class="form-control" 
+										id="carboidrato" name="carboidrato" placeholder="">
 
 								</div>
 
 								<div class="mb-2">
 									<label for="gordura" class="form-label">Gordura</label> <input
-										type="text" class="form-control" required id="gordura"
+										type="text" class="form-control"  id="gordura"
 										name="gordura" placeholder="">
 
 								</div>
 							</div>
 						</div>
-						<button type="button" onclick="mandarFormulario()"
-							class="btn btn-success">Adicionar</button>
+						<button type="button" onclick="mandarFormulario();"
+							class="btn btn-primary">Adicionar</button>
+							
 
-						<button type="button" onclick="mostrarTodosAlimentos()"
-							class="btn btn-primary">Mostrar Todos</button>
-						<button type="button" onclick="editarAlimento()"
-							class="btn btn-secondary">Editar</button>
+						<button type="button" onclick="editarAlimento();"
+							class="btn btn-primary">Editar</button>
+							<button type="button" onclick="limpar('form-user');verificarFormulario();mensagemSucesso('mensagem','Formulario limpo !')"
+							class="btn btn-primary">Limpar</button>
+							
+							<br><br>
+				<div class="alert alert-info" style="display: none;"
+											id="mensagem" role="alert"></div>
+			<div style= "height:500px">
+						<ul id="paginacacadastroalimento" class="pagination  justify-content-end">
 
+						</ul>
+					<table  id="tabelaalimentoscadastro" class="table table-hover">
+
+					</table>
+			</div>
 
 					</form>
-					<c:if test="${not empty msg }">
-						<div style="margin-top: 10px" class="alert alert-info"
-							role="alert">${msg}</div>
 
-					</c:if>
 
-					<c:if test="${not empty todos}">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>ID</th>
-									<th>Nome</th>
-									<th>Porcao</th>
-									<th>Calorias</th>
-									<th>P</th>
-									<th>C</th>
-									<th>G</th>
-									<th>Remover</th>
 
-								</tr>
-
-							</thead>
-							<tbody>
-								<c:forEach items="${todos}" var="ali">
-									<tr id="${ali.id}" onclick="pegarAlimento(${ali.id})">
-										<td>${ali.id}</td>
-
-										<td>${ali.nome}</td>
-										<td>${ali.porcao}</td>
-										<td>${ali.caloria }</td>
-										<td>${ali.proteina}</td>
-										<td>${ali.carboidrato}</td>
-										<td>${ali.gordura}</td>
-										<td><button type="button" onclick="deletarId(${ali.id})"
-												class="btn btn-danger btn-sm">Excluir</button></td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-						<nav aria-label="Page navigation example">
-							<ul class="pagination justify-content-end">
-
-								<c:if test="${paginaatual!=1 }">
-									<li class="page-item ">
-								</c:if>
-								<c:if test="${paginaatual==1 }">
-									<li class="page-item disabled">
-								</c:if>
-								<a
-									href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${paginaatual-1}"
-									class="page-link">Previous</a>
-
-								</li>
-
-								<c:forEach begin="1" end="${totalpaginas}" step="1" var="p">
-									<c:if test="${p==paginaatual}">
-										<li class="page-item"><a class="page-link"
-											autofocus="autofocus"
-											href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${p}">${p}</a></li>
-									</c:if>
-
-									<c:if test="${p!=paginaatual}">
-										<li class="page-item"><a class="page-link"
-											href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${p}">${p}</a></li>
-									</c:if>
-								</c:forEach>
-								<c:if test="${totalpaginas!=paginaatual}">
-									<li class="page-item">
-								</c:if>
-								<c:if test="${totalpaginas==paginaatual}">
-									<li class="page-item disabled">
-								</c:if>
-								<a class="page-link"
-									href="<%=request.getContextPath()%>/ServletAlimento?acao=mostrartodosalimentospaginados&paginaatual=${paginaatual+1}">Next</a>
-
-								</li>
-							</ul>
-						</nav>
-					</c:if>
 				</div>
 			</main>
-
-
-
-
-
-
-
-						                           <jsp:include page="/footer.jsp"></jsp:include>
+			<jsp:include page="/footer.jsp"></jsp:include>
 
 		</div>
-		
+
 	</div>
-	
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
+	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
 
 	<jsp:include page="javascript-files.jsp"></jsp:include>
 
 	<script type="text/javascript">
+// 	$.mobile.ajaxLinksEnabled = false; 
+
 	function verificarFormulario(){
 		var regex=/^[0-9]*(\.[0-9]{0,2})?$/;
 		const container = document.querySelectorAll(".numeros .mb-2");
@@ -257,54 +191,181 @@
 		return true;
 		
 	}
+
+	
+	exibirElementos(1);
+	function exibirElementos(paginaatual){
+		var caminho=$("#caminhocontexto").val();
+		var urlAction=document.getElementById("form-user").action;
+		var data="acao=alimentoscadastrados";
+		data+="&";
+		data+="paginaatual="+paginaatual;
+		$.get(urlAction,data,function(response,textStatus,xhr){
+			var json=JSON.parse(response);
+			if (json.length>0){
+    			var totalPaginas= xhr
+				.getResponseHeader("totalPagina");	
+    		$("#tabelaalimentoscadastro").empty();
+    		
+    		$("#tabelaalimentoscadastro").append("<thead><tr><th>NOME</th><th>PORÇÃO</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>Ação</th></tr></thead>")
+        	$("#tabelaalimentoscadastro").append("<tbody></tbody>");
+    		json.forEach((e)=>{
+        		var botao=icone("deletar.png","deletarId("+e.id+")","Remover");
+				var botao2=icone("editar.png","pegarAlimento("+e.id+")","Editar");//     			var botao2="<input type='image' width='24px' src='"+caminho+"/assets/img/editar.png'/>";
+        		$("#tabelaalimentoscadastro > tbody").append("<tr  id='"+e.id+"'><td>"+e.nome+"</td><td>"+e.porcao+"</td><td>"+e.caloria+"</td><td>"+e.proteina+"</td><td>"+e.carboidrato+"</td><td>"+e.gordura+"</td><td>"+botao+botao2+"</td></tr>")
+    		
+    		});
+			limpar("form-user");
+
+    		$("#paginacacadastroalimento").empty();
+
+			paginarTabelas("paginacacadastroalimento",totalPaginas,paginaatual,"exibirElementos");
+
+        		
+        	}else {
+	    		$("#tabelaalimentoscadastro").empty();
+	    		$("#tabelaalimentoscadastro").append("<th>Nenhum alimento encontrado.</th>");
+
+
+        	}
+		});
+	}
+	
 	
 		function mandarFormulario(){
-			
-			if (verificarFormulario()){
-				document.getElementById("form-user").submit();
-
+			var urlAction=document.getElementById("form-user").action;
+			if (!$("#id").val().trim==""){
+				mensagemErro("mensagem","Este alimento já está cadastrado.")
+				
+			}
+			else if (!verificarFormulario()){
+				mensagemErro('mensagem','Preencha o formulario corretamente.')
+			}
+			else {
+				var data="acao=novoalimento&nome="+$("#nome").val();
+				data+="&";
+		        data+="porcao="+$("#porcao").val();
+				data+="&";
+				data+="caloria="+$("#caloria").val();
+				data+="&";
+				data+="proteina="+$("#proteina").val();
+				data+="&";
+				data+="carboidrato="+$("#carboidrato").val();
+				data+="&";
+				data+="gordura="+$("#gordura").val();
+				$.get(urlAction,data,function(response){
+					limpar('form-user');
+					mensagemSucesso("mensagem","Alimento adicionado com sucesso !");
+					exibirElementos(1);
+				});
 			}
 			
 		}
-		function mostrarTodosAlimentos() {
-			document.getElementById("form-user").method = "get";
-			var urlAction = document.getElementById("form-user").action;
-
-			window.location.href = urlAction + "?acao=mostrartodosalimentospaginados&paginaatual=1";
-
-		}
+	
 		
 		function pegarAlimento(alimento){
 			var linha=document.getElementById(alimento);
 			document.getElementById("id").value=alimento;
+			mensagemSucesso('mensagem','Edite o Alimento');
+			document.getElementById("nome").value=linha.cells[0].innerHTML;
+			document.getElementById("porcao").value=linha.cells[1].innerHTML;
+			document.getElementById("caloria").value=linha.cells[2].innerHTML;
+			document.getElementById("proteina").value=linha.cells[3].innerHTML;
+			document.getElementById("carboidrato").value=linha.cells[4].innerHTML;
+			document.getElementById("gordura").value=linha.cells[5].innerHTML;
 
-			document.getElementById("nome").value=linha.cells[1].innerHTML;
-			document.getElementById("porcao").value=linha.cells[2].innerHTML;
-			document.getElementById("caloria").value=linha.cells[3].innerHTML;
-			document.getElementById("proteina").value=linha.cells[4].innerHTML;
-			document.getElementById("carboidrato").value=linha.cells[5].innerHTML;
-			document.getElementById("gordura").value=linha.cells[6].innerHTML;
+			verificarFormulario();
 
-			
 		}
 		
 		function editarAlimento(){
 			if (verificarFormulario()){
-			document.getElementById("form-user").method = "get";
-			document.getElementById("acao").value = "editar";
-			document.getElementById("form-user").submit();
+			var urlAction=document.getElementById("form-user").action;
+			
+			var data="acao=editar&nome="+$("#nome").val();
+			data+="&";
+	        data+="porcao="+$("#porcao").val();
+	        data+="&";
+	        data+="id="+$("#id").val();
+			data+="&";
+			data+="caloria="+$("#caloria").val();
+			data+="&";
+			data+="proteina="+$("#proteina").val();
+			data+="&";
+			data+="carboidrato="+$("#carboidrato").val();
+			data+="&";
+			data+="gordura="+$("#gordura").val();
+			$.get(urlAction,data,function(response){
+				
+				var json=JSON.parse(response);
+				console.log(json);
+				if (json.length==0){
+					mensagemSucesso('mensagem','Alimento Editado Com Sucesso');
+					
+				}
+				else{
+					
+					
+					var mensagem="<b>Não foi possivel realizar a ação por que o alimento está sendo usado.</b>";
+				
+					for (var i=0;i<json.length;i++){
+						mensagem+=("<ul> Refeição : "+json[i][0]+"  ("+json[i][1]+"x)</ul>");
+					}
+					mensagemErro('mensagem',mensagem);
+					
+				}
+			
+				limpar('form-user');
+			});
+			
+			
 			}
+		}
+	
+		function deletarId(id){
+// 			document.getElementById("form-user").method = "get";
+          if(confirm("Deseja remover  ?")){
+        	  var urlAction = document.getElementById("form-user").action;
+
+  			var data="acao=deletarid&paginaatual=1&idalimento="+id;
+  			$.get(urlAction,data,function(response){
+  				var json=JSON.parse(response);
+  				if (json.length==0){
+  					mensagemSucesso("mensagem","Alimento removido do cadastro.")
+  	  				exibirElementos(1);
+
+  				}else {
+  					erroAcao(json);
+  				}
+  				
+  			});
+          }
 			
 		}
-		function deletarId(id){
-			document.getElementById("form-user").method = "get";
-			var urlAction = document.getElementById("form-user").action;
-
-			window.location.href = urlAction + "?acao=deletarId&paginaatual=1&idalimento="+id;
-
+		
+		
+		
+		function erroAcao(json){
+			var mensagem="<b>Não foi possivel realizar a ação por que o alimento está sendo usado.</b>";
+			
+			for (var i=0;i<json.length;i++){
+				mensagem+=("<ul> Refeição : "+json[i][0]+"  ("+json[i][1]+"x)</ul>");
+			}
+			mensagemErro('mensagem',mensagem);
 		}
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
 	</script>
 </body>
 </html>

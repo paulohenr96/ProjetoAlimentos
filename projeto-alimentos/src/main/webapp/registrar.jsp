@@ -201,15 +201,13 @@ body {
 				      $('#form-cadastro').each (function(){
 				    	  this.reset();
 				    	});
-				      $('#mensagem').show();
-				      $('#mensagem').html("Cadastro Efetuado !");
+				     mensagemSucesso("mensagem","Cadastro efetuado com sucesso.");
 			      }
 			      else {
 				      $('#mensagem').show();
 
 				      $('#mensagem').html(response);
-				      alert(response);
-				      console.log(response);
+					     mensagemErro("mensagem",response);
 
 
 			      }

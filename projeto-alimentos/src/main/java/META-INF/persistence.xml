@@ -20,6 +20,13 @@
 <!-- 		<property name="javax.persistence.jdbc.user" value="paulo1930_postgres"/> -->
 <!-- 		<property name="javax.persistence.jdbc.password" value=".RP?COCn@N^F"/> -->
 		
+		
+<!-- 		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/paulo1930_alimentos"/> -->
+<!-- 		<property name="javax.persistence.jdbc.user" value="paulo1930_user"/> -->
+<!-- 		<property name="javax.persistence.jdbc.password" value="hxvBwH.Gq}wf"/> -->
+		
+		
+		
 		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/projetoalimentos"/>
 		<property name="javax.persistence.jdbc.user" value="postgres"/>
 		<property name="javax.persistence.jdbc.password" value="senha"/>

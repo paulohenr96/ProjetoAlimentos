@@ -1,10 +1,12 @@
 package dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import model.ModelAlimentoConsumido;
 import model.ModelAlimentoRefeicao;
 import model.ModelRefeicao;
 import util.JPAUtil;
@@ -18,16 +20,36 @@ public class DAORefeicao extends DAOGeneric<ModelRefeicao> {
 	private String nome = "";
 
 	public Long contarTotalRefeicoes(Long idUserLogado) {
-		String sql = "select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="
+		String sql = "select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=null and macros_id=null and idUserLogado="
 				+ idUserLogado + condicaoNome();
 
 		return retornaLong(sql);
 	}
 
-	public Long contarAlimentosEmRefeicoes(Long idAlimento) {
+	public Long contarRefeicoesComOAlimento(Long idAlimento) {
 		String sql = "select count(1) from " + ModelAlimentoRefeicao.class.getCanonicalName() + " where alimento_id=" + idAlimento;
 
 		return retornaLong(sql);
+	}
+	
+	public List refeicoesAlimentosInnerJoin(Long idAlimento) {
+		String ref="ModelRefeicao";
+		String ali="ModelAlimentoRefeicao";
+		String sql = ""
+				+ "SELECT "
+				+ " "+ref+".nome as refeicao,"
+				+ " count("+ref+".nome) as total"
+				+ " FROM "+ali+" "
+				+ " INNER JOIN  "+ref+" ON "+ref+".id ="+ali+".refeicao_id "
+				+ " where "+ali+".alimento_id = "+idAlimento+" GROUP BY refeicao";
+		return retornaListaEntidadesINNERJOIN(sql);
+	}
+	
+	public List refeicoesContemAlimento(Long idAlimento) {
+		String sql = "from "+ModelAlimentoRefeicao.class.getCanonicalName()+" where alimento_id="+idAlimento;
+		
+		return retornaListaEntidades(sql);
+		
 	}
 
 	public Long contarTotalRefsDieta(Long idDieta) {

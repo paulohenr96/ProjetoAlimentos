@@ -28,9 +28,9 @@
 
 			<main>
 				<div class="container-fluid px-4">
-				
-									<button class="btn btn-link hBack" type="button">VOLTAR</button>
-				
+
+					<button class="btn btn-link hBack" type="button">VOLTAR</button>
+
 					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
 
 
@@ -122,24 +122,35 @@
 						</div>
 
 					</div>
+					
+					<br/>
+										<br/>
+					<hr>
+					<div style="height:400px;">
+						<nav aria-label="Page navigation example">
+							<ul class="pagination" id="paginacao">
 
-					<table class="table todos">
-						
-						
+							</ul>
+						</nav>
+						<table class="table todos">
 
-					</table>
-					<nav aria-label="Page navigation example">
-						<ul class="pagination">
 
-						</ul>
-					</nav>
+
+						</table>
+						<nav aria-label="Page navigation example">
+							<ul class="pagination" id="paginacao">
+
+							</ul>
+						</nav>
+					</div>
+
 				</div>
 			</main>
 
 
 
 			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-				aria-labelledby="exampleModalLabel" aria-hidden="true" >
+				aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -149,29 +160,27 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-						<div class="modal-body" style="height:400px;overflow:scroll">
-						
-						<table class="table" >
-						<thead>
-							<tr>
-								<th scope="col">#</th>
-								<th scope="col">Nome</th>
-								<th scope="col">Quantidade</th>
+						<div class="modal-body" style="height: 400px; overflow: scroll">
 
-								<th scope="col">Remover</th>
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Nome</th>
+										<th scope="col">Quantidade</th>
+
+										<th scope="col">Remover</th>
 
 
-							</tr>
-						</thead>
-						<tbody class="alimentos-refeicao" >
-						</tbody>
+									</tr>
+								</thead>
+								<tbody class="alimentos-refeicao">
+								</tbody>
 
-					</table>
-						
+							</table>
+
 						</div>
-						<div class="modal-footer">
-							
-						</div>
+						<div class="modal-footer"></div>
 					</div>
 				</div>
 			</div>
@@ -181,7 +190,7 @@
 
 
 
-								                           <jsp:include page="/footer.jsp"></jsp:include>
+			<jsp:include page="/footer.jsp"></jsp:include>
 
 		</div>
 	</div>
@@ -233,24 +242,18 @@
 
 					
 
-					var total=xhr.getResponseHeader("totalPagina");
+					var totalPaginas=xhr.getResponseHeader("totalPagina");
 
-					var quociente=Math.floor(total/porpagina);
-					var paginas=quociente;
-					
-					if (total%porpagina!=0){
-						paginas++;
-					}
 					var tbody = document.querySelector("tbody.todos-alimentos");
 					tbody.innerHTML="";
 					
 					json.forEach((e)=>{
 						
 						
-// 						document.querySelector("table > tbody").innerHTML+="<tr><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.porcao+"</td><td>"+e.caloria+"</td><td>"+e.proteina+"</td><td>"+e.carboidrato+"</td><td>"+e.gordura+"</td></tr>"
 						
 						
 						var linha=tbody.insertRow();
+						linha.setAttribute("id",e.id);
 						
 						linha.insertCell().innerHTML=e.id;
 						linha.insertCell().innerHTML=e.nome;
@@ -259,43 +262,14 @@
 						linha.insertCell().innerHTML=e.proteina;
 						linha.insertCell().innerHTML=e.carboidrato;
 						linha.insertCell().innerHTML=e.gordura;
-						var button=$("<button>").addClass("btn btn-success").attr("type","button").html("Selecionar").click(function (){
-							document.querySelector("#id").value=e.id;
-							document.querySelector("#nome").value=e.nome;
-
-						});
-						linha.insertCell().append(button[0]);
-
+						var button = icone("selecionar.png","pegarAlimento("+e.id+")","Selecionar");
+						linha.insertCell().innerHTML=button;
 
 						
 					});
 					$("ul.pagination").empty();
-					if (paginaatual>1){
-// 						document.querySelector("ul.pagination").innerHTML="<li class=\"page-item\"><a class=\"page-link\" onclick=\"mostrarListaAlimentos("+(paginaatual-1)+")\" href=\"#\">Anterior</a></li>";
-						var anterior=$("<li>").addClass("page-item");
-						var link=$("<a>").addClass("page-link").attr("href","#").attr("onclick","mostrarListaAlimentos("+(paginaatual-1)+")").html("Anterior").click(function (){
-						});
-						console.log(link[0]);
-						anterior.append(link[0])
-						$("ul.pagination").append(anterior[0]);
-						
-				
-					}else{
-						document.querySelector("ul.pagination").innerHTML="<li class=\"page-item disabled\"><a class=\"page-link\" onclick=\"mostrarListaAlimentos("+(paginaatual-1)+")\" href=\"#\">Anterior</a></li>";
-
-					}
-				
-					for (var i=1;i<=paginas;i++){
-						document.querySelector("ul.pagination").innerHTML+="<li class=\"page-item\"><a class=\"page-link\" onclick=\"mostrarListaAlimentos("+i+")\" href=\"#\">"+i+"</a></li>";
-
-					}
-					if (paginaatual<paginas){
-						document.querySelector("ul.pagination").innerHTML+="<li class=\"page-item\"><a class=\"page-link\" onclick=\"mostrarListaAlimentos("+(paginaatual+1)+")\" href=\"#\">Proxima</a></li>";
-
-					}else{
-						document.querySelector("ul.pagination").innerHTML+="<li class=\"page-item disabled\"><a class=\"page-link\" onclick=\"mostrarListaAlimentos("+(paginaatual+1)+")\" href=\"#\">Proxima</a></li>";
-
-					}
+					paginarTabelas("paginacao", totalPaginas, paginaatual, "mostrarListaAlimentos");
+					
 					
 					
 				}else {
@@ -310,6 +284,13 @@
 		    });
 			
 		}
+		function pegarAlimento(id){
+			var linha=document.getElementById(id);
+			
+
+			document.querySelector("#id").value=linha.cells[0].innerHTML;
+			document.querySelector("#nome").value=linha.cells[1].innerHTML;
+		}
 		function verificarFormulario(){
 			var id=$("#id");
 			var quantidade=$("#quantidade");
@@ -322,6 +303,12 @@
 			}else if ($.trim(quantidade.val())==""){
 				$("p.alerta").remove();
 				var aviso=$("<p>").addClass("alerta").css("color","red").html("insira uma quantidade");
+				$("#quantidade").parent().append(aviso[0]);
+				
+				return false;
+			}else if (isNaN(quantidade.val())){
+				$("p.alerta").remove();
+				var aviso=$("<p>").addClass("alerta").css("color","red").html("Quantidade Invalida");
 				$("#quantidade").parent().append(aviso[0]);
 				
 				return false;

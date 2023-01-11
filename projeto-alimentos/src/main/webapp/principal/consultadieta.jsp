@@ -35,9 +35,9 @@
 					<h1>Dieta</h1>
 					<form id="form-user"
 						action="<%=request.getContextPath()%>/ServletDieta" method="get">
-
+<input type="hidden" value="<%=request.getContextPath()%>" id="caminho"/>
 						<input type="hidden" id="id-dieta" name="iddieta" value="${dieta.id}">
-						<input type="hidden" id="acao" name="acao" value="">
+						<input type="hidden" id="acao" name="acao" >
 						
 						<table class="table  table-borderless">
 							<thead>
@@ -68,15 +68,11 @@
 							</tbody>
 						</table>
 
-
-
-						<button type="button" onclick="adicionandoRef()"
-							class="btn btn-primary">Adicionar Refeição</button>
-
+					
 
 					</form>
 
-
+					<h2>Adicione Refeições !</h2>
 					<div id="campo_nome" class="mb-2 ">
 						<label for="nome-novo" class="col-sm-2 col-form-label">Nome</label>
 						<div class="col-sm-10">
@@ -129,7 +125,7 @@
 
 		</div>
 	</div>
-
+	
 	<jsp:include page="javascript-files.jsp"></jsp:include>
 
 	<script
@@ -167,11 +163,17 @@
 
 		
 		function imprimirDieta(){
-			document.getElementById("acao").value="imprimirdieta";
-			
-	    	$("#form-user").submit();
-	    	return false;
+			if ($("div.refeicoes>table>tbody").children().length==0){
+				alert("Você não possui refeições cadastradas nesta dieta, por isso o relatório está indisponível. Cadastre refeições na dieta.")
+			}else{
+				document.getElementById("acao").value="imprimirdieta";
+				var urlAction = document.getElementById("form-user").action;
+				
+		    	$("#form-user").submit();
+		    	return false;
 
+			}
+			
 			
 		}
 		function salvarRefs() {
@@ -192,7 +194,8 @@
 									+ "&id=" + id,
 							success : function(response) {
 								
-								
+								 $("#nome-novo").val("");
+
 								var json=JSON.parse(response);
 								
 								montarTabelaRefeicoes(json);
@@ -253,6 +256,7 @@
 		}
 		
 	var ordem;
+	var vazia=true;
 	function montarTabelaRefeicoes(json){
 		
 		$("div.refeicoes>table>thead").html("");
@@ -261,14 +265,14 @@
 			$("div.refeicoes>table>thead").append("<th>Sem refeições cadastradas.</th>");
 		}else{
 			
-		
-			var thead="<th>REFEICAO</th> 	<th>HORARIO</th> <th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th>	<th>VER</th>	<th>REMOVER</th>";
+			vazia=false;
+			var thead="<th>REFEICAO</th> 	<th>HORARIO</th> <th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th>		<th>AÇÃO</th>";
 			json.sort(compare);
 			$("div.refeicoes>table>thead").append(thead);
 			json.forEach((e)=>{
-				var botaoremover="<button type='button' onclick='deletar("+e.id+")' class='btn btn-danger'>REMOVER</button>";
-				var botaover="<button type='button' onclick='ver("+e.id+")' class='btn btn-success'>VER</button>";
-				$("div.refeicoes > table > tbody").append("<tr id=\""+e.id+"\"><td>"+e.nome+"</td><td>"+e.horario+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaover+"</td><td>"+botaoremover+"</td></tr>")
+				var botaoremover=icone("deletar.png","deletar("+e.id+")","Remover");
+				var botaover=icone("ver.png","ver("+e.id+")","Ver");
+				$("div.refeicoes > table > tbody").append("<tr id=\""+e.id+"\"><td>"+e.nome+"</td><td>"+e.horario+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaover+"  "+botaoremover+"</td></tr>")
 			})
 			
 		}

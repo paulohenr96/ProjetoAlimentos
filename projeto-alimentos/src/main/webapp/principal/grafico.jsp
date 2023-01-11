@@ -16,20 +16,13 @@
 	rel="stylesheet" />
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
 	crossorigin="anonymous"></script>
-</head>
-<body class="sb-nav-fixed">
-	<jsp:include page="header.jsp"></jsp:include>
-	<div id="layoutSidenav">
-		<jsp:include page="navbar.jsp" />
-		<div id="layoutSidenav_content">
 
 
 
 
 
 
-			<main>
-				<div class="container-fluid px-4">
+			
 					<h2>Gráfico de consumo nutricional</h2>
 
 					<form action="<%=request.getContextPath()%>/ServletAlimento"
@@ -61,8 +54,6 @@
 																</div>
 
 					</form>
-				</div>
-			</main>
 
 
 
@@ -73,20 +64,7 @@
 
 
 
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-						class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2022</div>
-						<div>
-							<a href="#">Privacy Policy</a> &middot; <a href="#">Terms
-								&amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
-		</div>
-	</div>
+	
 
 
 
@@ -118,78 +96,84 @@
 					url : urlAction,
 					data : "acao=mostrargrafico&macro=" + macro,
 					success : function(response, textStatus, xhr) {
-
+						
 						var json=JSON.parse(response);
-						
-						var listaMacro;
-						var titulo;
-						var cor;
-						if (macro=='calorias'){
-							listaMacro=json.listaCalorias;
-							titulo="Calorias";
-							cor="brown";
-						}
-						if (macro=='proteina'){
-							listaMacro=json.listaProteinas;
-							titulo="Proteinas";
-							cor="blue";
+						if (json.listaData.length>0){
+							alert("Aqui");
+							var listaMacro;
+							var titulo;
+							var cor;
+							if (macro=='calorias'){
+								listaMacro=json.listaCalorias;
+								titulo="Calorias";
+								cor="brown";
+							}
+							if (macro=='proteina'){
+								listaMacro=json.listaProteinas;
+								titulo="Proteinas";
+								cor="blue";
 
-						}
-						if (macro=='carboidrato'){
-							listaMacro=json.listaCarboidratos;
-							titulo="Carboidratos";
-							cor="green";
+							}
+							if (macro=='carboidrato'){
+								listaMacro=json.listaCarboidratos;
+								titulo="Carboidratos";
+								cor="green";
 
-						}
-						if (macro=='gordura'){
-							listaMacro=json.listaGorduras;
-							titulo="Gorduras";
-							cor="orangered";
+							}
+							if (macro=='gordura'){
+								listaMacro=json.listaGorduras;
+								titulo="Gorduras";
+								cor="orangered";
+								
+
+							}
+							myChart.destroy();
 							
-
+							myChart = new Chart(
+								    document.getElementById('myChart'),
+								    {
+									    type: 'line',
+									    data:  {
+										    labels:json.listaData  ,
+										    datasets: [{
+										      label: 'Proteinas',
+										      backgroundColor: 'blue',
+										      borderColor: 'blue',
+										      data: json.listaProteinas,
+										    },
+										    {
+											      label: 'Gorduras',
+											      backgroundColor: 'orangered',
+											      borderColor: 'orangered',
+											      data: json.listaGorduras,
+											},
+											{
+											      label: 'Carboidratos',
+											      backgroundColor: 'green',
+											      borderColor: 'green',
+											      data: json.listaCarboidratos,
+											}
+										    
+										    
+										    ]
+										  },
+									    options: {
+									        scales: {
+									            x: {
+									              type: 'time',
+									              time:{
+									            	  unit:'day'
+									              }
+									            }
+									          }}
+									  }
+								  );
+							console.log(response);
+						}else {
+							alert("Vazio")
+							$("#myChart").hide();
 						}
-						myChart.destroy();
 						
-						myChart = new Chart(
-							    document.getElementById('myChart'),
-							    {
-								    type: 'line',
-								    data:  {
-									    labels:json.listaData  ,
-									    datasets: [{
-									      label: 'Proteinas',
-									      backgroundColor: 'blue',
-									      borderColor: 'blue',
-									      data: json.listaProteinas,
-									    },
-									    {
-										      label: 'Gorduras',
-										      backgroundColor: 'orangered',
-										      borderColor: 'orangered',
-										      data: json.listaGorduras,
-										},
-										{
-										      label: 'Carboidratos',
-										      backgroundColor: 'green',
-										      borderColor: 'green',
-										      data: json.listaCarboidratos,
-										}
-									    
-									    
-									    ]
-									  },
-								    options: {
-								        scales: {
-								            x: {
-								              type: 'time',
-								              time:{
-								            	  unit:'day'
-								              }
-								            }
-								          }}
-								  }
-							  );
-						console.log(response);
 					},
 				}).fail(
 						function(xhr, status, errothrown) {

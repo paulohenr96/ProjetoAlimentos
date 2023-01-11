@@ -25,7 +25,13 @@ import org.hibernate.annotations.LazyCollectionOption;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class ModelConsumidoDia {
+public class ModelConsumidoDia implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1298944819715758021L;
+
+
 	/**
 	 * 
 	 */

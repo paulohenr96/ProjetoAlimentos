@@ -23,6 +23,8 @@
 
 
 
+			<input type="hidden" id="caminhocontexto"
+				value="<%=request.getContextPath()%>" />
 
 
 
@@ -33,8 +35,8 @@
 						action="<%=request.getContextPath()%>/ServletAlimento">
 						<input type="hidden" id="acao" value="">
 						<div class="mb-2">
-							<label for="nome">Nova Refeição</label> <input class="form-control"
-								name="nome" required id="nome" type="text"
+							<label for="nome">Nova Refeição</label> <input
+								class="form-control" name="nome" required id="nome" type="text"
 								placeholder="Nome da refeição" />
 						</div>
 
@@ -47,21 +49,26 @@
 									class="btn btn-primary btn-block">Criar</button>
 							</div>
 						</div>
-						<span class="aviso"></span>
+						<br><br>
+						<div class="alert alert-info" style="display: none;" id="mensagem"
+							role="alert"></div>
 					</form>
+					<div>
+						<nav aria-label="Page navigation example">
+							<ul class="pagination" id="paginacaorefeicoes">
 
-					<table class="table table-striped">
-						<thead>
+							</ul>
+						</nav>
+						<table class="table table-striped">
+							<thead>
 
-						</thead>
-						<tbody></tbody>
-					</table>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
 
-					<nav aria-label="Page navigation example">
-						<ul class="pagination">
 
-						</ul>
-					</nav>
+
 				</div>
 			</main>
 
@@ -74,7 +81,7 @@
 
 
 
-									                           <jsp:include page="/footer.jsp"></jsp:include>
+			<jsp:include page="/footer.jsp"></jsp:include>
 
 		</div>
 	</div>
@@ -84,9 +91,9 @@
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
+
+
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
-
-
 
 	<script type="text/javascript">
 	document.querySelector(".table > tbody").innerHTML="<div class=\"spinner-border\" role=\"status\">  <span class=\"sr-only\">Loading...</span>  </div>";
@@ -111,7 +118,7 @@
 						data : "acao=novarefeicao&nome=" + nome,
 						success : function(response) {
 							mostrarTodasRefeicoes(1);
-							$(".aviso").html("Refeição "+nome+" adicionada com sucesso.").attr("style","color:green;font-weight:bold;");
+							mensagemSucesso("mensagem","Refeição adicionada com sucesso.")
 						}
 
 					}).fail(function(xhr, status, errorThrown) {
@@ -119,15 +126,18 @@
 			});
 			
 			}else {
-				$(".aviso").html("Insira um nome.").attr("style","color:red;font-weight:bold;");
 
+				mensagemErro("mensagem","Insira um nome para a refeição.")
 			}
 		}
+		
 		var p=1;
 		mostrarTodasRefeicoes(1);
 		function mostrarTodasRefeicoes(paginaatual) {
 			var urlAction=document.getElementById("form-user").action;
 			var porpagina=5;
+			var caminho=$("#caminhocontexto").val();
+
 			p=paginaatual;
 			$.ajax(
 					{
@@ -145,36 +155,23 @@
 									"<th scope=\"col\">Proteinas</th>"+
 									"<th scope=\"col\">Carboidratos</th>"+
 									"<th scope=\"col\">Gorduras</th>"+
-									"<th scope=\"col\">Remover</th>"+
-									"<th scope=\"col\">Ver</th>"+
+									"<th scope=\"col\">AÇÃO</th>"+
 
 
 								"</tr>")
 						$("ul.pagination").html("");
 						document.querySelector("table >tbody").innerHTML="";
 						json.forEach((e)=>{
-							var botaoremover="<button type=\"button\" onclick=\"excluirRefeicao("+e.id+")\" class=\"btn btn-danger\">EXCLUIR</button>";
-							var botaover="<button type=\"button\" onclick=\"verRefeicao("+e.id+")\" class=\"btn btn-success\">VER</button>";
+							
+			        		var botaoremover=icone("deletar.png","excluirRefeicao("+e.id+")","Remover");
+			        		var botaover=icone("ver.png","verRefeicao("+e.id+")","ver");
 
-							document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+"</td><td>"+botaover+"</td></tr>"
+							document.querySelector("table >tbody").innerHTML+="<tr id=\""+e.id+"\"><td>"+e.id+"</td><td>"+e.nome+"</td><td>"+e.calorias+"</td><td>"+e.proteinas+"</td><td>"+e.carboidratos+"</td><td>"+e.gorduras+"</td><td>"+botaoremover+" "+botaover+"</td></tr>"
 						
 						})
-						var totalPaginas=request.getResponseHeader("totalPagina");
-						for (var i=0;i<totalPaginas;i++){
-							if (paginaatual==(i+1)){
-								document.querySelector("ul.pagination").innerHTML+="<li onclick=\"mostrarTodasRefeicoes("+(i+1)+")\" class=\"page-item active\"><a class=\"page-link\" href=\"#\">"+(i+1)+"</a></li>"			
+								var totalPaginas=request.getResponseHeader("totalPagina");
 
-							}else{
-								document.querySelector("ul.pagination").innerHTML+="<li onclick=\"mostrarTodasRefeicoes("+(i+1)+")\" class=\"page-item\"><a class=\"page-link\" href=\"#\">"+(i+1)+"</a></li>"			
-
-							}
-							
-						
-						
-						
-						
-						}
-						
+						paginarTabelas('paginacaorefeicoes',totalPaginas,paginaatual,"mostrarTodasRefeicoes");
 						}else {
 							$("table>thead").html("Você não possui refeições cadastradas.");
 							$("table>tbody").empty();
@@ -205,8 +202,7 @@
 						
 						$("#"+idrefeicao).remove();
 						mostrarTodasRefeicoes(p);
-						$(".aviso").html("Refeição removida com sucesso.").attr("style","color:green;font-weight:bold;");
-
+						mensagemSucesso("mensagem","Refeição removida com sucesso ! .")
 						
 						}
 
@@ -222,5 +218,6 @@
 				window.location.href = urlAction + "?acao=consultarrefeicao&idrefeicao=" + refeicao;
 		}
 	</script>
+
 </body>
 </html>

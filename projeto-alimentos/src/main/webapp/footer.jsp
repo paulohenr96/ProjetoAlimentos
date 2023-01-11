@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <link href="assets/css/styles.css" rel="stylesheet" />
 
-<title>Insert title here</title>
 </head>
 <body>
 	<div id="layoutAuthentication_footer">

@@ -23,8 +23,7 @@
 		<jsp:include page="navbar.jsp" />
 		<div id="layoutSidenav_content">
 
-
-
+		
 
 
 
@@ -35,7 +34,27 @@
 
 					<form id="form-user"
 						action="<%=request.getContextPath()%>/ServletUsuario"
-						method="post">
+						method="post" enctype="multipart/form-data">
+						<div class="divfoto">
+	<c:if test="${empty user.extensaoFoto}">
+				<img alt="imagem user" id="fotoBase64"
+								src="<%=request.getContextPath()%>/assets/img/user-1.png"
+								width="70px"> <input name="imagem" style="display: none;"
+								accept="img/" id="fileFoto" class="form-control"
+								class="custom-file-input" type="file">
+			</c:if>
+			<c:if test="${not empty user.extensaoFoto}">
+			
+			<img alt="imagem user" id="fotoBase64"
+								src="data:image/${user.extensaoFoto};base64,${user.foto}"
+								width="70px"> <input name="imagem" style="display: none;"
+								accept="img/" id="fileFoto" class="form-control"
+								class="custom-file-input" type="file">
+			</c:if>
+
+							
+
+						</div>
 
 						<div class="mb-2 col-2">
 							<label for="id">ID</label> <input type="text"
@@ -63,17 +82,18 @@
 								value="${user.login}" readonly>
 						</div>
 
-						<div class="form-group col-4 mb-2">
-							<label for="senha">Senha</label> <input type="password"
-								class="form-control" id="senha" name="senha"
-								value="${user.senha}" readonly>
-						</div>
+
 
 					</form>
 
 
-					<button type="button" class="btn btn-primary btn-editar"
-						onclick="editarPerfil()">Editar</button>
+					<br />
+
+					<p>${msg_atualiza_perfil}</p>
+					<button type="button" id="botaoeditar"
+						class="btn btn-primary btn-editar" onclick="editarPerfil()">Editar</button>
+					<button type="button" id="botaosalvar" class="btn btn-success"
+						style="display: none;" onclick="salvar()">Salvar</button>
 					<button data-toggle="modal" data-target="#modalsenha" type="button"
 						class="btn btn-primary">Alterar Senha</button>
 
@@ -120,9 +140,9 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
-								onclick="alterarsenha()">Save changes</button>
+								onclick="alterarsenha()">Salvar</button>
 							<button type="button" class="btn btn-secondary"
-								data-dismiss="modal">Close</button>
+								data-dismiss="modal">Cancelar</button>
 						</div>
 					</div>
 				</div>
@@ -158,33 +178,34 @@
 
 			$(".editavel > input").attr("readonly", false);
 			$(".btn-editar").remove();
-			$("main > div.container-fluid")
-					.append(
-							$("<button type=\"button\" class=\"btn btn-success\" onclick=\"salvar()\">Salvar</button>"));
+			$("#fileFoto").show();
+			$("#botaosalvar").show();
+
 		}
 
 		function salvar() {
+			$("#form-user").submit();
+			// 			var urlAction = document.getElementById("form-user").action;
+			// 			var data = "nome=" + $('#nome').val();
+			// 			data += "&";
+			// 			data += "sobrenome=" + $('#sobrenome').val();
+			// 			data += "&";
+			// 			data += "email=" + $('#email').val();
+			// 			data += "&";
+			// 			data += "login=" + $('#login').val();
+			// 			data += "&";
+			// 			data += "imagem=" + $('#fileFoto').val();
+			// 			$.post(urlAction, data, function(response) {
+			// 				if (response === 'ERRO') {
+			// 					alert(response);
 
-			var urlAction = document.getElementById("form-user").action;
-			var data = "nome=" + $('#nome').val();
-			data += "&";
-			data += "sobrenome=" + $('#sobrenome').val();
-			data += "&";
-			data += "email=" + $('#email').val();
-			data += "&";
-			data += "login=" + $('#login').val();
-			$.post(urlAction, data, function(response) {
-				if (response === 'ERRO') {
-					alert(response);
+			// 				} else {
 
-				} else {
-				
+			// 					location.reload(true);
 
-					location.reload(true);
+			// 				}
+			// 			});
 
-				}
-			});
-			
 		}
 
 		function alterarsenha() {

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,9 @@ public class ModelUsuario implements Serializable{
 	private String email;	
 	private String senha;
 	
+	@Column(columnDefinition="TEXT")
+	private String foto;
+	private String extensaoFoto;
 	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonIgnore
@@ -98,6 +102,18 @@ public class ModelUsuario implements Serializable{
 				&& Objects.equals(id, other.id) && Objects.equals(login, other.login)
 				&& Objects.equals(nome, other.nome) && Objects.equals(senha, other.senha)
 				&& Objects.equals(sobreNome, other.sobreNome);
+	}
+	public String getExtensaoFoto() {
+		return extensaoFoto;
+	}
+	public void setExtensaoFoto(String extensaoFoto) {
+		this.extensaoFoto = extensaoFoto;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 	
 	

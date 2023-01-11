@@ -43,7 +43,7 @@
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
 									<span id="media-calorias"></span>
-									
+
 								</div>
 							</div>
 						</div>
@@ -53,18 +53,18 @@
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
 									<span id="media-proteinas"></span>
-									
+
 								</div>
 							</div>
 						</div>
-				
+
 
 						<div class="col-sm-3 col-md-2">
 							<div class="card bg-success text-white mb-4">
 								<div class="card-body">Carboidratos</div>
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
-																		<span id="media-carboidratos"></span>
+									<span id="media-carboidratos"></span>
 
 								</div>
 							</div>
@@ -74,14 +74,14 @@
 								<div class="card-body">Gorduras</div>
 								<div
 									class="card-footer d-flex align-items-center justify-content-between">
-																		<span id="media-gorduras"></span>
+									<span id="media-gorduras"></span>
 
 								</div>
 							</div>
 						</div>
 
 						<div class="container-fluid px-4">
-						<h2>Histórico</h2>
+							<h2>Histórico</h2>
 							<select id="select_historico" onchange="mostrarHistorico(1)"
 								class="custom-select custom-select-lg mb-3">
 								<option value="2">2 por pagina</option>
@@ -94,20 +94,21 @@
 								id="form-macro" method="get">
 								<input type="hidden" name="acao" value=""
 									id="acaoRelatorioImprimirTipo">
-								<button type="button" id="btn_historico" onclick="imprimirHtml()"
-									class="btn btn-dark  btn-sm">Imprimir Histórico</button>
+								<button type="button" id="btn_historico"
+									onclick="imprimirHtml()" class="btn btn-dark  btn-sm">Imprimir
+									Histórico</button>
 
 
-<table class="table table-striped-columns">
-						<thead>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-					<nav aria-label="Page navigation example">
-						<ul class="pagination">
-						</ul>
-					</nav>
+								<table class="table table-striped-columns">
+									<thead>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+								<nav aria-label="Page navigation example">
+									<ul class="pagination">
+									</ul>
+								</nav>
 
 
 
@@ -119,28 +120,34 @@
 
 
 								<h2>Gráfico de Macronutrientes Consumidos</h2>
+								<div style="display: none;" id="avisografico">O seu histórico está
+									vazio.</div>
 
-								<input type="hidden" id="acao" name="acao" value=""> <select
-									id="macro" class="form-select mb-2"
-									aria-label="Default select example">
-									<option selected value="todos">Todos</option>
-									<option value="calorias">Calorias</option>
+								<div id="dadosgrafico" style="display: none">
 
-									<option value="proteina">Proteina</option>
-									<option value="gordura">Gordura</option>
-									<option value="carboidrato">Carboidrato</option>
-								</select>
+									<input type="hidden" id="acao" name="acao" value=""> <select
+										id="macro" class="form-select mb-2"
+										aria-label="Default select example">
+										<option selected value="todos">Todos</option>
+										<option value="calorias">Calorias</option>
 
-								<button type="button" onclick="mostrarGrafico()"
-									class="btn btn-dark">Pesquisar</button>
+										<option value="proteina">Proteina</option>
+										<option value="gordura">Gordura</option>
+										<option value="carboidrato">Carboidrato</option>
+									</select>
+
+									<button type="button" onclick="mostrarGrafico()"
+										class="btn btn-dark">Pesquisar</button>
 
 
 
 
-								<div>
-									<canvas id="myChart"></canvas>
+									<div>
+										<canvas id="myChart"></canvas>
+									</div>
+
+
 								</div>
-
 							</form>
 						</div>
 
@@ -161,7 +168,7 @@
 
 
 
-									                           <jsp:include page="/footer.jsp"></jsp:include>
+			<jsp:include page="/footer.jsp"></jsp:include>
 
 		</div>
 	</div>
@@ -200,7 +207,8 @@
 							success : function(response, textStatus, xhr) {
 
 								var json = JSON.parse(response);
-
+								if (json.listaData.length>0){
+									$("#dadosgrafico").show();
 								var listaMacro;
 								var titulo;
 								var cor;
@@ -279,6 +287,9 @@
 									}
 								});
 								console.log(response);
+								}else {
+									$("#avisografico").show();
+								}
 							},
 						}).fail(
 						function(xhr, status, errothrown) {

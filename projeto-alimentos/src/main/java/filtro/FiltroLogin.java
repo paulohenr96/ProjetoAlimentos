@@ -1,4 +1,4 @@
-package controller;
+package filtro;
 
 import java.io.IOException;
 
@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -53,6 +54,10 @@ public class FiltroLogin extends HttpFilter implements Filter {
 			return;
 		}
 		else {
+			HttpServletResponse httpres = (HttpServletResponse) response;
+			httpres.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+			httpres.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+			httpres.setDateHeader("Expires", 0); // Proxies.
 			
 			chain.doFilter(request, response);
 

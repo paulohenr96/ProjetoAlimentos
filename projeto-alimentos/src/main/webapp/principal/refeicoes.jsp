@@ -63,12 +63,13 @@
 					<button type="button" onclick="limparMacros()"
 						class="btn btn-primary">Limpar</button>
 
-					<button type="button" class="btn btn-primary" onclick="exibirModal(1)">Ver
-						Alimentos</button>
-<button type="button" class="btn btn-primary" onclick="exibirModalRefs(1)">Ver
-						Refeições</button>
+					<button type="button" class="btn btn-primary"
+						onclick="exibirModal(1)">Ver Alimentos</button>
+					<button type="button" class="btn btn-primary"
+						onclick="exibirModalRefs(1)">Ver Refeições</button>
 
-
+					<br>
+					<br>
 					<div id="aviso_1"></div>
 
 
@@ -86,7 +87,7 @@
 
 						<input class="form-check-input" type="radio" id="radio-alimento"
 							name="radio-pesquisa" value="alimento" checked> <label
-							class="form-check-label"  for="radio-alimento">Alimento </label> <input
+							class="form-check-label" for="radio-alimento">Alimento </label> <input
 							class="form-check-input" type="radio" id="radio-refeicao"
 							value="refeicao" name="radio-pesquisa"> <label
 							class="form-check-label" for="radio-refeicao">Refeição </label>
@@ -95,14 +96,6 @@
 					<button type="button" onclick="pesquisar()" class="btn btn-dark">Pesquisar</button>
 
 
-					<table id="tabela-pagina" class="table table-hover">
-
-					</table>
-					<nav aria-label="Page navigation example">
-						<ul id="paginacao-pagina" class="pagination justify-content-end">
-
-						</ul>
-					</nav>
 
 
 
@@ -123,10 +116,22 @@
 									<button type="button" class="btn-close" data-bs-dismiss="modal"
 										aria-label="Close"></button>
 								</div>
-								<div class="modal-body"></div>
+								<div class="modal-body">
+									<table class='table table-striped' id='comi-hoje'></table>
+
+									<nav aria-label="Page navigation example">
+										<ul class="pagination" id="paginacaoali">
+
+										</ul>
+									</nav>
+
+
+									<table id='tabelamacros' class="table info-macros"
+										style="text-align: center;"></table>
+								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
-										data-bs-dismiss="modal">Close</button>
+										data-bs-dismiss="modal">Fechar</button>
 								</div>
 							</div>
 						</div>
@@ -139,6 +144,18 @@
 
 
 
+					<div style="height: 400px" id="tabelapesquisa">
+						<nav aria-label="Page navigation example">
+							<ul id="paginacao-pagina" class="pagination justify-content-end">
+
+							</ul>
+						</nav>
+
+						<table id="tabela-pagina" class="table table-hover">
+
+						</table>
+
+					</div>
 
 
 
@@ -154,7 +171,7 @@
 
 
 
-								                           <jsp:include page="/footer.jsp"></jsp:include>
+			<jsp:include page="/footer.jsp"></jsp:include>
 
 		</div>
 	</div>
@@ -174,7 +191,7 @@
 	
 	
 		function pesquisar() {
-			
+			$("#tabelapesquisa").append($(spinner_azul))
 			
 			var radio=0;
 			if ($("#radio-alimento").is(":checked")){
@@ -201,38 +218,27 @@
 			      "&acao=pesquisaralimentos"+
 			      "&paginaatual="+paginaatual,
 			      success: function (response, textStatus, xhr) {
-			    	  
+						$("div.spinner-border").remove();
 			    		var json = JSON.parse(response);
 			    		if (json.length>0){
 			    			var totalPaginas= xhr
-							.getResponseHeader("totalpagina");	
+							.getResponseHeader("totalPagina");	
 
 			    		$("#tabela-pagina").empty();
 			    		
-			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>PORÇÃO</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th></tr></thead>")
+			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>PORÇÃO</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>AÇÃO</th></tr></thead>")
 			        	$("#tabela-pagina").append("<tbody></tbody>");
 			    		json.forEach((e)=>{
-			        		var botao="<button onclick='pegarAlimento("+e.id+")' class='btn btn-success'>Selecionar</button>";
+			        		var botao=icone("comer.png","pegarAlimento("+e.id+")","Comer");
 			    			$("#tabela-pagina > tbody").append("<tr id='"+e.id+"'><td>"+e.nome+"</td><td>"+e.porcao+"</td><td>"+e.caloria+"</td><td>"+e.proteina+"</td><td>"+e.carboidrato+"</td><td>"+e.gordura+"</td><td>"+botao+"</td></tr>")
-			    			    		
+			    			    		console.log(e.nome);
 			    		
 			    		});
 			    		
 			    		
 			    		$("#paginacao-pagina").empty();
-						for (var i=1;i<=totalPaginas;i++){
-							
-							var n="";
-							if (i==paginaatual){
-								 n="<li onclick='pesquisarAlimento("+i+")' class='page-item active'> <a  href='#' class='page-link'>"+i+"</a></li> ";
+						paginarTabelas("paginacao-pagina",totalPaginas,paginaatual,"pesquisarAlimento");
 
-							}else{
-								 n="<li onclick='pesquisarAlimento("+i+")' class='page-item '> <a  href='#' class='page-link'>"+i+"</a></li> ";
-
-							}
-							$("#paginacao-pagina").append(n);
-
-						}			    	
 			        		
 			        	}else {
 				    		$("#tabela-pagina").empty();
@@ -248,7 +254,8 @@
 		
 		function verAlimentosRefeicao(idrefeicao){
 			
-			$("div.modal-body").html("");
+			$("#comi-hoje").remove();
+
 			$("#exampleModal").modal('show');
 
 			$("div.modal-body").append("<table class='table' style='text-align:center;'> </table>");
@@ -302,7 +309,6 @@
 			var nome = document.getElementById("nome-pesquisa").value;
 
 
-
 		    $.ajax({
 			      method: "get",
 			      url: urlAction,
@@ -310,19 +316,20 @@
 			      "&acao=pesquisarrefeicao"+
 			      "&paginaatual="+paginaatual,
 			      success: function (response, textStatus, xhr) {
-			    	  
+						$("div.spinner-border").remove();
+
 			    		var json = JSON.parse(response);
 			    		if (json.length>0){
 			    			var totalPaginas= xhr
-							.getResponseHeader("totalpagina");	
-
+							.getResponseHeader("totalPagina");	
 			    		$("#tabela-pagina").empty();
 			    		
-			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>SELECIONAR</th><th>VER</th></tr></thead>")
+			    		$("#tabela-pagina").append("<thead><tr><th>NOME</th><th>CALORIAS</th><th>PROTEINAS</th><th>CARBOIDRATOS</th><th>GORDURAS</th><th>AÇÃO<th/></tr></thead>")
 			        	$("#tabela-pagina").append("<tbody></tbody>");
 			    		json.forEach((e)=>{
-			        		var botao="<button onclick='addRefeicao("+e.id+")' class='btn btn-success'>Adicionar</button>";
-			        		var botaoVerAlimentos="<button onclick='verAlimentosRefeicao("+e.id+")' class='btn btn-primary'>Ver Alimentos</button>";
+			        		var botao=icone("comer.png","addRefeicao("+e.id+")","Comer");
+			        		var botaoVerAlimentos=icone("ver.png","verAlimentosRefeicao("+e.id+")","VER");
+
 
 			    			$("#tabela-pagina > tbody").append("<tr id='"+e.id+"'></tr>");
 			    			$("#"+e.id).append("<td>"+e.nome+"</td>")
@@ -330,8 +337,7 @@
 			    			$("#"+e.id).append("<td>"+e.proteinas+"</td>");
 			    			$("#"+e.id).append("<td>"+e.carboidratos+"</td>");
 			    			$("#"+e.id).append("<td>"+e.gorduras+"</td>");
-			    			$("#"+e.id).append("<td>"+botao+"</td>");
-			    			$("#"+e.id).append("<td>"+botaoVerAlimentos+"</td>");
+			    			$("#"+e.id).append("<td>"+botao+" "+botaoVerAlimentos+"</td>");
 
 			    			    		
 			    		
@@ -340,19 +346,8 @@
 			    		
 			    		$("#paginacao-pagina").empty();
 
-						for (var i=1;i<=totalPaginas;i++){
-							
-							var n="";
-							if (i==paginaatual){
-								 n="<li onclick='pesquisarRefeicao("+i+")' class='page-item active'> <a  href='#' class='page-link'>"+i+"</a></li> ";
+						paginarTabelas("paginacao-pagina",totalPaginas,paginaatual,"pesquisarRefeicao");
 
-							}else{
-								 n="<li onclick='pesquisarRefeicao("+i+")' class='page-item '> <a  href='#' class='page-link'>"+i+"</a></li> ";
-
-							}
-							$("#paginacao-pagina").append(n);
-
-						}			    	
 			        		
 			        	}else {
 				    		$("#tabela-pagina").empty();
@@ -367,56 +362,46 @@
 		}
 		
 		function verificarFormulario(){
-			var erro=0;
-			  var quantidade=document.getElementById("quantidade");
-			  var idselecionado = document.getElementById("idselecionado");
-				var data=document.getElementById("data");
-				
-			  if (document.querySelector(".alerta")!=null){
-				  document.querySelector(".alerta").remove();  
-			  }
-			  
-			  if (idselecionado.value=="" ){
-				idselecionado.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Por favor Selecione Um alimento na Lista abaixo.</span>";
+			var quantidade=document.getElementById("quantidade");
+			var idselecionado = document.getElementById("idselecionado");
+			var data=document.getElementById("data");
+	        if (idselecionado.value=="" ){
+				mensagemErro("aviso_alimento","Nenhum Alimento Selecionado");
 				return false;
 			}
-			
 			if (quantidade.value==""){
-				
-				erro++;
-				quantidade.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Insira uma Quantidade</span>";
+				mensagemErro("aviso_alimento","Selecione uma quantidade");
 				return false;
 			} 
-			
-			
 			return true;
-			
 		}
 		
 		function addRefeicao(idrefeicao) {
 			  var urlAction = document.getElementById("form-user").action;
 			  var data=document.getElementById("data").value;
-			    $.ajax({
-			      method: "get",
-			      url: urlAction,
-			      data: "id=" + idrefeicao +
-			      "&acao=adicionarrefeicaomacros"+
-			      "&data="+data,
-			      success: function (response, textStatus, xhr) {
-			    	  var json=JSON.parse(response);
-			    	  console.log(json);
+			  if (verificarData()){
+				  $.ajax({
+				      method: "get",
+				      url: urlAction,
+				      data: "id=" + idrefeicao +
+				      "&acao=adicionarrefeicaomacros"+
+				      "&data="+data,
+				      success: function (response, textStatus, xhr) {
+						if (response.trim==""){
+							mensagemErro("aviso_1","Erro ao adicionar a refeição.");
+						}				else {
+					    	mensagemSucesso("aviso_1","Refeição Adicionada")
 
-// 			    	  var ali_n=json.listaAlimentos.length;
-// 			    	  var ref_n=json.refeicoes.length;
-			    	  $("#aviso_1").empty()
-			    	  $("#aviso_1").append("<span style='color:green'>Refeicao adicionada.</span>")
-			    	
+						}	
+				    	
 
 
-			      },
-			    }).fail(function (xhr, status, errorThrown) {
-			      alert("Error ao adicionar refeicao " + xhr.responseText);
-			    });
+				      },
+				    }).fail(function (xhr, status, errorThrown) {
+				      alert("Error ao adicionar refeicao " + xhr.responseText);
+				    });
+			  }
+			  
 			  }
 		
 		
@@ -435,10 +420,10 @@
 			      "&data="+data,
 			      success: function (response, textStatus, xhr) {
 			    	  
-			    		var json = JSON.parse(response);
+			    	var json = JSON.parse(response);
 					
-
-			        adicionar();
+					$("#quantidade").val("");
+			    	mensagemSucesso("aviso_alimento","Alimento adicionado com sucesso.");
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
 			      alert("Error ao adicionar novo alimento " + xhr.responseText);
@@ -448,13 +433,11 @@
 
 		function verificarData(){
 			var data=document.getElementById("data");
-			  if (document.querySelector(".alerta")!=null){
-				  document.querySelector(".alerta").remove();  
-			  }
+			 
 			  
 			  if (data.value=="" || data.value.trim=="" ){
-					data.parentNode.innerHTML+="<span class=\"alerta\" style=\"color:red\">Por favor, selecione uma data.</span>";
-					flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
+					mensagemErro("aviso_1","Selecione uma data.");
+				  flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
 					return false;
 				}
 			  return true;
@@ -471,9 +454,8 @@
 				      data: "acao=limparmacros"+
 				      "&data="+data,
 				      success: function (response, textStatus, xhr) {
-				    	  $("#aviso_1").empty()
-
-						$("#aviso_1").append("<span style='color:green'>Consumos da data "+data+" foram zerados.</span>")
+						
+				    	  mensagemSucesso("aviso_1","Os macros foram zerados para esta data.")							
 
 				      },
 				    }).fail(function (xhr, status, errorThrown) {
@@ -491,24 +473,27 @@
 
 				var linha=document.getElementById(id);
 				var nome=linha.cells[0].innerHTML;
-				$("div.modal-body").html("");
+				limparModal	();
 				$("#exampleModalLabel").html("Insira a quantidade.");
-				 $("div.modal-body").append($("<div class=\"mb-2\">"+
+				$("div.modal-body").append($("<div id='pegaralimento'></div>"))
+				 $("#pegaralimento").append($("<div class=\"mb-2\">"+
 							"<label for=\"idselecionado\" class=\"form-label\">ID</label>" +
 							"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
 							"id=\"idselecionado\" name=\"idselecionado\"></div>"));
-				 $("div.modal-body").append($("<div class=\"mb-2\">"+
+				 $("#pegaralimento").append($("<div class=\"mb-2\">"+
 							"<label for=\"nomeselecionado\" class=\"form-label\">NOME</label>" +
 							"<input type=\"text\" readonly=\"readonly\" class=\"form-control\" required "+
 							"id=\"nomeselecionado\" name=\"nomeselecionado\"></div>"));
-				 $("div.modal-body").append($("<div class=\"mb-2\">"+
+				 $("#pegaralimento").append($("<div class=\"mb-2\">"+
 							"<label for=\"quantidade\" class=\"form-label\">QUANTIDADE</label>" +
 							"<input type=\"text\"  class=\"form-control\" required "+
 							"id=\"quantidade\" name=\"quantidade\"></div>"));
-
-				
+				 $("#pegaralimento").append($("<br><br>"))
+				$("#pegaralimento").append($("<div id='aviso_alimento'></div>"));
+				 
+				 
 				var button="<button type=\"button\" onclick=\"adicionarNovoAlimento()\" class=\"btn btn-warning\">Adicionar</button>";
-				 $("div.modal-body").append($(button));
+				 $("#pegaralimento").append($(button));
 				document.getElementById("nomeselecionado").value=nome;
 				document.getElementById("idselecionado").value=id;
 
@@ -535,11 +520,6 @@
 			      success: function (response, textStatus, xhr) {
 						var json = JSON.parse(response);
 
-// 						console.log(json);
-// 						document.getElementById("data-caloria").innerHTML=json.calorias;
-// 						document.getElementById("data-proteina").innerHTML=json.proteinas;
-// 						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
-// 						document.getElementById("data-gordura").innerHTML=json.gordura;
 						
 						exibirModal(1);
 			      },
@@ -554,7 +534,7 @@
 		function consultarMacros(){
 			  var data=document.getElementById("data").value;
 				 var urlAction = document.getElementById("form-user").action;
-
+				 $("div.modal-body").append("<table id='tabelamacros' class='table info-macros'	style='text-align: center;'></table>")
 		    $.ajax({
 			      method: "get",
 			      url: urlAction,
@@ -562,12 +542,6 @@
 			      success: function (response, textStatus, xhr) {
 						var json = JSON.parse(response);
 
-//						console.log(json);
-//						document.getElementById("data-caloria").innerHTML=json.calorias;
-//						document.getElementById("data-proteina").innerHTML=json.proteinas;
-//						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
-//						document.getElementById("data-gordura").innerHTML=json.gordura;
-						$("div.modal-body").append("<table class=\"table info-macros\" style=\"text-align: center;\"></table>");	
 						$("div.modal-body > table.info-macros").append("<thead><th>Calorias</th><th>Proteinas</th><th>Carboidratos</th><th>Gorduras</th></thead>");
 						$("div.modal-body > table.info-macros ").append("<tbody></tbody>");
 						$("div.modal-body > table.info-macros >tbody").append("<td>"+json.calorias+" kcal</td>");	
@@ -580,19 +554,19 @@
 			      alert("Error ao consultar os macros " + xhr.responseText);
 			    });
 		}
-	
+		$('#exampleModal').on('hidden.bs.modal', function () {
+			  // refresh current page
+			 $("#paginacaoali").empty();
+
+			})
 		
 		function exibirModal(paginaAtual){
 			 var urlAction = document.getElementById("form-user").action;
 			  var data=document.getElementById("data").value;
-				$("div.modal-body").html("");
-				console.log(data);
-			  var spinner="<div class=\"spinner-border text-primary\" role=\"status\">"+
-			  "<span class=\"sr-only\">Loading...</span>"+
-			  "</div>";
+				limparModal();
 			  $("div.modal-body").append($("<table class='table table-striped' id='comi-hoje'></table>"))
-			  $("div.modal-body").append($("<nav aria-label=\"Page navigation example\"><ul id=\"paginacao-modal\" class=\"pagination\"></ul></nav>"))
-			  document.getElementById("comi-hoje").innerHTML=spinner;
+			  
+			  document.getElementById("comi-hoje").innerHTML=spinner_azul;
 			if (verificarData()){
 				$('#exampleModal').modal('show');
 
@@ -609,74 +583,23 @@
 								$("#comi-hoje").html("Sem Alimentos");
 							}
 							else {
-								var tabela="";
-								var previous="";
-								var next="";
-								var paginacao="";
 								$("#comi-hoje").empty();
 								$("#comi-hoje").append("<thead></thead>");
 								$("#comi-hoje > thead").append("<th>id</th");
-
 								$("#comi-hoje > thead").append("<th>Nome</th");
 								$("#comi-hoje > thead").append("<th>Quantidade</th");
 								$("#comi-hoje > thead").append("<th>Tipo</th");
 								$("#comi-hoje > thead").append("<th>Remover</th");
-
-								
-								
 								$("#comi-hoje").append("<tbody></tbody>");
 								for (let i=0;i<json.length;i++){
-									console.log(i);
-									var botao="<button onclick=\"removerAlimento("+json[i].id+","+json[i].quantidade+")\"type=\"button\" class=\"btn btn-danger\">Remover</button>";
-									
-									
-									
-									
-									
-									
-									 var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+json[i].nome+"</td><td>"+json[i].quantidade+"</td><td>Alimento</td><td>"+botao+"</td></tr>"
-								
-										$("#comi-hoje > tbody").append(linha)
-
+									var botao=icone("deletar.png","removerAlimento("+json[i].id+","+json[i].quantidade+")","REMOVER");
+									var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+normalizar(json[i].nome)+"</td><td>"+json[i].quantidade+"</td><td>Alimento</td><td>"+botao+"</td></tr>"
+									$("#comi-hoje > tbody").append(linha)
 								}
-								
-								var totalElementos = xhr
+								var totalPaginas = xhr
 								.getResponseHeader("totalPagina");
-								const quotient = Math.floor(totalElementos/5);
-								const remainder = totalElementos % 5;
-								var totalPagina=quotient;
-								if (remainder!=0){
-									totalPagina++;
-								}
-								for (var i=1;i<=totalPagina;i++){
-									
-									
-									if (paginaAtual==i){
-										
-											paginacao+="<li class=\"page-item active\"  onclick=\"exibirModal("+i+")\"><a  class=\"page-link\" >"+i+"</a></li>";
-									}
-									else {
-										paginacao+="<li class=\"page-item\" onclick=\"exibirModal("+i+")\"><a class=\"page-link\" href=\"#\" >"+i+"</a></li>";
-
-									}
-								}
-								if  (totalPagina>1){
-									previous="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual-1)+")\"><a class=\"page-link\" href=\"#\" ><</a></li>";
-									next="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual+1)+")\"><a class=\"page-link\" href=\"#\" >></a></li>";
-
-									if (paginaAtual==1){
-										previous="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" ><</a></li>";
-
-									}
-									if (paginaAtual==totalPagina){
-										next="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" >></a></li>";
-
-									}
-
-								}
-								document.getElementById("paginacao-modal").innerHTML=previous+paginacao+next;
+								paginarTabelas("paginacaoali",totalPaginas,paginaAtual,"exibirModal");
 								consultarMacros();
-
 							}
 						
 							
@@ -696,20 +619,25 @@
 		
 		
 		
-		
+		function limparModal(){
+			$("#comi-hoje").remove();
+			$("#tabelamacros").remove();
+			$("#pegaralimento").remove();
+
+		}
 		
 		function exibirModalRefs(paginaAtual){
-			 var urlAction = document.getElementById("form-user").action;
+			  var urlAction = document.getElementById("form-user").action;
 			  var data=document.getElementById("data").value;
-				$("div.modal-body").html("");
-				console.log(data);
+			  console.log(data);
+			  limparModal();
+			  $("div.modal-body").append($("<table class='table table-striped' id='comi-hoje'></table>"))
+
 			  var spinner="<div class=\"spinner-border text-primary\" role=\"status\">"+
 			  "<span class=\"sr-only\">Loading...</span>"+
 			  "</div>";
-			  $("div.modal-body").append($("<table class='table table-striped' id='comi-hoje'></table>"))
-			  $("div.modal-body").append($("<nav aria-label=\"Page navigation example\"><ul id=\"paginacao-modal\" class=\"pagination\"></ul></nav>"))
 			  document.getElementById("comi-hoje").innerHTML=spinner;
-			if (verificarData()){
+			  if (verificarData()){
 				$('#exampleModal').modal('show');
 
 				$("#exampleModalLabel").html("Todos as refeicoes consumidas "+data);
@@ -732,63 +660,20 @@
 								$("#comi-hoje").empty();
 								$("#comi-hoje").append("<thead></thead>");
 								$("#comi-hoje > thead").append("<th>id</th");
-
 								$("#comi-hoje > thead").append("<th>Nome</th");
 								$("#comi-hoje > thead").append("<th>Remover</th");
-
-								
-								
 								$("#comi-hoje").append("<tbody></tbody>");
 								for (let i=0;i<json.length;i++){
 									console.log(i);
-									var botao="<button onclick=\"removerRefeicao("+json[i].id+","+json[i].quantidade+")\"type=\"button\" class=\"btn btn-danger\">Remover</button>";
-									
-									
-									
-									
-									
-									
+									var botao=icone("deletar.png","removerRefeicao("+json[i].id+","+json[i].quantidade+")","REMOVER");
+
 									 var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].id+"</td><td>"+json[i].nome+"</td><td>"+botao+"</td></tr>"
-								
 										$("#comi-hoje > tbody").append(linha)
-
 								}
 								
-								var totalElementos = xhr
+								var totalPaginas = xhr
 								.getResponseHeader("totalPagina");
-								const quotient = Math.floor(totalElementos/5);
-								const remainder = totalElementos % 5;
-								var totalPagina=quotient;
-								if (remainder!=0){
-									totalPagina++;
-								}
-								for (var i=1;i<=totalPagina;i++){
-									
-									
-									if (paginaAtual==i){
-										
-											paginacao+="<li class=\"page-item active\"  onclick=\"exibirModal("+i+")\"><a  class=\"page-link\" >"+i+"</a></li>";
-									}
-									else {
-										paginacao+="<li class=\"page-item\" onclick=\"exibirModal("+i+")\"><a class=\"page-link\" href=\"#\" >"+i+"</a></li>";
-
-									}
-								}
-								if  (totalPagina>1){
-									previous="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual-1)+")\"><a class=\"page-link\" href=\"#\" ><</a></li>";
-									next="<li class=\"page-item\" onclick=\"exibirModal("+(paginaAtual+1)+")\"><a class=\"page-link\" href=\"#\" >></a></li>";
-
-									if (paginaAtual==1){
-										previous="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" ><</a></li>";
-
-									}
-									if (paginaAtual==totalPagina){
-										next="<li class=\"page-item disabled\" ><a class=\"page-link\" href=\"#\" >></a></li>";
-
-									}
-
-								}
-								document.getElementById("paginacao-modal").innerHTML=previous+paginacao+next;
+								paginarTabelas("paginacaoali",totalPaginas,paginaAtual,"exibirModalRefs");
 								consultarMacros();
 
 							}
@@ -823,11 +708,6 @@
 			      success: function (response, textStatus, xhr) {
 						var json = JSON.parse(response);
 
-//						console.log(json);
-//						document.getElementById("data-caloria").innerHTML=json.calorias;
-//						document.getElementById("data-proteina").innerHTML=json.proteinas;
-//						document.getElementById("data-carboidrato").innerHTML=json.carboidrato;
-//						document.getElementById("data-gordura").innerHTML=json.gordura;
 						
 						exibirModalRefs(1);
 			      },
@@ -837,18 +717,18 @@
 			  
 		}
 		
-		function adicionar(){
-			var nome=document.getElementById("nomeselecionado").value;
-			var id=document.getElementById("idselecionado").value;
-			var quantidade=document.getElementById("quantidade").value;
-			var lista=document.getElementById("lista-alimentos");
-			var botao="<button onclick=\"removerAlimento("+id+","+quantidade+")\"type=\"button\" class=\"btn btn-danger\">Danger</button>";
+// 		function adicionar(){
+// 			var nome=document.getElementById("nomeselecionado").value;
+// 			var id=document.getElementById("idselecionado").value;
+// 			var quantidade=document.getElementById("quantidade").value;
+// 			var lista=document.getElementById("lista-alimentos");
+// 			var botao="<button onclick=\"removerAlimento("+id+","+quantidade+")\"type=\"button\" class=\"btn btn-danger\">Danger</button>";
 
-			var string="<tr id=\"comido"+id+"\"><td>"+id+"</td><td>"+nome+"</td><td>"+quantidade+"</td><td>"+botao+"</td></tr>";
+// 			var string="<tr id=\"comido"+id+"\"><td>"+id+"</td><td>"+nome+"</td><td>"+quantidade+"</td><td>"+botao+"</td></tr>";
 			
-			lista.innerHTML+=string;
+// 			lista.innerHTML+=string;
 
-		}
+// 		}
 		
 		
 		</script>
