@@ -30,7 +30,6 @@
 
 			<main>
 				<div class="container-fluid px-4">
-					<button class="btn btn-link hBack" type="button">VOLTAR</button>
 					
 					<h1>Dieta</h1>
 					<form id="form-user"
@@ -89,6 +88,7 @@
 						</div>
 						<span style='color:red;'></span>
 					</div>
+						<div id="alerta_dieta"></div>
 
 					<button type="button" onclick="salvarRefs()"
 						class="btn btn-primary" id="btn-salvar">Salvar</button>
@@ -97,8 +97,7 @@
 
 					<button type="button" onclick="imprimirDieta()"
 						class="btn btn-primary" id="btn-salvar">Imprimir</button>
-
-
+						
 					<div class="refeicoes">
 						<table class="table  table-borderless">
 							<thead>
@@ -164,7 +163,7 @@
 		
 		function imprimirDieta(){
 			if ($("div.refeicoes>table>tbody").children().length==0){
-				alert("Você não possui refeições cadastradas nesta dieta, por isso o relatório está indisponível. Cadastre refeições na dieta.")
+				mensagemErro("alerta_dieta","Você não possui refeições cadastradas nesta dieta, por isso o relatório está indisponível. Cadastre refeições na dieta.")
 			}else{
 				document.getElementById("acao").value="imprimirdieta";
 				var urlAction = document.getElementById("form-user").action;
@@ -201,6 +200,7 @@
 								montarTabelaRefeicoes(json);
 
 								$("btn-salvar").removeClass("disabled");
+								mensagemSucesso("alerta_dieta","Refeição salva com sucesso !");
 
 							}
 
@@ -291,6 +291,7 @@
 				if ($("div.refeicoes>table>tbody").children().length==0){
 					montarTabelaRefeicoes("");
 				}
+				mensagemSucesso("alerta_dieta","Refeição Removida Com Sucesso.");
 			}
 		}).fail(function(xhr,status,erroThrown){
 			alert("Erro ao deletar : "+xhr.responseText);

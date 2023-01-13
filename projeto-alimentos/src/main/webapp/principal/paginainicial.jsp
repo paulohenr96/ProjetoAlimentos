@@ -106,7 +106,7 @@
 									</tbody>
 								</table>
 								<nav aria-label="Page navigation example">
-									<ul class="pagination">
+									<ul class="pagination" id="paginacaohistorico">
 									</ul>
 								</nav>
 
@@ -216,7 +216,7 @@
 									if (macro == 'calorias') {
 										listaMacro = json.listaCalorias;
 										titulo = "Calorias";
-										cor = "brown";
+										cor = "black";
 									}
 									if (macro == 'proteina') {
 										listaMacro = json.listaProteinas;
@@ -227,13 +227,13 @@
 									if (macro == 'carboidrato') {
 										listaMacro = json.listaCarboidratos;
 										titulo = "Carboidratos";
-										cor = "green";
+										cor = "orangered";
 
 									}
 									if (macro == 'gordura') {
 										listaMacro = json.listaGorduras;
 										titulo = "Gorduras";
-										cor = "orangered";
+										cor = "green";
 
 									}
 									var vetor = [ {
@@ -408,7 +408,7 @@
 						json.forEach((e)=>{
 							var minhaData=new Date(e.data);
 							console.log();
-							document.querySelector(".table > tbody").innerHTML+="<tr><td>"+minhaData.getUTCDate()+"/"+(minhaData.getUTCMonth() + 1)+"/"+(minhaData.getUTCFullYear())+"</td>"+"<td>"+e.calorias+" g</td>"+"<td>"+e.proteinas+" g</td>"+"<td>"+e.carboidrato+" g</td>"+"<td>"+e.gordura+" g</td>"+"</tr>";
+							document.querySelector(".table > tbody").innerHTML+="<tr><td>"+minhaData.getUTCDate()+"/"+(minhaData.getUTCMonth() + 1)+"/"+(minhaData.getUTCFullYear())+"</td>"+"<td>"+e.calorias+" g</td>"+"<td>"+e.proteinas+" g</td>"+"<td>"+e.gordura+" g</td>"+"<td>"+e.carboidrato+" g</td>"+"</tr>";
 							
 							
 							
@@ -424,40 +424,7 @@
 						var next="";
 						var totalElementos = xhr
 						.getResponseHeader("totalPagina");
-						console.log("TOTAL : "+totalElementos);
-						const quotient = Math.floor(totalElementos/porpagina);
-						const remainder = totalElementos % porpagina;
-						var totalPagina=quotient;
-						if (remainder!=0){
-							totalPagina++;
-						}
-						for (var i=1;i<=totalPagina;i++){
-							
-							
-							if (paginaatual==i){
-								
-									paginacao+="<li class=\"page-item active\"  onclick=\"mostrarHistorico("+i+")\"><a  class=\"page-link\" >"+i+"</a></li>";
-							}
-							else {
-								paginacao+="<li class=\"page-item\" onclick=\"mostrarHistorico("+i+")\"><a class=\"page-link\"  >"+i+"</a></li>";
-
-							}
-						}
-						if  (totalPagina>1){
-							previous="<li class=\"page-item\" onclick=\"mostrarHistorico("+(paginaatual-1)+")\"><a class=\"page-link\"  ><</a></li>";
-							next="<li class=\"page-item\" onclick=\"mostrarHistorico("+(paginaatual+1)+")\"><a class=\"page-link\"  >></a></li>";
-
-							if (paginaatual==1){
-								previous="<li class=\"page-item disabled\" ><a class=\"page-link\"  ><</a></li>";
-
-							}
-							if (paginaatual==totalPagina){
-								next="<li class=\"page-item disabled\" ><a class=\"page-link\"  >></a></li>";
-
-							}
-
-						}
-						document.querySelector("ul.pagination").innerHTML=previous+paginacao+next;
+						paginarTabelas("paginacaohistorico", totalElementos, paginaatual, "mostrarHistorico");
 
 						$("#select_historico").show();
 						$("#btn_historico").show();

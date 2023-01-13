@@ -31,7 +31,9 @@ public class DAORefeicao extends DAOGeneric<ModelRefeicao> {
 
 		return retornaLong(sql);
 	}
-	
+	public ModelRefeicao consultarPorId(Long id) {
+		return consultarPorId(ModelRefeicao.class,id);
+	}
 	public List refeicoesAlimentosInnerJoin(Long idAlimento) {
 		String ref="ModelRefeicao";
 		String ali="ModelAlimentoRefeicao";

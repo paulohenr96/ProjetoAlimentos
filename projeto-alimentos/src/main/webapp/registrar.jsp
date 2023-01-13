@@ -36,7 +36,7 @@ body {
 										<div class="row mb-3">
 											<div class="col-md-6">
 												<div class="form-floating mb-3 mb-md-0">
-													<input class="form-control" required name="nome"
+													<input  class="form-control" required name="nome"
 														id="inputFirstName" type="text"
 														placeholder="Enter your first name" /> <label
 														for="inputFirstName">First name</label>
@@ -141,11 +141,13 @@ body {
 	}
 	
 	
-	
+		
+		var falhou=false;
         function verificarFormulario(){
         	var entradas=document.querySelectorAll(".form-floating");
         	var erro=0;
         	entradas.forEach((e)=>{
+        		
         		if (e.querySelector(".alerta")!=null){
             		e.querySelector(".alerta").remove();
 
@@ -171,10 +173,14 @@ body {
         	return true;
         }
         function enviarFormulario(){
-        	
-        	if (verificarFormulario()){
-    			ajaxFormulario();
-        	}
+			ajaxFormulario();
+
+//         	if (verificarFormulario()){
+        		
+//     			ajaxFormulario();
+//         	}else{
+//         		falhou=true;
+//         	}
 
         }
         
@@ -215,7 +221,7 @@ body {
 
 
 		}
-        
+    	
         </script>
 </body>
 </html>

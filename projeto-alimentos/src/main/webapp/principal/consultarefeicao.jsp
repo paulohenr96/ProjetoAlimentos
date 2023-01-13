@@ -29,9 +29,8 @@
 			<main>
 				<div class="container-fluid px-4">
 
-					<button class="btn btn-link hBack" type="button">VOLTAR</button>
-
-					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
+					
+					<h1>Detalhes da refeição</h1>
 
 
 
@@ -101,6 +100,8 @@
 
 							<button type="button" onclick="adicionarAlimento()"
 								class="btn btn-primary ">Adicionar Alimento</button>
+								<button type="button" onclick="imprimirRefeicao()"
+								class="btn btn-primary ">Imprimir Refeicao</button>
 							<button type="button" class="btn btn-success "
 								data-toggle="modal" data-target="#exampleModal"
 								onclick="verAlimentosRefeicao()">Ver Todos os Alimentos</button>
@@ -108,7 +109,12 @@
 						</div>
 
 					</form>
-
+<form id="form-refeicao" method="get"
+						action="<%=request.getContextPath()%>/ServletRefeicao">
+						<input type="hidden" id="acao2" name="acao" value="">
+						<input type="hidden" name="id" value="${ref.id}">
+						
+						</form>
 					<div class="row mb-2">
 
 						<div class="col">
@@ -154,7 +160,7 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">${ref.nome}</h5>
+							<h5 class="modal-title" id="exampleModalLabel">Alimentos da Refeição ${ref.nome}</h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -286,23 +292,24 @@
 		}
 		function pegarAlimento(id){
 			var linha=document.getElementById(id);
-			
 
 			document.querySelector("#id").value=linha.cells[0].innerHTML;
 			document.querySelector("#nome").value=linha.cells[1].innerHTML;
+			verificarFormulario();
+
 		}
 		function verificarFormulario(){
 			var id=$("#id");
 			var quantidade=$("#quantidade");
 			if ( $.trim(id.val())==''){
 				$("p.alerta").remove();
-				var aviso=$("<p>").addClass("alerta").css("color","red").html("selecione um elemento");
+				var aviso=$("<p>").addClass("alerta").css("color","red").html("Selecione um elemento");
 				$("#id").parent().append(aviso[0]);
 				
 				return false;
 			}else if ($.trim(quantidade.val())==""){
 				$("p.alerta").remove();
-				var aviso=$("<p>").addClass("alerta").css("color","red").html("insira uma quantidade");
+				var aviso=$("<p>").addClass("alerta").css("color","red").html("Insira uma quantidade");
 				$("#quantidade").parent().append(aviso[0]);
 				
 				return false;
@@ -333,30 +340,14 @@
 					}else {
 						$(".modal .table").show();
 						$(".modal .table>tbody").empty();
-
+						
 						json.forEach((e)=>{
 							var linha=tbody.insertRow();
-							var button=$("<button>").addClass("btn btn-danger").attr("type","button").html("REMOVER").click(function(){
-								
-								
-								$.ajax({
-									method:"get",
-									url:urlAction,
-									data:"idalimento="+e.id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
-									success:function(response,textStatus,xhr){
-										infoRefeicao();
-										verAlimentosRefeicao();
-									}
-								}).fail(function(xhr,status,erroThrown){
-									alert("Erro : "+xhr.responseText);
-								})
-								
-								
-							});
+							var button=icone("deletar.png","removerAlimentoRefeicao("+e.id+")");
 							linha.insertCell().innerHTML=e.id;
 							linha.insertCell().innerHTML=e.alimento.nome;
 							linha.insertCell().innerHTML=e.quantidade;
-							linha.insertCell().append(button[0]);
+							linha.insertCell().innerHTML=button;
 
 
 						});
@@ -397,6 +388,27 @@
 			
 			
 		}
+		function removerAlimentoRefeicao(id){
+			var urlAction=document.getElementById("form-user").action;
+
+			var idrefeicao=document.getElementById("idrefeicao").value;
+			
+				$.ajax({
+					method:"get",
+					url:urlAction,
+					data:"idalimento="+id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
+					success:function(response,textStatus,xhr){
+						infoRefeicao();
+						verAlimentosRefeicao();
+					}
+				}).fail(function(xhr,status,erroThrown){
+					alert("Erro : "+xhr.responseText);
+				});
+				
+				
+			
+		}
+		
 		
 		function adicionarAlimento(){
 			if (verificarFormulario()){
@@ -423,6 +435,18 @@
 				
 			}
 		
+		}
+		
+		function imprimirRefeicao(){
+			var idrefeicao=document.getElementById("idrefeicao").value;
+			var data="acao=imprimir"+"&"+"id="+idrefeicao;
+			var urlAction=getContextPath()+"/ServletRefeicao";
+			
+			document.getElementById("acao2").value="imprimir";
+			
+			$("#form-refeicao").submit();
+			return false;
+			
 		}
 	</script>
 </body>

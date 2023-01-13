@@ -184,28 +184,49 @@ public class ServletAlimento extends ContextoBean {
 					.consumir(quantidade);
 			String data = request.getParameter("data");
 			ModelConsumidoDia macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
-			System.out.println(request.getParameter("data"));
-			ModelAlimentoConsumido alimentoConsumido = new ModelAlimentoConsumido();
-			alimentoConsumido.setIdAlimento(alimento.getId());
-			alimentoConsumido.setNome(alimento.getNome());
-			alimentoConsumido.setQuantidade(quantidade);
 
-			if (macros != null) {
-				macros.adicionarAlimento(alimento);
-				dao.merge(macros);
-				alimentoConsumido.setMacros(macros);
-
-			} else {
-
-				ModelConsumidoDia dia = new ModelConsumidoDia();
-				dia.setUsuario((ModelUsuario) dao.consultarPorId(ModelUsuario.class, idLogado));
-				dia.setData(super.editaData(data));
-				dia.adicionarAlimento(alimento);
-				dao.salvar(dia);
-				alimentoConsumido.setMacros(dia);
-
+			boolean contem=false;
+			if (macros!=null) {
+				for (ModelAlimentoConsumido ali : macros.getListaAlimentos()) {
+					System.out.println(ali.getIdAlimento()+" "+alimento.getId());
+					if (ali.getIdAlimento().intValue() == alimento.getId().intValue()) {
+						System.out.println("Já existe esse alimento neste dia.");
+						ali.setQuantidade(ali.getQuantidade()+quantidade);
+						dao.merge(ali);
+						macros.adicionarAlimento(alimento);
+						daoConsumido.merge(macros);
+						contem=true;
+						break;
+					}
+				}
 			}
-			dao.salvar(alimentoConsumido);
+
+			if (!contem) {
+				ModelAlimentoConsumido alimentoConsumido = new ModelAlimentoConsumido();
+
+				alimentoConsumido.setIdAlimento(alimento.getId());
+				alimentoConsumido.setNome(alimento.getNome());
+				alimentoConsumido.setQuantidade(quantidade);
+
+				if (macros != null) {
+					macros.adicionarAlimento(alimento);
+					dao.merge(macros);
+					alimentoConsumido.setMacros(macros);
+
+				} 	else {
+
+					ModelConsumidoDia dia = new ModelConsumidoDia();
+					dia.setUsuario((ModelUsuario) dao.consultarPorId(ModelUsuario.class, idLogado));
+					dia.setData(super.editaData(data));
+					dia.adicionarAlimento(alimento);
+					dao.salvar(dia);
+					alimentoConsumido.setMacros(dia);
+
+				}
+				dao.salvar(alimentoConsumido);
+			}
+			
+		
 			super.responderAjax(response, macros);
 
 		} else if (acao != null && acao.equalsIgnoreCase("consultarmacros")) {
@@ -224,9 +245,14 @@ public class ServletAlimento extends ContextoBean {
 
 			ModelAlimentoConsumido alimentoConsumido = (ModelAlimentoConsumido) daoAlimentoConsumido
 					.consultarPorId(ModelAlimentoConsumido.class, id);
-			System.out.println(id);
-			dao.deletarPorId(ModelAlimentoConsumido.class, alimentoConsumido.getId());
+			
+			alimentoConsumido.setQuantidade(alimentoConsumido.getQuantidade()-quantidade);
+			if (alimentoConsumido.getQuantidade()<=0) {
+				dao.deletarPorId(ModelAlimentoConsumido.class, alimentoConsumido.getId());
 
+			}else {
+				dao.merge(alimentoConsumido);
+			}
 			ModelAlimento alimento = ((ModelAlimento) daoAlimento.consultarPorId(ModelAlimento.class,
 					alimentoConsumido.getIdAlimento())).consumir(quantidade);
 			String data = request.getParameter("data");
@@ -248,7 +274,7 @@ public class ServletAlimento extends ContextoBean {
 
 			ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, id);
 			dao.deletarPorId(ModelRefeicao.class, ref.getId());
-
+			
 			String data = request.getParameter("data");
 			ModelConsumidoDia consumoDia = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
 			consumoDia.removerRefeicao(ref);
@@ -376,12 +402,7 @@ public class ServletAlimento extends ContextoBean {
 				super.realizaPaginacao(response, todos, porPagina, total);
 
 			} else {
-				ObjectMapper mapper = new ObjectMapper();
-				String json = mapper.writeValueAsString(new ArrayList());
-
-				response.getWriter().write(json);
-
-				response.getWriter().write("");
+				responderAjax(response, "");				
 
 			}
 
@@ -403,7 +424,11 @@ public class ServletAlimento extends ContextoBean {
 			HashMap<String, Object> params = new HashMap<String, Object>();
 
 			params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("relatorio") + File.separator);
+			params.put("PARAM_FOTO", request.getServletContext().getRealPath("assets") + File.separator+"img"+File.separator+"user-1.png");
+			System.out.println(params.get("PARAM_FOTO"));
+			System.out.println(params.get("PARAM_SUB_REPORT"));
 
+			
 			super.relatorio(response, request, params, "rel_alimentos_jsp", lista);
 
 		} else if (acao != null && acao.equalsIgnoreCase("novarefeicao")) {

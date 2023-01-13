@@ -120,5 +120,8 @@ public class DAOConsumido extends DAOGeneric<ModelConsumidoDia> {
 		}
 
 	}
+	public void addAlimento(ModelAlimentoConsumido ali,ModelConsumidoDia macros) {
+	
+	}
 
 }

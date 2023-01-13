@@ -37,6 +37,11 @@ public class ContextoBean extends HttpServlet implements Serializable {
 		return (ModelUsuario) request.getSession().getAttribute(USUARIO_LOGADO);
 	}
 
+	public void setUserLogado(HttpServletRequest request,ModelUsuario user) {
+		
+		request.getSession().setAttribute(USUARIO_LOGADO, user);
+		
+	}
 	public ContextoBean() {
 		// TODO Auto-generated constructor stub
 		System.out.println("Contexto Bean");
@@ -94,7 +99,6 @@ public class ContextoBean extends HttpServlet implements Serializable {
 					request.getServletContext());
 			response.setHeader("Content-Disposition", "attachment;filename=arquivo.pdf");
 			response.getOutputStream().write(relatorio);
-			System.out.println("Fim relatorio");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,5 +136,13 @@ public class ContextoBean extends HttpServlet implements Serializable {
 		}
 
 		return encodeBase64String;
+	}
+	
+	public boolean stringVazia(String str) {
+		return str==null || str.equals("") || str.isEmpty();
+	}
+	public boolean stringEquivalente(String str, String str2) {
+		
+		return (!stringVazia(str)) && str.equalsIgnoreCase(str2);
 	}
 }

@@ -46,9 +46,9 @@
 							<select id="obj" class="form-select"
 								aria-label="Default select example">
 								<option selected value="">Open this select menu</option>
-								<option value="PERDER_MASSA">Emagrecer</option>
-								<option value="GANHAR_MASSA">Ganho de Massa</option>
-								<option value="MANTER_MASSA">Manter</option>
+								<option value="Perder Peso">Emagrecer</option>
+								<option value="Ganhar Peso">Ganho de Massa</option>
+								<option value="Manter Peso">Manter</option>
 							</select> <span id="select-vazio" class="alerta"></span>
 
 						</div>

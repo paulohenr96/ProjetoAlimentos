@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.ContextoBean;
 import dao.DAOGeneric;
 import dao.DAOUsuario;
 import model.ModelUsuario;
@@ -16,7 +17,7 @@ import util.Mensagem;
  * Servlet implementation class ServletCadastro
  */
 @WebServlet("/ServletCadastro")
-public class ServletCadastro extends HttpServlet {
+public class ServletCadastro extends ContextoBean {
 	private static final long serialVersionUID = 1L;
 	private DAOUsuario daoUsuario = new DAOUsuario();
 
@@ -60,22 +61,28 @@ public class ServletCadastro extends HttpServlet {
 		String email = request.getParameter("email");
 		String senha = request.getParameter("senha");
 		String confirmaSenha = request.getParameter("confirmasenha");
+		if (stringVazia(nome) || stringVazia(sobreNome) || stringVazia(login) || stringVazia(email)
+				|| stringVazia(senha) || stringVazia(confirmaSenha)) {
+			response.getWriter().write(Mensagem.PREENCHER_TODOS_OS_CAMPOS);
 
-		ModelUsuario model = new ModelUsuario();
-		model.setEmail(email);
-		model.setNome(nome);
-		model.setSobreNome(sobreNome);
-		model.setLogin(login);
-		model.setSenha(senha);
-		if (daoUsuario.contarLogin(model) > 0) {
-			response.getWriter().write(Mensagem.MENSAGEM_ERRO);
+			return;
+		}else if (!senha.equals(confirmaSenha)) {
+			response.getWriter().write(Mensagem.MENSAGEM_CONFIRMA_SENHA);
 
-		} else {
+		}
+		else {
+			ModelUsuario model = new ModelUsuario();
+			model.setEmail(email);
+			model.setNome(nome);
+			model.setSobreNome(sobreNome);
+			model.setLogin(login);
+			model.setSenha(senha);
+
 			daoUsuario.salvar(model);
 			response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 
 		}
-
+	
 	}
 
 }

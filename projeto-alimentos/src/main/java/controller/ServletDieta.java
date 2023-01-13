@@ -160,12 +160,15 @@ public class ServletDieta extends ContextoBean {
 				response.getWriter().write("");
 
 			} else if (acao != null && acao.equalsIgnoreCase("imprimirdieta")) {
-				System.out.println("Imprimir dieta...");
 
 				Long iddieta = Long.parseLong(request.getParameter("iddieta"));
 				List lista = daoDieta.todasRefsDieta(iddieta);
 				HashMap<String, Object> params = new HashMap<>();
 				params.put("param_sub_report", request.getServletContext().getRealPath("relatorio") + File.separator);
+				
+			
+
+
 				super.relatorio(response, request, params, "rel_dieta", lista);
 			}
 

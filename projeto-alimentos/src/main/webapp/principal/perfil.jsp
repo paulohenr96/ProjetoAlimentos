@@ -37,22 +37,21 @@
 						method="post" enctype="multipart/form-data">
 						<div class="divfoto">
 	<c:if test="${empty user.extensaoFoto}">
+	<input type="hidden" value="nao" id="temfoto"/>
 				<img alt="imagem user" id="fotoBase64"
 								src="<%=request.getContextPath()%>/assets/img/user-1.png"
-								width="70px"> <input name="imagem" style="display: none;"
-								accept="img/" id="fileFoto" class="form-control"
-								class="custom-file-input" type="file">
+								width="70px"> 
 			</c:if>
 			<c:if test="${not empty user.extensaoFoto}">
-			
+			<input type="hidden" value="sim" id="temfoto"/>
 			<img alt="imagem user" id="fotoBase64"
 								src="data:image/${user.extensaoFoto};base64,${user.foto}"
-								width="70px"> <input name="imagem" style="display: none;"
-								accept="img/" id="fileFoto" class="form-control"
-								class="custom-file-input" type="file">
+								width="70px"> 
 			</c:if>
 
-							
+							<input name="imagem" style="display: none;"
+								accept="img/" id="fileFoto" class="form-control edicao"
+								class="custom-file-input" type="file" onchange="visualizarImage('fotoBase64', 'fileFoto')">
 
 						</div>
 
@@ -89,15 +88,18 @@
 
 					<br />
 
-					<p>${msg_atualiza_perfil}</p>
 					<button type="button" id="botaoeditar"
 						class="btn btn-primary btn-editar" onclick="editarPerfil()">Editar</button>
-					<button type="button" id="botaosalvar" class="btn btn-success"
+					<button type="button" id="botaosalvar" class="btn btn-success edicao"
 						style="display: none;" onclick="salvar()">Salvar</button>
-					<button data-toggle="modal" data-target="#modalsenha" type="button"
-						class="btn btn-primary">Alterar Senha</button>
+					<button data-toggle="modal" data-target="#modalsenha" id="botaoalterarsenha" type="button"
+						class="btn btn-primary ">Alterar Senha</button>
+						
+						<button  style="display:none;" onclick="colocaFotoPadrao()" id="botaoremoverfoto" type="button"
+						class="btn btn-danger edicao">Remover Foto</button>
 
-
+<button   id="botaocancelar" type="button"
+						class="btn btn-primary edicao" onclick="location.reload(true);" style="display:none;">Cancelar</button>
 				</div>
 			</main>
 
@@ -121,28 +123,30 @@
 								action="<%=request.getContextPath()%>/ServletSenha">
 								<div class="form-group">
 									<label for="senhaantiga" class="col-form-label">Senha
-										Antiga:</label> <input type="password" class="form-control"
+										Antiga:</label> <input required type="password" class="form-control"
 										id="senhaantiga">
 								</div>
 
 								<div class="form-group">
 									<label for="senhanova" class="col-form-label">Nova
-										Senha:</label> <input type="password" class="form-control"
+										Senha:</label> <input required type="password" class="form-control"
 										id="senhanova">
 								</div>
 
 								<div class="form-group">
-									<label for="confirmasenha" class="col-form-label">Confirma
+									<label for="confirmasenha" required class="col-form-label">Confirma
 										Senha:</label> <input type="password" class="form-control"
 										id="confirmasenha">
 								</div>
 							</form>
+							<br><br>
+							<div id="alerta_senha"></div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary"
 								onclick="alterarsenha()">Salvar</button>
 							<button type="button" class="btn btn-secondary"
-								data-dismiss="modal">Cancelar</button>
+								data-dismiss="modal" onclick="$('#alerta_senha').hide()">Cancelar</button>
 						</div>
 					</div>
 				</div>
@@ -174,61 +178,114 @@
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
 
 	<script type="text/javascript">
+		checarFoto();
+		function checarFoto(){
+			if (document.getElementById("temfoto").value=='sim'){
+			}
+			else if (document.getElementById("temfoto").value=='nao'){
+				$("#botaoremoverfoto").addClass('disabled');
+			}
+		}
 		function editarPerfil() {
 
 			$(".editavel > input").attr("readonly", false);
 			$(".btn-editar").remove();
-			$("#fileFoto").show();
-			$("#botaosalvar").show();
+// 			$("#fileFoto").show();
+// 			$("#botaosalvar").show();
+// 			$("#botaoremoverfoto").show();
+// 			$("#botaoalterarsenha").show();
+// 			$("#botaocancelar").show();
+			$(".edicao").show();
+
 
 		}
 
 		function salvar() {
+			if (removerfoto){
+				removerFoto();
+			}
+			
 			$("#form-user").submit();
-			// 			var urlAction = document.getElementById("form-user").action;
-			// 			var data = "nome=" + $('#nome').val();
-			// 			data += "&";
-			// 			data += "sobrenome=" + $('#sobrenome').val();
-			// 			data += "&";
-			// 			data += "email=" + $('#email').val();
-			// 			data += "&";
-			// 			data += "login=" + $('#login').val();
-			// 			data += "&";
-			// 			data += "imagem=" + $('#fileFoto').val();
-			// 			$.post(urlAction, data, function(response) {
-			// 				if (response === 'ERRO') {
-			// 					alert(response);
-
-			// 				} else {
-
-			// 					location.reload(true);
-
-			// 				}
-			// 			});
-
+			
 		}
-
+		
 		function alterarsenha() {
+			if (!verificarFormulario()){
+				return;
+			}
 			var urlAction = document.getElementById("form-senha").action;
-			var data = "senha=" + $('#senha').val();
+			var data = "senhaantiga=" + $('#senhaantiga').val();
 			data += "&";
 			data += "senhanova=" + $('#senhanova').val();
 			data += "&";
 			data += "confirmasenha=" + $('#confirmasenha').val();
 
 			$.post(urlAction, data, function(response) {
-				if (response === 'ERRO') {
-					alert(response);
-
-				} else {
-					$('#form-senha').each(function() {
-						this.reset();
-					});
-
-					location.reload(true);
+				
+				if (response==1) {
+					mensagemSucesso("alerta_senha","Senha alterada com sucesso.")					
+// 					location.reload(true);
+					limpar('form-senha');
 
 				}
+				else {
+					mensagemErro("alerta_senha",response);
+				}
 			});
+		}
+		
+		function verificarFormulario(){
+			if ($('#senhaantiga').val().length==0){
+				mensagemErro("alerta_senha","Senha antiga vazia.");
+				return false;
+			}
+			if ($('#senhanova').val().length==0){
+				mensagemErro("alerta_senha","Insira a nova senha.");
+				return false;
+			}
+			if ($('#confirmasenha').val().length==0){
+				mensagemErro("alerta_senha","Confirme a senha.");
+				return false;
+			}
+			return true;
+		}
+		function visualizarImage(foto, file) {
+			var preview = document.getElementById(foto);
+			var file = document.getElementById(file).files[0];
+
+			var reader = new FileReader();
+			reader.onloadend = function() {
+				preview.src = reader.result;
+
+			};
+
+			if (file) {
+				reader.readAsDataURL(file);
+			} else {
+				preview.src = '';
+			}
+		}
+		
+		var removerfoto=false;
+		function removerFoto(){
+			
+			var id=document.getElementById("id").value;
+			var urlAction=document.getElementById("form-user").action;
+			
+			$.get(urlAction,"acao=removerimagem",function(response){
+				var preview = document.getElementById('fotoBase64');
+				preview.src=getContextPath()+"/assets/img/user-1.png";
+
+			})
+		}
+		
+		function colocaFotoPadrao(){
+			
+			removerfoto=true;
+			var preview = document.getElementById('fotoBase64');
+
+			preview.src=getContextPath()+"/assets/img/user-1.png";
+
 		}
 	</script>
 </body>

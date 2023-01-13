@@ -43,7 +43,7 @@
 						<input type="hidden" id="acao" name="acao" value="">
 
 						<div class="mb-2">
-							<label for="data" class="form-label">Data</label> <input
+							<label for="data" class="form-label">Data</label> <input onchange="dataVazia()"
 								type="text" class="form-control" id="data" name="data">
 
 
@@ -188,7 +188,12 @@
 	
 	flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
 
-	
+		function dataVazia(){
+			
+			if ($("#data").val!=''){
+				mensagemSucesso("aviso_1","Escolha entre os alimentos e refeições.")
+			}
+		}
 	
 		function pesquisar() {
 			$("#tabelapesquisa").append($(spinner_azul))
@@ -254,11 +259,10 @@
 		
 		function verAlimentosRefeicao(idrefeicao){
 			
-			$("#comi-hoje").remove();
-
+			limparModal();
 			$("#exampleModal").modal('show');
 
-			$("div.modal-body").append("<table class='table' style='text-align:center;'> </table>");
+			$("div.modal-body").append("<table class='table' id='tabela-alimentosrefeicao' style='text-align:center;'> </table>");
 			$("div.modal-body > table").append("<thead></thead>");
 			$("div.modal-body > table > thead").append ("<th scope='col'>#</th>");
 			$("div.modal-body > table > thead").append ("<th scope='col'>Nome</th>");
@@ -266,7 +270,8 @@
 			
 			$("div.modal-body > table").append("<tbody></tbody>");
 			
-			
+			$("#exampleModalLabel").html("Esta refeição contém os seguintes alimentos.");
+
 			
 			var urlAction=document.getElementById("form-user").action;
 			$.ajax({
@@ -440,6 +445,7 @@
 				  flatpickr("#data", {"locale":"pt", dateFormat: "d-m-Y",maxDate: "today"});
 					return false;
 				}
+
 			  return true;
 		}
 		function limparMacros(){
@@ -503,9 +509,10 @@
 			}
 			
 		}
-		function removerAlimento(id,quantidade){
+		function removerAlimento(id){
 			 var urlAction = document.getElementById("form-user").action;
 			  var data=document.getElementById("data").value;
+			  var quantidade=$("#removerquantidade").val();
 			  if (
 			    id != null &&
 			    
@@ -588,12 +595,11 @@
 								$("#comi-hoje > thead").append("<th>id</th");
 								$("#comi-hoje > thead").append("<th>Nome</th");
 								$("#comi-hoje > thead").append("<th>Quantidade</th");
-								$("#comi-hoje > thead").append("<th>Tipo</th");
 								$("#comi-hoje > thead").append("<th>Remover</th");
 								$("#comi-hoje").append("<tbody></tbody>");
 								for (let i=0;i<json.length;i++){
-									var botao=icone("deletar.png","removerAlimento("+json[i].id+","+json[i].quantidade+")","REMOVER");
-									var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+normalizar(json[i].nome)+"</td><td>"+json[i].quantidade+"</td><td>Alimento</td><td>"+botao+"</td></tr>"
+									var botao=icone("deletar.png","removerAlimento("+json[i].id+")","REMOVER");
+									var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+normalizar(json[i].nome)+"</td><td>"+json[i].quantidade+"</td><td><input type='number' id='removerquantidade'  placeholder='qtde'/>"+botao+"</td></tr>"
 									$("#comi-hoje > tbody").append(linha)
 								}
 								var totalPaginas = xhr
@@ -623,7 +629,7 @@
 			$("#comi-hoje").remove();
 			$("#tabelamacros").remove();
 			$("#pegaralimento").remove();
-
+			$("#tabela-alimentosrefeicao").remove();
 		}
 		
 		function exibirModalRefs(paginaAtual){
@@ -716,19 +722,6 @@
 			    });
 			  
 		}
-		
-// 		function adicionar(){
-// 			var nome=document.getElementById("nomeselecionado").value;
-// 			var id=document.getElementById("idselecionado").value;
-// 			var quantidade=document.getElementById("quantidade").value;
-// 			var lista=document.getElementById("lista-alimentos");
-// 			var botao="<button onclick=\"removerAlimento("+id+","+quantidade+")\"type=\"button\" class=\"btn btn-danger\">Danger</button>";
-
-// 			var string="<tr id=\"comido"+id+"\"><td>"+id+"</td><td>"+nome+"</td><td>"+quantidade+"</td><td>"+botao+"</td></tr>";
-			
-// 			lista.innerHTML+=string;
-
-// 		}
 		
 		
 		</script>

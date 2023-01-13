@@ -39,8 +39,8 @@
                                             </div>
                                             <c:if test="${not empty msg }">
                                             
-                                            
-                                            <div class="alert alert-danger" role="alert">
+                                            <br>
+                                            <div class="alert alert-danger" id="alerta_cadastro" role="alert">
 												${msg}											
 											</div>
 											</c:if>
@@ -81,7 +81,7 @@
 					erro++;
 				}
 			})
-			
+			mensagemErro("alerta_cadastro","Preencha todos os campos.");
 			if (erro==0){
 				document.querySelector("button").innerHTML="<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>Entrando...";
 				$("button").addClass("disabled");
