@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_relatorio_refeicoes" pageWidth="340" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="300" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="34c75d8f-a4a6-416c-91bc-82bec0029917">
+	<style name="zebra" mode="Transparent" backcolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() % 2 ==0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EBFA1B"/>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="gorduras" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[gorduras]]></fieldDescription>
+	</field>
+	<field name="carboidratos" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[carboidratos]]></fieldDescription>
+	</field>
+	<field name="calorias" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[calorias]]></fieldDescription>
+	</field>
+	<field name="proteinas" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[proteinas]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<fieldDescription><![CDATA[nome]]></fieldDescription>
+	</field>
+	<field name="listaAlimentos" class="java.util.List">
+		<fieldDescription><![CDATA[listaAlimentos]]></fieldDescription>
+	</field>
+	<group name="Grupo_Refeicoes">
+		<groupExpression><![CDATA[$F{nome}]]></groupExpression>
+	</group>
+	<title>
+		<band height="21">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="300" height="21" backcolor="#EBFA1B" uuid="825cedc1-07e2-414d-b4db-bd47406347de">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[REFEIÇÕES]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="60" height="15" backcolor="#EBFA1B" uuid="e66c8c08-594a-4ea4-af5c-28c95e9e6396">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d9d1f14-2315-42c8-9e7f-8e6ae921f866"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="60" y="0" width="60" height="15" backcolor="#EBFA1B" uuid="d8710031-459a-4028-a7e6-c7cfc8cca58a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6abe80aa-9f6d-4a83-81d3-bbdf2d16745c"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[KCal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="120" y="0" width="60" height="15" backcolor="#EBFA1B" uuid="c5680134-7efe-488f-a708-f9f27bb0995b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5c95b7f-2885-4001-b695-8d8465494edc"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[P]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="180" y="0" width="60" height="15" backcolor="#EBFA1B" uuid="4f4404af-b6a0-42bf-8c89-c89ac4b0c88d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c8af146-7f98-4e85-ab83-8f713bb563b5"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[C]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="240" y="0" width="60" height="15" backcolor="#EBFA1B" uuid="8b66f901-3d13-44bf-a89b-82bd4f486232">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="146c3e53-26f6-4dbb-862d-98db17b00135"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[G]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<rectangle>
+				<reportElement style="zebra" mode="Opaque" x="0" y="0" width="300" height="20" backcolor="#C1C2AE" uuid="f63ff852-b4c8-446b-9c74-53506765bc05">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[new Boolean ($V{REPORT_COUNT}.intValue() %2==0)]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement mode="Transparent" x="0" y="0" width="60" height="20" uuid="390f5456-fec2-4b1c-9e73-c5ccd646e8e9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d9d1f14-2315-42c8-9e7f-8e6ae921f866"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Transparent" x="60" y="0" width="60" height="20" uuid="2f2fae6b-276d-4786-8a1d-59087667eba6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6abe80aa-9f6d-4a83-81d3-bbdf2d16745c"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{calorias}+" kcal"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="120" y="0" width="60" height="20" uuid="9f17c43e-3ae5-4317-92ee-78eb6ab83de4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5c95b7f-2885-4001-b695-8d8465494edc"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{proteinas}+" g"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="180" y="0" width="60" height="20" uuid="b055184e-edac-44ef-9295-5e0a3d333466">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0c8af146-7f98-4e85-ab83-8f713bb563b5"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{carboidratos}+" g"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="240" y="0" width="60" height="20" uuid="7ffcef70-a770-4001-8445-745017aa0c1f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="146c3e53-26f6-4dbb-862d-98db17b00135"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{gorduras}+" g"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<noData>
+		<band height="41">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="300" height="41" uuid="d2f3f206-a7da-4de1-993a-4b0efa417bb4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[SEM REFEIÇÕES]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>
