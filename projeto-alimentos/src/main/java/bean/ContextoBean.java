@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.ModelAlimento;
 import model.ModelConsumidoDia;
+import model.ModelDieta;
+import model.ModelRefeicao;
 import model.ModelUsuario;
 import util.ReportUtil;
 
@@ -75,7 +78,7 @@ public class ContextoBean extends HttpServlet implements Serializable {
 
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			String json;
+			String json="";
 			json = mapper.writeValueAsString(o);
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(json);
@@ -144,5 +147,31 @@ public class ContextoBean extends HttpServlet implements Serializable {
 	public boolean stringEquivalente(String str, String str2) {
 		
 		return (!stringVazia(str)) && str.equalsIgnoreCase(str2);
+	}
+	public  boolean valorInvalido(BigDecimal valor) {
+		return (valor.compareTo(BigDecimal.ZERO)==-1) ;
+		
+	}
+	
+	public boolean refInvalida(ModelRefeicao ref) {
+		return (valorInvalido(ref.getCalorias()) || valorInvalido(ref.getProteinas())
+				|| valorInvalido(ref.getCarboidratos())|| valorInvalido(ref.getGorduras()));
+			
+	
+	}
+	public boolean dietaInvalida(ModelDieta dieta) {
+		return (valorInvalido(dieta.getTotalCalorias()) || valorInvalido(dieta.getTotalProteinas())
+				|| valorInvalido(dieta.getTotalCarboidratos())|| valorInvalido(dieta.getTotalGorduras()));
+			
+	
+	}
+	public ModelDieta verificaDieta(ModelDieta dieta) {
+		if (dietaInvalida(dieta) || dieta.getListaRefeicoes().size()==1) {
+			dieta.setTotalCalorias(BigDecimal.ZERO);
+			dieta.setTotalProteinas(BigDecimal.ZERO);
+			dieta.setTotalCarboidratos(BigDecimal.ZERO);
+			dieta.setTotalGorduras(BigDecimal.ZERO);
+		}
+		return dieta;
 	}
 }

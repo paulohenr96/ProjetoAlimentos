@@ -234,7 +234,8 @@ text-align: center;
 	
 		function mandarFormulario(){
 			var urlAction=document.getElementById("form-user").action;
-			if (!$("#id").val().trim==""){
+			var id=$("#id").val();
+			if ( id.length !=0 ){
 				mensagemErro("mensagem","Este alimento já está cadastrado.")
 				
 			}
@@ -254,9 +255,14 @@ text-align: center;
 				data+="&";
 				data+="gordura="+$("#gordura").val();
 				$.get(urlAction,data,function(response){
-					limpar('form-user');
-					mensagemSucesso("mensagem","Alimento adicionado com sucesso !");
-					exibirElementos(1);
+					if (response == "SUCESSO"){
+						limpar('form-user');
+						mensagemSucesso("mensagem","Alimento adicionado com sucesso !");
+						exibirElementos(1);
+					}else {
+						mensagemErro("mensagem","Numero maximo de alimentos atingido.");
+					}
+					
 				});
 			}
 			

@@ -14,7 +14,7 @@ public class Mensagem implements Serializable{
 	public static final String SESSION_EXPIRED="A sessão expirou. Efetue o Login novamente";
 	public static final String LOGOUT="Logout efetuado com sucesso.";
 	public static final String PREENCHER_TODOS_OS_CAMPOS="Por favor, preencha todos os campos.";
-
+	public static final String VALOR_MAXIMO="MAXIMO";
 
 
 

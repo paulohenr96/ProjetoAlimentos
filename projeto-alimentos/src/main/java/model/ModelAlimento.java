@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -69,13 +70,22 @@ public void setPorcao(double porcao) {
 	this.porcao = porcao;
 }
 
+//public ModelAlimento consumir(double quantidade) {
+//	double k=(quantidade/porcao);
+//	
+//	proteina=new BigDecimal(k* ((proteina).doubleValue()));
+//	caloria=new BigDecimal(k* ((caloria).doubleValue()));
+//	gordura=new BigDecimal(k* ((gordura).doubleValue()));
+//	carboidrato=new BigDecimal(k* ((carboidrato).doubleValue()));
+//	return this;
+//}
 public ModelAlimento consumir(double quantidade) {
-	double k=(quantidade/porcao);
+	BigDecimal k=new BigDecimal((quantidade/porcao)).setScale(2,RoundingMode.UP);
 	
-	proteina=new BigDecimal(k* ((proteina).doubleValue()));
-	caloria=new BigDecimal(k* ((caloria).doubleValue()));
-	gordura=new BigDecimal(k* ((gordura).doubleValue()));
-	carboidrato=new BigDecimal(k* ((carboidrato).doubleValue()));
+	proteina=new BigDecimal(k.doubleValue()* ((proteina).doubleValue())).setScale(2,RoundingMode.UP);
+	caloria=new BigDecimal(k.doubleValue()* ((caloria).doubleValue())).setScale(2,RoundingMode.UP);
+	gordura=new BigDecimal(k.doubleValue()* ((gordura).doubleValue())).setScale(2,RoundingMode.UP);
+	carboidrato=new BigDecimal(k.doubleValue()* ((carboidrato).doubleValue())).setScale(2,RoundingMode.UP);
 	return this;
 }
 

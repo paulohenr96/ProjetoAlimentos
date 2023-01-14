@@ -225,7 +225,7 @@
 					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{alimento}.getPorcao()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="111" height="20" uuid="01844ffb-3b08-45ba-a5d3-a0e7ee70b6b2">

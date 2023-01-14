@@ -168,7 +168,7 @@
 						</div>
 						<div class="modal-body" style="height: 400px; overflow: scroll">
 
-							<table class="table">
+							<table class="table modalalimentos">
 								<thead>
 									<tr>
 										<th scope="col">#</th>
@@ -328,6 +328,9 @@
 			var urlAction=document.getElementById("form-user").action;
 			var idrefeicao=document.getElementById("idrefeicao").value;
 			var tbody=document.querySelector("tbody.alimentos-refeicao");
+			$("table.modalalimentos").empty();
+			$("table.modalalimentos").show();
+
 			$.ajax({
 				method:"get",
 				url:urlAction,
@@ -335,19 +338,31 @@
 				success:function(response,textStatus,xhr){
 					var json=JSON.parse(response);
 					if (json.length==0){
-						tbody.innerHTML="LISTA VAZIA";
-						$(".modal thead").hide();
+						$("table.modalalimentos").append("<thead><th>Lista Vazia</th></thead>");
 					}else {
-						$(".modal .table").show();
-						$(".modal .table>tbody").empty();
+						
+
+						$("table.modalalimentos").append("<thead></thead>");
+						$("table.modalalimentos >thead").append("<tr></tr>");
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>#</th>");
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>Nome</th>");
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>QUANTIDADE</th>")
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>REMOVER</th>")
+
+						$("table.modalalimentos").append("<tbody class='alimentos-refeicao'></tbody>");
+
+						var tbody=document.querySelector("tbody.alimentos-refeicao");
+
+						
 						
 						json.forEach((e)=>{
+							var idinput='quantidade_remover'+e.id;
 							var linha=tbody.insertRow();
 							var button=icone("deletar.png","removerAlimentoRefeicao("+e.id+")");
 							linha.insertCell().innerHTML=e.id;
 							linha.insertCell().innerHTML=e.alimento.nome;
 							linha.insertCell().innerHTML=e.quantidade;
-							linha.insertCell().innerHTML=button;
+							linha.insertCell().innerHTML="<input type='number' placeholder='quantidade' id="+idinput+" style='width:75px;'/>"+button;
 
 
 						});
@@ -392,11 +407,13 @@
 			var urlAction=document.getElementById("form-user").action;
 
 			var idrefeicao=document.getElementById("idrefeicao").value;
-			
+			var quantidade=$("#quantidade_remover"+id).val();
+			if (quantidade != null && quantidade != ""){
+				
 				$.ajax({
 					method:"get",
 					url:urlAction,
-					data:"idalimento="+id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
+					data:"quantidade="+quantidade+"&idalimento="+id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
 					success:function(response,textStatus,xhr){
 						infoRefeicao();
 						verAlimentosRefeicao();
@@ -405,6 +422,9 @@
 					alert("Erro : "+xhr.responseText);
 				});
 				
+			}else {
+				alert("Insira uma quantidade para remover.")
+			}
 				
 			
 		}

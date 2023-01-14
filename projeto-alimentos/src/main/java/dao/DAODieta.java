@@ -23,6 +23,13 @@ public class DAODieta extends DAOGeneric<ModelDieta> {
 
 		return retornaLong(sql);
 	}
+	public Long contarRefeicoesDieta(Long idDieta) {
+		String sql="SELECT COUNT(1) FROM "+ModelRefeicao.class.getCanonicalName() +" WHERE dieta_id="+idDieta;
+		
+		return retornaLong(sql);
+		
+		
+	}
 
 	public List consultarTodasDietasPorIdPaginado(Long idUserLogado, int paginaAtual, int porPagina) {
 		// TODO Auto-generated method stub
@@ -62,6 +69,12 @@ public class DAODieta extends DAOGeneric<ModelDieta> {
 	public List todasRefsDieta(Long id) {
 		String sql = "from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=" + id + " order by horario";
 		return retornaListaEntidades(sql);
+	}
+
+	public ModelDieta consultarPorId(Long id) {
+		// TODO Auto-generated method stub
+		
+		return consultarPorId(ModelDieta.class, id);
 	}
 
 }

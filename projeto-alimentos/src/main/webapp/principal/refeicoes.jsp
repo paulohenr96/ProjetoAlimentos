@@ -392,12 +392,15 @@
 				      "&acao=adicionarrefeicaomacros"+
 				      "&data="+data,
 				      success: function (response, textStatus, xhr) {
-						if (response.trim==""){
-							mensagemErro("aviso_1","Erro ao adicionar a refeição.");
-						}				else {
+						if (response=="MAXIMO"){
+							mensagemErro("aviso_1","Numero maximo de refeicoes consumidas.")
+						}else if (response== "SUCESSO"){
 					    	mensagemSucesso("aviso_1","Refeição Adicionada")
 
-						}	
+						}else {
+							mensagemErro("aviso_1","Erro ao adicionar a refeição.");
+
+						}
 				    	
 
 
@@ -425,10 +428,16 @@
 			      "&data="+data,
 			      success: function (response, textStatus, xhr) {
 			    	  
-			    	var json = JSON.parse(response);
-					
-					$("#quantidade").val("");
-			    	mensagemSucesso("aviso_alimento","Alimento adicionado com sucesso.");
+					if (response == 'SUCESSO'){
+						$("#quantidade").val("");
+				    	mensagemSucesso("aviso_alimento","Alimento adicionado com sucesso.");
+					}else if (response == 'MAXIMO') {
+						mensagemErro("aviso_alimento","O numero maximo de alimentos para consumo foi atingido");
+					} else {
+						mensagemErro("aviso_alimento","Erro");
+
+					}
+				
 			      },
 			    }).fail(function (xhr, status, errorThrown) {
 			      alert("Error ao adicionar novo alimento " + xhr.responseText);
@@ -512,11 +521,12 @@
 		function removerAlimento(id){
 			 var urlAction = document.getElementById("form-user").action;
 			  var data=document.getElementById("data").value;
-			  var quantidade=$("#removerquantidade").val();
+			  var quantidade=$("#quantidade_remover"+id).val();
 			  if (
 			    id != null &&
-			    
-			    id != ""
+			    quantidade !=null &&
+			    id != "" &&
+			    quantidade != ""
 			  ) {
 			    $.ajax({
 			      method: "get",
@@ -598,8 +608,9 @@
 								$("#comi-hoje > thead").append("<th>Remover</th");
 								$("#comi-hoje").append("<tbody></tbody>");
 								for (let i=0;i<json.length;i++){
+									var idinput="quantidade_remover"+json[i].id;
 									var botao=icone("deletar.png","removerAlimento("+json[i].id+")","REMOVER");
-									var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+normalizar(json[i].nome)+"</td><td>"+json[i].quantidade+"</td><td><input type='number' id='removerquantidade'  placeholder='qtde'/>"+botao+"</td></tr>"
+									var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].idAlimento+"</td><td>"+normalizar(json[i].nome)+"</td><td>"+json[i].quantidade+"</td><td><input type='number' style='width:75px;' id="+idinput+"  placeholder='qtde'/>"+botao+"</td></tr>"
 									$("#comi-hoje > tbody").append(linha)
 								}
 								var totalPaginas = xhr

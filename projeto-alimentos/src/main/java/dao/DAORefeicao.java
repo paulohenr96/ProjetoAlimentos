@@ -136,4 +136,11 @@ public class DAORefeicao extends DAOGeneric<ModelRefeicao> {
 		realizarUpdate(sql);
 
 	}
+
+	public void deletarPorId(Long idRefeicao) {
+		// TODO Auto-generated method stub
+		
+		deletarPorId(ModelRefeicao.class, idRefeicao);
+		
+	}
 }
