@@ -93,7 +93,7 @@
 							class="form-check-label" for="radio-refeicao">Refeição </label>
 
 					</div>
-					<button type="button" onclick="pesquisar()" class="btn btn-dark">Pesquisar</button>
+					<button type="button" onclick="pesquisar()" class="btn btn-primary">Pesquisar</button>
 
 
 

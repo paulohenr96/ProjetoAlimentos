@@ -16,9 +16,9 @@
 		<class>model.ModelDieta</class>
 
 		<properties>
-			<!-- <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/paulo1930_projetoalimentos"/> -->
-			<!-- <property name="javax.persistence.jdbc.user" value="paulo1930_postgres"/> -->
-			<!-- <property name="javax.persistence.jdbc.password" value=".RP?COCn@N^F"/> -->
+<!-- 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/paulo1930_projetoalimentos"/> -->
+<!-- 			<property name="javax.persistence.jdbc.user" value="paulo1930_postgres"/> -->
+<!-- 			<property name="javax.persistence.jdbc.password" value=".RP?COCn@N^F"/> -->
 
 
 			<!-- <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/paulo1930_alimentos"/> -->

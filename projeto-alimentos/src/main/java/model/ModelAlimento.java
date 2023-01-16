@@ -70,25 +70,34 @@ public void setPorcao(double porcao) {
 	this.porcao = porcao;
 }
 
-//public ModelAlimento consumir(double quantidade) {
-//	double k=(quantidade/porcao);
-//	
-//	proteina=new BigDecimal(k* ((proteina).doubleValue()));
-//	caloria=new BigDecimal(k* ((caloria).doubleValue()));
-//	gordura=new BigDecimal(k* ((gordura).doubleValue()));
-//	carboidrato=new BigDecimal(k* ((carboidrato).doubleValue()));
-//	return this;
-//}
 public ModelAlimento consumir(double quantidade) {
 	BigDecimal k=new BigDecimal((quantidade/porcao)).setScale(2,RoundingMode.UP);
 	
-	proteina=new BigDecimal(k.doubleValue()* ((proteina).doubleValue())).setScale(2,RoundingMode.UP);
-	caloria=new BigDecimal(k.doubleValue()* ((caloria).doubleValue())).setScale(2,RoundingMode.UP);
-	gordura=new BigDecimal(k.doubleValue()* ((gordura).doubleValue())).setScale(2,RoundingMode.UP);
-	carboidrato=new BigDecimal(k.doubleValue()* ((carboidrato).doubleValue())).setScale(2,RoundingMode.UP);
+	proteina=new BigDecimal(converterDouble(k.doubleValue()* ((proteina).doubleValue())));
+	caloria=new BigDecimal(converterDouble(k.doubleValue()* ((caloria).doubleValue())));
+	gordura=new BigDecimal(converterDouble(k.doubleValue()* ((gordura).doubleValue())));
+	carboidrato=new BigDecimal(converterDouble(k.doubleValue()* ((carboidrato).doubleValue())));
 	return this;
 }
+public double converterDouble (double valor) {
+	
+	String str=valor+"";
+	if (str.contains(".")) {
+		String[] split = str.split("\\.");
+		String inteiro=split[0];
+		String decimal="";
+		if (split[1].length()>1) {
+			decimal=split[1].substring(0, 2);
 
+		}else {
+			decimal=split[1];
+		}
+		double novovalor=Double.parseDouble(inteiro+"."+decimal);
+		valor=novovalor;
+	}
+	return valor;
+
+}
 
 @Override
 public String toString() {

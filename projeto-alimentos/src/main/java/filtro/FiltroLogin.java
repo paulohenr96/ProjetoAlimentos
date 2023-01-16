@@ -47,7 +47,6 @@ public class FiltroLogin extends HttpFilter implements Filter {
 		String urlParaAutentificar = servletRequest.getServletPath();
 		// pass the request along the filter chain
 		 Object attribute = session.getAttribute("user");
-		 System.out.println(urlParaAutentificar);
 		 if (attribute==null && !urlParaAutentificar.contains("/ServletLogin") && !urlParaAutentificar.contains("/registrar.jsp")) {
 			 System.out.println(urlParaAutentificar+"-----------");
 			request.getRequestDispatcher("/index.jsp?url="+urlParaAutentificar).forward(request, response);
@@ -58,6 +57,7 @@ public class FiltroLogin extends HttpFilter implements Filter {
 			httpres.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
 			httpres.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 			httpres.setDateHeader("Expires", 0); // Proxies.
+			
 			
 			chain.doFilter(request, response);
 

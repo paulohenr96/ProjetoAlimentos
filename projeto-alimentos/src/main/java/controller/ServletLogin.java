@@ -73,6 +73,7 @@ public class ServletLogin extends ContextoBean {
 		String url=request.getParameter("url");
 		
 		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && modelUsuario!=null ) {
+
 			request.getSession().setAttribute("user", modelUsuario);
 			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
 			

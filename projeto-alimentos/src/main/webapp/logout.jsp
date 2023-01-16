@@ -23,8 +23,8 @@
                             <div class="col-lg-6">
                                 <div class="text-center mt-4">
                                     <h1 class="display-1">${aviso}</h1>
-                                    <p class="lead">Unauthorized</p>
-                                    <p>Sessão expirou, por favor efetue o login novamente.</p>
+                                    <p class="lead">Desconectado</p>
+                                    <p>Você foi desconectado, por favor efetue o login novamente.</p>
                                     <a href="index.jsp">
                                         <i class="fas fa-arrow-left me-1"></i>
 										Realizar o login novamente 

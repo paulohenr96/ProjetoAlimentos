@@ -46,7 +46,7 @@
 								<th>CALORIAS</th>
 								<th>PROTEINAS</th>
 								<th>CARBOIDRATOS</th>
-								<th>CALORIAS</th>
+								<th>GORDURAS</th>
 
 
 							</thead>

@@ -70,6 +70,7 @@ public class ServletAlimento extends ContextoBean {
 		// TODO Auto-generated method stub
 		String acao = request.getParameter("acao");
 		String msg = "";
+		
 		super.requestEncoding(request);
 		if (acao != null && acao.equalsIgnoreCase("editar")) {
 			ModelAlimento alimento = gerarAlimento(request, response);
@@ -147,10 +148,10 @@ public class ServletAlimento extends ContextoBean {
 			String data = request.getParameter("data");
 			ModelConsumidoDia macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
 			ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, id);
-			if (macros!=null && (daoRefeicao.contarTotalRefeicoesConsumidas(idLogado, macros.getId())==Constantes.VALOR_MAXIMO_REFEICOES_CONSUMIDAS) ) {
-					response.getWriter().write(Mensagem.VALOR_MAXIMO);
-			}
-			else {
+			if (macros != null && (daoRefeicao.contarTotalRefeicoesConsumidas(idLogado,
+					macros.getId()) == Constantes.VALOR_MAXIMO_REFEICOES_CONSUMIDAS)) {
+				response.getWriter().write(Mensagem.VALOR_MAXIMO);
+			} else {
 				if (macros != null) {
 
 					macros.adicionarRefeicao(ref);
@@ -174,8 +175,7 @@ public class ServletAlimento extends ContextoBean {
 
 				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 			}
-			
-			
+
 		} else if (acao != null && acao.equalsIgnoreCase("alimentoconsumido")) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			int quantidade = Integer.parseInt(request.getParameter("quantidade"));
@@ -183,15 +183,14 @@ public class ServletAlimento extends ContextoBean {
 					.consumir(quantidade);
 			String data = request.getParameter("data");
 			ModelConsumidoDia macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
-			
+
 			boolean contem = false;
-			if (macros !=null && (daoConsumido.contarTodosAlimentosConsumidos(macros.getId())==Constantes.VALOR_MAXIMO_ALIMENTOS_CONSUMIDOS)) {
+			if (macros != null && (daoConsumido
+					.contarTodosAlimentosConsumidos(macros.getId()) == Constantes.VALOR_MAXIMO_ALIMENTOS_CONSUMIDOS)) {
 				response.getWriter().write(Mensagem.VALOR_MAXIMO);
-			}
-			else {
+			} else {
 				if (macros != null) {
 					for (ModelAlimentoConsumido ali : macros.getListaAlimentos()) {
-						System.out.println(ali.getIdAlimento() + " " + alimento.getId());
 						if (ali.getIdAlimento().intValue() == alimento.getId().intValue()) {
 							ali.setQuantidade(ali.getQuantidade() + quantidade);
 							dao.merge(ali);
@@ -202,7 +201,6 @@ public class ServletAlimento extends ContextoBean {
 						}
 					}
 				}
-				
 
 				if (!contem) {
 					ModelAlimentoConsumido alimentoConsumido = new ModelAlimentoConsumido();
@@ -210,7 +208,7 @@ public class ServletAlimento extends ContextoBean {
 					alimentoConsumido.setIdAlimento(alimento.getId());
 					alimentoConsumido.setNome(alimento.getNome());
 					alimentoConsumido.setQuantidade(quantidade);
-
+					
 					if (macros != null) {
 						macros.adicionarAlimento(alimento);
 						dao.merge(macros);
@@ -229,10 +227,9 @@ public class ServletAlimento extends ContextoBean {
 					dao.salvar(alimentoConsumido);
 				}
 
-
 				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 			}
-			
+
 		} else if (acao != null && acao.equalsIgnoreCase("consultarmacros")) {
 
 			String data = request.getParameter("data");
@@ -299,7 +296,6 @@ public class ServletAlimento extends ContextoBean {
 			int paginaAtual = 1;
 			int porPagina = Integer.parseInt(request.getParameter("porpagina"));
 			String ordenar = request.getParameter("asc");
-			System.out.println(ordenar + "-------");
 			String ordem = request.getParameter("ordem");
 			if (request.getParameter("paginaatual") != null) {
 				paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
@@ -427,8 +423,6 @@ public class ServletAlimento extends ContextoBean {
 			params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("relatorio") + File.separator);
 			params.put("PARAM_FOTO", request.getServletContext().getRealPath("assets") + File.separator + "img"
 					+ File.separator + "user-1.png");
-			System.out.println(params.get("PARAM_FOTO"));
-			System.out.println(params.get("PARAM_SUB_REPORT"));
 
 			super.relatorio(response, request, params, "rel_alimentos_jsp", lista);
 		} else if (acao != null && acao.equalsIgnoreCase("novarefeicao")) {
@@ -512,16 +506,23 @@ public class ServletAlimento extends ContextoBean {
 				dao.salvar(ali);
 
 			}
-			ref.addAlimento(ali);
+			ali.getAlimento().consumir(ali.getQuantidade());
+
 			if (ref.getDieta() != null) {
 				ModelDieta dieta = ref.getDieta();
 				ModelRefeicao refaux = new ModelRefeicao();
+				ModelAlimentoRefeicao aliaux=new ModelAlimentoRefeicao();
+				aliaux.setQuantidade(quantidade);
+				aliaux.setAlimento(alimento);
+				refaux.setNome("Auxiliar");
 				refaux.addAlimento(ali);
-
+				System.out.println(refaux.getCalorias() + "--- REFAUX");
 				dieta.adicionarRefeicao(refaux);
 				dao.merge(dieta);
 			}
-			dao.merge(ref);
+			ref.addAlimento(ali);
+
+			ref=daoRefeicao.merge(ref);
 			super.responderAjax(response, ref);
 
 		} else if (acao != null && acao.equalsIgnoreCase("informacaodarefeicao")) {
@@ -543,7 +544,6 @@ public class ServletAlimento extends ContextoBean {
 					idAlimento);
 			ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
 			if (ali != null) {
-				System.out.println("Não é nulo.");
 				Double quantidadeAtual = ali.getQuantidade();
 				Double quantidadeNova = quantidadeAtual - quantidadeRetirar;
 				ali.setQuantidade(quantidadeRetirar);

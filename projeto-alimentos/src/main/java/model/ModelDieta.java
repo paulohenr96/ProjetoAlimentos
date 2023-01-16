@@ -126,18 +126,13 @@ public class ModelDieta implements Serializable{
 //		System.out.println("Calorias da dieta atua : "+totalCalorias+" --- Calorias da refeição " +ref.getCalorias()+
 //				"\n Nova caloria: "+(totalCalorias.doubleValue()+ref.getCalorias().doubleValue()));
 		
-		
-		System.out.println("Calorias atual : "+totalCalorias);
-		System.out.println("Calorias do Alimento : "+ref.getCalorias());
-		System.out.println("Calorias nova : "+new BigDecimal(totalCalorias.doubleValue() + (ref.getCalorias().doubleValue())).setScale(2,RoundingMode.UNNECESSARY));
 
-		totalCalorias=new BigDecimal (totalCalorias.doubleValue()+ref.getCalorias().doubleValue()).setScale(2,RoundingMode.UNNECESSARY);
-		totalProteinas=totalProteinas.add(ref.getProteinas()).setScale(2,RoundingMode.UNNECESSARY);
-		totalCarboidratos=totalCarboidratos.add(ref.getCarboidratos()).setScale(2,RoundingMode.UNNECESSARY);
-		totalGorduras=totalGorduras.add(ref.getGorduras()).setScale(2,RoundingMode.UNNECESSARY);
+		totalCalorias=new BigDecimal (totalCalorias.doubleValue()+ref.getCalorias().doubleValue());
+		totalProteinas=totalProteinas.add(ref.getProteinas());
+		totalCarboidratos=totalCarboidratos.add(ref.getCarboidratos());
+		totalGorduras=totalGorduras.add(ref.getGorduras());
 		
 		
-		System.out.println(this);
 
 	}
 	

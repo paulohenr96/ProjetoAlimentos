@@ -222,7 +222,7 @@
 
 			$.post(urlAction, data, function(response) {
 				
-				if (response==1) {
+				if (response=='SUCESSO') {
 					mensagemSucesso("alerta_senha","Senha alterada com sucesso.")					
 // 					location.reload(true);
 					limpar('form-senha');

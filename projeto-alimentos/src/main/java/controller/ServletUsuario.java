@@ -17,6 +17,7 @@ import bean.ContextoBean;
 import dao.DAOGeneric;
 import dao.DAOUsuario;
 import model.ModelUsuario;
+import util.Constantes;
 import util.Mensagem;
 
 /**
@@ -77,8 +78,12 @@ public class ServletUsuario extends ContextoBean {
 		ModelUsuario m = new ModelUsuario();
 
 		Part part = request.getPart("imagem");
+		if (Constantes.EDITAR_LOGIN) {
+			m.setLogin(login);
 
-		m.setLogin(login);
+		}else {
+			m.setLogin(user.getLogin());
+		}
 		if (daoUsuario.contarLogin(m) == 0 || login.equals(user.getLogin())) {
 			user.setNome(nome);
 			user.setLogin(login);
@@ -106,11 +111,9 @@ public class ServletUsuario extends ContextoBean {
 				}
 
 			}
-
+			
 			request.getSession().setAttribute("user", daoUsuario.merge(user));
-			request.getSession().setAttribute("msg_atualiza_perfil", Mensagem.MENSAGEM_SUCESSO);
 		} else {
-			request.getSession().setAttribute("msg_atualiza_perfil", Mensagem.MENSAGEM_ERRO);
 
 		}
 

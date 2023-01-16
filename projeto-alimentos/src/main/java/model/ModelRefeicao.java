@@ -101,15 +101,36 @@ public class ModelRefeicao implements Serializable {
 
 	public void addAlimento(ModelAlimentoRefeicao ali) {
 	
-		
-		ali.getAlimento().consumir(ali.getQuantidade());
-		calorias = new BigDecimal(calorias.doubleValue() + (ali.getAlimento().getCaloria().doubleValue())).setScale(2,RoundingMode.UNNECESSARY);
-		proteinas = new BigDecimal(proteinas.doubleValue() + (ali.getAlimento().getProteina().doubleValue())).setScale(2,RoundingMode.UNNECESSARY);
-		carboidratos = new BigDecimal(carboidratos.doubleValue() + (ali.getAlimento().getCarboidrato().doubleValue())).setScale(2,RoundingMode.UNNECESSARY);
-		gorduras = new BigDecimal(gorduras.doubleValue() + (ali.getAlimento().getGordura().doubleValue())).setScale(2,RoundingMode.UNNECESSARY);
-		
-	}
+		System.out.println(ali.getAlimento());
 
+		calorias = new BigDecimal(converterDouble(calorias.doubleValue() + (ali.getAlimento().getCaloria().doubleValue())));
+
+
+		
+		proteinas = new BigDecimal(converterDouble(proteinas.doubleValue() + (ali.getAlimento().getProteina().doubleValue())));
+		carboidratos = new BigDecimal(converterDouble(carboidratos.doubleValue() + (ali.getAlimento().getCarboidrato().doubleValue())));
+		gorduras = new BigDecimal(converterDouble(gorduras.doubleValue() + ali.getAlimento().getGordura().doubleValue()));
+
+	}
+	public double converterDouble (double valor) {
+		
+		String str=valor+"";
+		if (str.contains(".")) {
+			String[] split = str.split("\\.");
+			String inteiro=split[0];
+			String decimal="";
+			if (split[1].length()>1) {
+				decimal=split[1].substring(0, 2);
+
+			}else {
+				decimal=split[1];
+			}
+			double novovalor=Double.parseDouble(inteiro+"."+decimal);
+			valor=novovalor;
+		}
+		return valor;
+
+	}
 	public void removeralimento(ModelAlimentoRefeicao ali) {
 		// TODO Auto-generated method stub
 		ali.getAlimento().consumir(ali.getQuantidade());

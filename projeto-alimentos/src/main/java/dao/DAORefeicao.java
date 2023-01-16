@@ -80,17 +80,7 @@ public class DAORefeicao extends DAOGeneric<ModelRefeicao> {
 		realizarUpdate(sql);
 	}
 
-//	public Long contarTotalRefeicoes(String nome, Long userLogado) {
-//		// TODO Auto-generated method stub
-//		
-//		String sql="select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="
-//				+ userLogado + condicaoNome()+")";
-//		
-//		
-//		return retornaLong(sql);
-//
-//	}
-//	
+
 
 	public List consultarTodosRefeicaoPaginado(int paginaAtual, int porPagina, Long userLogado) {
 		String sql = "from " + ModelRefeicao.class.getCanonicalName()

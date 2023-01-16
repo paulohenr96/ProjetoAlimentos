@@ -15,6 +15,8 @@ public class Mensagem implements Serializable{
 	public static final String LOGOUT="Logout efetuado com sucesso.";
 	public static final String PREENCHER_TODOS_OS_CAMPOS="Por favor, preencha todos os campos.";
 	public static final String VALOR_MAXIMO="MAXIMO";
+	public static final String PERMISSAO="Você não tem permissão para realizar esta ação.";
+
 
 
 

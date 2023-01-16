@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import bean.ContextoBean;
 import dao.DAOUsuario;
 import model.ModelUsuario;
+import util.Constantes;
 import util.Mensagem;
 
 /**
@@ -40,27 +41,29 @@ public class ServletSenha extends ContextoBean {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		ModelUsuario user = super.getUserLogado(request);
-		String senhaantiga = request.getParameter("senhaantiga");
-		System.out.println("senhaantiga digitada: " + senhaantiga);
-		System.out.println("senhaantiga real: " + user.getSenha());
-		System.out.println("As senhas são iguais ? : " + senhaantiga.equals(user.getSenha()));
+		if (Constantes.EDITAR_LOGIN) {
+			ModelUsuario user = super.getUserLogado(request);
+			String senhaantiga = request.getParameter("senhaantiga");
+			String senhaNova = request.getParameter("senhanova");
+			String confirmaSenha = request.getParameter("confirmasenha");
 
-		String senhaNova = request.getParameter("senhanova");
-		String confirmaSenha = request.getParameter("confirmasenha");
+			if (!senhaantiga.equals(user.getSenha())) {
+				responderAjax(response, Mensagem.MENSAGEM_SENHA);
+			} else if (!senhaNova.equals(confirmaSenha)) {
+				responderAjax(response, Mensagem.MENSAGEM_CONFIRMA_SENHA);
 
-		if (!senhaantiga.equals(user.getSenha())) {
-			responderAjax(response, Mensagem.MENSAGEM_SENHA);
-		} else if (!senhaNova.equals(confirmaSenha)) {
-			responderAjax(response, Mensagem.MENSAGEM_CONFIRMA_SENHA);
+			} else {
+				user.setSenha(senhaNova);
 
-		} else {
-			user.setSenha(senhaNova);
+				setUserLogado(request, daoUsuario.merge(user));
 
-			setUserLogado(request, daoUsuario.merge(user));
-
-			responderAjax(response, 1);
+				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
+			}
+		}else {
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(Mensagem.PERMISSAO);
 		}
+		
 	}
 
 }

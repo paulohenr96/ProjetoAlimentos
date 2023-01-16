@@ -48,32 +48,32 @@
 								<label for="nomerefeicao">Refeicao</label> <input
 									class="form-control" name="nomerefeicao" required
 									id="nomerefeicao" value="${ref.nome}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 
 							<div class="col">
 								<label for="caloriatotal">Calorias</label> <input
 									class="form-control" name="caloriatotal" required
 									id="caloriatotal" value="${ref.calorias}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 							<div class="col">
 								<label for="proteinatotal">Proteinas</label> <input
 									class="form-control" name="proteinatotal" required
 									id="proteinatotal" value="${ref.proteinas}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 							<div class="col">
 								<label for="carboidratototal">Carboidratos</label> <input
 									class="form-control" name="carboidratototal" required
 									id="carboidratototal" value="${ref.carboidratos}"
-									readonly="readonly" type="text" placeholder="Nome da refeição" />
+									readonly="readonly" type="text"  />
 							</div>
 							<div class="col">
 								<label for="gorduratotal">Gorduras</label> <input
 									class="form-control" name="gorduratotal" required
 									id="gorduratotal" value="${ref.gorduras}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 						</div>
 
