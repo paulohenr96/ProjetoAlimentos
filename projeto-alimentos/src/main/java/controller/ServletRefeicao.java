@@ -47,7 +47,7 @@ public class ServletRefeicao extends ContextoBean {
 			Long idRefeicao=Long.parseLong(request.getParameter("id"));
 			ModelRefeicao refeicao = daoRefeicao.consultarPorId( idRefeicao);
 			HashMap<String,Object> params= new HashMap<String, Object>();
-			
+			refeicao.setListaAlimentos(daoRefeicao.consultarAlimentosRefeicao(idRefeicao));
 			params.put("PARAM_SUB_REPORT", request.getServletContext().getRealPath("relatorio")+File.separator);
 			
 			List<ModelRefeicao> lista = new ArrayList<ModelRefeicao>();

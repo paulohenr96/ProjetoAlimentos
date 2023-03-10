@@ -322,6 +322,8 @@ text-align: center;
 				}
 			
 				limpar('form-user');
+				exibirElementos(1);
+
 			});
 			
 			

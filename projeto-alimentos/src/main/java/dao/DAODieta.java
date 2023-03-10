@@ -19,14 +19,14 @@ public class DAODieta extends DAOGeneric<ModelDieta> {
 
 	public Long contarDietas(Long idUserLogado) {
 		// TODO Auto-generated method stub
-		String sql = "select count(1) from " + ModelDieta.class.getCanonicalName() + " where idUsuario=" + idUserLogado;
+		String hql = "select count(u) from " + ModelDieta.class.getSimpleName() + " u where u.idUsuario=" + idUserLogado;
 
-		return retornaLong(sql);
+		return retornaLongHql(hql);
 	}
 	public Long contarRefeicoesDieta(Long idDieta) {
-		String sql="SELECT COUNT(1) FROM "+ModelRefeicao.class.getCanonicalName() +" WHERE dieta_id="+idDieta;
+		String hql="SELECT COUNT(u) FROM "+ModelRefeicao.class.getCanonicalName() +" u WHERE u.dieta.id="+idDieta;
 		
-		return retornaLong(sql);
+		return retornaLongHql(hql);
 		
 		
 	}
@@ -67,8 +67,8 @@ public class DAODieta extends DAOGeneric<ModelDieta> {
 	}
 
 	public List todasRefsDieta(Long id) {
-		String sql = "from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=" + id + " order by horario";
-		return retornaListaEntidades(sql);
+		String sql = "from " + ModelRefeicao.class.getCanonicalName() + " u where u.dieta.id=" + id + " order by horario";
+		return retornaListaEntidadesHql(sql);
 	}
 
 	public ModelDieta consultarPorId(Long id) {
@@ -76,5 +76,6 @@ public class DAODieta extends DAOGeneric<ModelDieta> {
 		
 		return consultarPorId(ModelDieta.class, id);
 	}
+
 
 }

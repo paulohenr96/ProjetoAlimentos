@@ -18,6 +18,7 @@ import dao.DAOGeneric;
 import dao.DAOUsuario;
 import model.ModelConsumidoDia;
 import model.ModelUsuario;
+import util.JPAUtil;
 import util.Mensagem;
 
 /**
@@ -75,6 +76,7 @@ public class ServletLogin extends ContextoBean {
 		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && modelUsuario!=null ) {
 
 			request.getSession().setAttribute("user", modelUsuario);
+			System.out.println(modelUsuario);
 			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
 			
 			
@@ -82,7 +84,7 @@ public class ServletLogin extends ContextoBean {
 				url="/principal/paginainicial.jsp";
 			}
 			
-
+			request.getSession().setMaxInactiveInterval(100);
 			request.getRequestDispatcher(url).forward(request, response);
 
 		} else {

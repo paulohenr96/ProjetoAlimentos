@@ -233,7 +233,6 @@
 			return true;
 			
 		}
-		mostrarRefs();
 		function mostrarRefs(){
 			var id = $("#id-dieta").val();
 	
@@ -297,6 +296,7 @@
 				$("#totalcalorias_dieta").html(json[0].totalCalorias);
 				$("#nome_dieta").html(json[0].nome);
 				$("#objetivo_dieta").html(json[0].objetivo);
+				mostrarRefs();
 
 				console.log(json[0].objetivo);
 		})

@@ -185,11 +185,16 @@
 	<script src="<%=request.getContextPath()%>/assets/js/scripts.js"></script>
 
 	<script type="text/javascript">
+	
+	// Inicia o gráfico
 		var myChart = new Chart(document.getElementById("myChart"));
 
+	
+	// Esconde os botões 
 		$("#select_historico").hide();
 		$("#btn_historico").hide();
-		mostrarGrafico();
+		
+	// chamaa a função que exibe o grafico
 		function mostrarGrafico() {
 			var macro = document.getElementById("macro").value;
 
@@ -329,9 +334,13 @@
 		
 		
 // 		Historico --------------------------------------------------------
+
+// 		Variável para deixar o histórico na ordem desejada
 		var ordem="data";
 		var asc="desc";
-		document.querySelector(".table > tbody").innerHTML="<div class=\"spinner-border\" role=\"status\">  <span class=\"sr-only\">Loading...</span>  </div>";
+		
+		
+		document.querySelector(".table > tbody").innerHTML="<div class=\"spinner-border\" id='spinnerhistorico' role=\"status\">  <span class=\"sr-only\">Loading...</span>  </div>";
 
 		function ordenarData(){
 			ordem="data";
@@ -380,7 +389,6 @@
 			mostrarHistorico(1);
 
 		}
-		mostrarHistorico(1);
 			function mostrarHistorico(paginaatual) {
 				var porpagina=document.querySelector("select").value;
 				$.ajax({
@@ -389,10 +397,14 @@
 					data : "paginaatual=" + paginaatual + "&porpagina=" + porpagina
 							+ "&acao=historico&ordem="+ordem+"&asc="+asc,
 					success : function(response, textStatus, xhr) {
-						
+						if (inicio){
+							mostrarGrafico();
+							inicio=false;
+						}
+
 						console.log(response);
 						var json=JSON.parse(response);
-						if (json.length!=0){
+						if (json!=null && json.length!=0 ){
 							$(".table").empty();
 							$(".table").append("<thead></thead>");
 
@@ -404,40 +416,34 @@
 									"<th onclick=\"ordenarCarboidrato()\">Carboidrato</th>"+
 								"</tr>");
 							$(".table").append("<tbody></tbody>");
-
-						json.forEach((e)=>{
-							var minhaData=new Date(e.data);
-							console.log();
-							document.querySelector(".table > tbody").innerHTML+="<tr><td>"+minhaData.getUTCDate()+"/"+(minhaData.getUTCMonth() + 1)+"/"+(minhaData.getUTCFullYear())+"</td>"+"<td>"+e.calorias+" g</td>"+"<td>"+e.proteinas+" g</td>"+"<td>"+e.gordura+" g</td>"+"<td>"+e.carboidrato+" g</td>"+"</tr>";
+	
+							json.forEach((e)=>{
+								var minhaData=new Date(e.data);
+								console.log();
+								document.querySelector(".table > tbody").innerHTML+="<tr><td>"+minhaData.getUTCDate()+"/"+(minhaData.getUTCMonth() + 1)+"/"+(minhaData.getUTCFullYear())+"</td>"+"<td>"+e.calorias+" g</td>"+"<td>"+e.proteinas+" g</td>"+"<td>"+e.gordura+" g</td>"+"<td>"+e.carboidrato+" g</td>"+"</tr>";
+							})
 							
 							
 							
+							var paginacao="";
+							var previous="";
+							var next="";
+							var totalElementos = xhr
+							.getResponseHeader("totalPagina");
+							paginarTabelas("paginacaohistorico", totalElementos, paginaatual, "mostrarHistorico");
+	
+							$("#select_historico").show();
+							$("#btn_historico").show();
 							
-							
-							
-						})
-						
-						
-						
-						var paginacao="";
-						var previous="";
-						var next="";
-						var totalElementos = xhr
-						.getResponseHeader("totalPagina");
-						paginarTabelas("paginacaohistorico", totalElementos, paginaatual, "mostrarHistorico");
-
-						$("#select_historico").show();
-						$("#btn_historico").show();
-						
 						}else{
-							$(".spinner-border").remove();
+							$("#spinnerhistorico").remove();
 						
 
 							
 							$("table.table").empty();
 							$(".table").append("<thead></thead>");
 
-							$("table.table>thead ").html("<span>O seu histórico está vazio.</span>");
+							$("table.table>thead").html("<span>O seu histórico está vazio.</span>");
 						}
 						
 					}
@@ -448,7 +454,7 @@
 			    });
 
 			}
-			
+			var inicio=true;
 			mediasMacros();
 			function mediasMacros(){
 				  var urlAction = document.getElementById("form-macro").action;
@@ -464,6 +470,8 @@
 					    	 $("#media-proteinas").html(Number(json[0][1]).toFixed(2)+" gramas");
 					    	 $("#media-carboidratos").html(Number(json[0][2]).toFixed(2)+" gramas");
 					    	 $("#media-gorduras").html(Number(json[0][3]).toFixed(2)+" gramas");
+					 		mostrarHistorico(1);
+					 		
 
 					      },
 					    }).fail(function (xhr, status, errorThrown) {

@@ -684,7 +684,7 @@
 									console.log(i);
 									var botao=icone("deletar.png","removerRefeicao("+json[i].id+","+json[i].quantidade+")","REMOVER");
 
-									 var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].id+"</td><td>"+json[i].nome+"</td><td>"+botao+"</td></tr>"
+									 var linha ="<tr id=\""+json[i].id+"\"><td>"+json[i].id+"</td><td>"+json[i].refeicao.nome+"</td><td>"+botao+"</td></tr>"
 										$("#comi-hoje > tbody").append(linha)
 								}
 								

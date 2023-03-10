@@ -3,8 +3,10 @@ package model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,8 +36,8 @@ public class ModelRefeicao implements Serializable {
 	private String nome;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "refeicao", fetch = FetchType.EAGER)
-	private List<ModelAlimentoRefeicao> listaAlimentos;
+	@OneToMany(mappedBy = "refeicao", fetch = FetchType.LAZY)
+	private List<ModelAlimentoRefeicao> listaAlimentos=new ArrayList<ModelAlimentoRefeicao>();
 	private Long idUserLogado;
 
 	@Column(precision = 10, scale = 2)
@@ -53,9 +55,10 @@ public class ModelRefeicao implements Serializable {
 	@ManyToOne(optional = true)
 	private ModelDieta dieta;
 
-	@ManyToOne(optional = true)
-	private ModelConsumidoDia macros;
 
+
+	
+	
 	public void setDieta(ModelDieta dieta) {
 		this.dieta = dieta;
 	}
@@ -100,16 +103,27 @@ public class ModelRefeicao implements Serializable {
 	}
 
 	public void addAlimento(ModelAlimentoRefeicao ali) {
-	
-		System.out.println(ali.getAlimento());
-
-		calorias = new BigDecimal(converterDouble(calorias.doubleValue() + (ali.getAlimento().getCaloria().doubleValue())));
-
-
+		ModelAlimento alimento=new ModelAlimento();
+		alimento.setPorcao(ali.getAlimento().getPorcao());
+		alimento.setCaloria(ali.getAlimento().getCaloria());
+		alimento.setProteina(ali.getAlimento().getProteina());
+		alimento.setCarboidrato(ali.getAlimento().getCarboidrato());
+		alimento.setGordura(ali.getAlimento().getGordura());
 		
-		proteinas = new BigDecimal(converterDouble(proteinas.doubleValue() + (ali.getAlimento().getProteina().doubleValue())));
-		carboidratos = new BigDecimal(converterDouble(carboidratos.doubleValue() + (ali.getAlimento().getCarboidrato().doubleValue())));
-		gorduras = new BigDecimal(converterDouble(gorduras.doubleValue() + ali.getAlimento().getGordura().doubleValue()));
+		alimento.consumir(ali.getQuantidade());
+
+		calorias=calorias.add(alimento.getCaloria());
+		proteinas=proteinas.add(alimento.getProteina());
+		carboidratos=carboidratos.add(alimento.getCarboidrato());
+		gorduras=gorduras.add(alimento.getGordura());
+
+//		calorias = new BigDecimal(converterDouble(calorias.doubleValue() + (ali.getAlimento().getCaloria().doubleValue())));
+//
+//
+//		
+//		proteinas = new BigDecimal(converterDouble(proteinas.doubleValue() + (ali.getAlimento().getProteina().doubleValue())));
+//		carboidratos = new BigDecimal(converterDouble(carboidratos.doubleValue() + (ali.getAlimento().getCarboidrato().doubleValue())));
+//		gorduras = new BigDecimal(converterDouble(gorduras.doubleValue() + ali.getAlimento().getGordura().doubleValue()));
 
 	}
 	public double converterDouble (double valor) {
@@ -133,12 +147,24 @@ public class ModelRefeicao implements Serializable {
 	}
 	public void removeralimento(ModelAlimentoRefeicao ali) {
 		// TODO Auto-generated method stub
-		ali.getAlimento().consumir(ali.getQuantidade());
+		ModelAlimento alimento=new ModelAlimento();
+		alimento.setPorcao(ali.getAlimento().getPorcao());
+		alimento.setCaloria(ali.getAlimento().getCaloria());
+		alimento.setProteina(ali.getAlimento().getProteina());
+		alimento.setCarboidrato(ali.getAlimento().getCarboidrato());
+		alimento.setGordura(ali.getAlimento().getGordura());
+		
+		alimento.consumir(ali.getQuantidade());
+		
+		calorias=calorias.subtract(alimento.getCaloria());
+		proteinas=proteinas.subtract(alimento.getProteina());
+		carboidratos=carboidratos.subtract(alimento.getCarboidrato());
+		gorduras=gorduras.subtract(alimento.getGordura());
 
-		calorias = new BigDecimal(calorias.doubleValue() - (ali.getAlimento().getCaloria().doubleValue()));
-		proteinas = new BigDecimal(proteinas.doubleValue() - (ali.getAlimento().getProteina().doubleValue()));
-		carboidratos = new BigDecimal(carboidratos.doubleValue() - (ali.getAlimento().getCarboidrato().doubleValue()));
-		gorduras = new BigDecimal(gorduras.doubleValue() - (ali.getAlimento().getGordura().doubleValue()));
+//		calorias = new BigDecimal(calorias.doubleValue() - (alimento.getCaloria().doubleValue()));
+//		proteinas = new BigDecimal(proteinas.doubleValue() - (alimento.getProteina().doubleValue()));
+//		carboidratos = new BigDecimal(carboidratos.doubleValue() - (alimento.getCarboidrato().doubleValue()));
+//		gorduras = new BigDecimal(gorduras.doubleValue() - (alimento.getGordura().doubleValue()));
 
 	}
 
@@ -182,11 +208,21 @@ public class ModelRefeicao implements Serializable {
 		this.horario = horario;
 	}
 
-	public ModelConsumidoDia getMacros() {
-		return macros;
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 
-	public void setMacros(ModelConsumidoDia macros) {
-		this.macros = macros;
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ModelRefeicao other = (ModelRefeicao) obj;
+		return Objects.equals(id, other.id);
 	}
 }

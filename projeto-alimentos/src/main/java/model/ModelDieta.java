@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,8 +51,8 @@ public class ModelDieta implements Serializable{
 	
 	
 	@JsonIgnore
-	@OneToMany(mappedBy ="dieta",fetch=FetchType.EAGER)
-	private List<ModelRefeicao> listaRefeicoes;
+	@OneToMany(mappedBy ="dieta",fetch=FetchType.LAZY)
+	private List<ModelRefeicao> listaRefeicoes=new ArrayList<ModelRefeicao>();
 
 	public Long getId() {
 		return id;
@@ -122,10 +123,6 @@ public class ModelDieta implements Serializable{
 	}
 	
 	public void adicionarRefeicao(ModelRefeicao ref) {
-//		totalCalorias=totalCalorias.add(ref.getCalorias());
-//		System.out.println("Calorias da dieta atua : "+totalCalorias+" --- Calorias da refeição " +ref.getCalorias()+
-//				"\n Nova caloria: "+(totalCalorias.doubleValue()+ref.getCalorias().doubleValue()));
-		
 
 		totalCalorias=new BigDecimal (totalCalorias.doubleValue()+ref.getCalorias().doubleValue());
 		totalProteinas=totalProteinas.add(ref.getProteinas());

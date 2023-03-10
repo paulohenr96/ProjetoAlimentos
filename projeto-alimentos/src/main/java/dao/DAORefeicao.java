@@ -20,14 +20,14 @@ public class DAORefeicao extends DAOGeneric<ModelRefeicao> {
 	private String nome = "";
 
 	public Long contarTotalRefeicoes(Long idUserLogado) {
-		String sql = "select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=null and macros_id=null and idUserLogado="
+		String sql = "select count(1) from " + ModelRefeicao.class.getSimpleName().toLowerCase() + " where dieta_id=null and idUserLogado="
 				+ idUserLogado + condicaoNome();
 
 		return retornaLong(sql);
 	}
 
 	public Long contarRefeicoesComOAlimento(Long idAlimento) {
-		String sql = "select count(1) from " + ModelAlimentoRefeicao.class.getCanonicalName() + " where alimento_id=" + idAlimento;
+		String sql = "select count(1) from " + ModelAlimentoRefeicao.class.getSimpleName() + " where alimento_id=" + idAlimento;
 
 		return retornaLong(sql);
 	}
@@ -48,30 +48,36 @@ public class DAORefeicao extends DAOGeneric<ModelRefeicao> {
 	}
 	
 	public List refeicoesContemAlimento(Long idAlimento) {
+		
+		
+		
 		String sql = "from "+ModelAlimentoRefeicao.class.getCanonicalName()+" where alimento_id="+idAlimento;
+		
+		Long valor=retornaLong("select count(1) "+sql);
+		
+		if (valor.intValue()==0) {
+			return null;
+		}
 		
 		return retornaListaEntidades(sql);
 		
 	}
 
 	public Long contarTotalRefsDieta(Long idDieta) {
-		// TODO Auto-generated method stub
-		EntityManager entityManager = JPAUtil.getEntityManager();
-
-		EntityTransaction transaction = entityManager.getTransaction();
-		transaction.begin();
-		Long total = (Long) entityManager
-				.createQuery("select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id=:id")
-				.setParameter("id", idDieta).getSingleResult();
-		transaction.commit();
-		entityManager.close();
-		return total;
+		String sql="select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where dieta_id="+idDieta;
+		return retornaLong(sql);
 	}
 
 	public List consultarAlimentosRefeicao(Long idRefeicao) {
-		String sql = "from " + ModelAlimentoRefeicao.class.getCanonicalName() + " where refeicao_id=" + idRefeicao;
-
-		return retornaListaEntidades(sql);
+		
+		
+		String hql = "from " + ModelAlimentoRefeicao.class.getCanonicalName() + " u where u.refeicao.id=" + idRefeicao;
+		Long total = contarAlimentosRefeicao(idRefeicao);
+		if (total.intValue()==0) {
+			return null;
+		}
+		getEntityManager().clear();
+		return retornaListaEntidadesHql(hql);
 	}
 
 	public void deletarRefeicoesConsumidas(Long id) {
@@ -84,16 +90,22 @@ public class DAORefeicao extends DAOGeneric<ModelRefeicao> {
 
 	public List consultarTodosRefeicaoPaginado(int paginaAtual, int porPagina, Long userLogado) {
 		String sql = "from " + ModelRefeicao.class.getCanonicalName()
-				+ " where dieta_id=null and macros_id=null and idUserLogado=" + userLogado + condicaoNome()
+				+ " where dieta_id=null and idUserLogado=" + userLogado + condicaoNome()
 				+ " ORDER BY id DESC";
 
 		int offset = porPagina * (paginaAtual - 1);
 
 		return retornaListaEntidadesPaginadas(sql, offset, porPagina);
 	}
-
+	
+	public Long contarAlimentosRefeicao(Long id) {
+		
+		String hql="select count(u) from ModelAlimentoRefeicao u where u.refeicao.id="+id;
+		return retornaLongHql(hql);
+	}
+	
 	public Long contarTotalRefeicoesConsumidas(Long idUserLogado, Long macros) {
-		String sql = "select count(1) from " + ModelRefeicao.class.getCanonicalName() + " where idUserLogado="
+		String sql = "select count(1) from " + ModelRefeicao.class.getSimpleName().toLowerCase() + " where idUserLogado="
 				+ idUserLogado + " and macros_id=" + macros;
 
 		return retornaLong(sql);

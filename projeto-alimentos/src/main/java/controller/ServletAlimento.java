@@ -1,8 +1,9 @@
 package controller;
 
+import java.awt.PageAttributes;
+import java.awt.print.Pageable;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,10 +15,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,6 +23,7 @@ import beanDTO.GraficoMacros;
 import dao.DAOAlimento;
 import dao.DAOAlimentoConsumido;
 import dao.DAOConsumido;
+import dao.DAODieta;
 import dao.DAOGeneric;
 import dao.DAORefeicao;
 import model.ModelAlimento;
@@ -34,8 +32,11 @@ import model.ModelAlimentoRefeicao;
 import model.ModelConsumidoDia;
 import model.ModelDieta;
 import model.ModelRefeicao;
+import model.ModelRefeicaoConsumida;
 import model.ModelUsuario;
-import net.sf.jasperreports.compilers.ConstantExpressionEvaluation;
+import srv.ConsumidoService;
+import srv.DietaService;
+import srv.RefeicaoService;
 import util.Constantes;
 import util.Mensagem;
 
@@ -45,12 +46,15 @@ import util.Mensagem;
 @WebServlet("/ServletAlimento")
 public class ServletAlimento extends ContextoBean {
 	private static final long serialVersionUID = 1L;
-	private DAOGeneric dao = new DAOGeneric();
 	private DAOAlimento daoAlimento = new DAOAlimento();
 	private DAORefeicao daoRefeicao = new DAORefeicao();
 	private DAOConsumido daoConsumido = new DAOConsumido();
 	private DAOAlimentoConsumido daoAlimentoConsumido = new DAOAlimentoConsumido();
-
+	private DAOGeneric<ModelRefeicaoConsumida> daoRefeicaoConsumida = new DAOGeneric<ModelRefeicaoConsumida>();
+	private DAOGeneric<ModelAlimentoRefeicao> daoALimentoRefeicao = new DAOGeneric<ModelAlimentoRefeicao>();
+	private DietaService dietaService = new DietaService();
+	private RefeicaoService refeicaoService = new RefeicaoService();
+	private ConsumidoService consumidoService = new ConsumidoService();
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -66,12 +70,17 @@ public class ServletAlimento extends ContextoBean {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Long idLogado = super.getUserLogado(request).getId();
+		ModelUsuario userLogado = super.getUserLogado(request);
+		Long idLogado = userLogado.getId();
 		// TODO Auto-generated method stub
 		String acao = request.getParameter("acao");
 		String msg = "";
-		
+
 		super.requestEncoding(request);
+		if (userLogado == null) {
+			request.getRequestDispatcher("index.jsp").forward(request, response);
+		}
+
 		if (acao != null && acao.equalsIgnoreCase("editar")) {
 			ModelAlimento alimento = gerarAlimento(request, response);
 			Long tamanho = daoRefeicao.contarRefeicoesComOAlimento(alimento.getId());
@@ -91,7 +100,8 @@ public class ServletAlimento extends ContextoBean {
 			int paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
 
 			long total = daoAlimento.contarTotalAlimentos(idLogado);
-			List todos = daoAlimento.consultarTodosPaginado(idLogado, porpagina, paginaAtual);
+			System.out.println(total);
+			List<ModelAlimento> todos = daoAlimento.consultarTodosPaginado(idLogado, porpagina, paginaAtual);
 			super.realizaPaginacao(response, todos, porpagina, total);
 		}
 
@@ -101,7 +111,7 @@ public class ServletAlimento extends ContextoBean {
 			int porpagina = 5;
 
 			if (tamanho == 0) {
-				dao.deletarPorId(ModelAlimento.class, id);
+				daoAlimento.deletarPorId(ModelAlimento.class, id);
 				responderAjax(response, "");
 
 			} else {
@@ -140,38 +150,45 @@ public class ServletAlimento extends ContextoBean {
 			todos = daoRefeicao.consultarTodosRefeicaoPaginado(paginaAtual, porPagina, idLogado);
 
 			total = daoRefeicao.contarTotalRefeicoes(idLogado);
-
+			
 			super.realizaPaginacao(response, todos, porPagina, total);
 
 		} else if (acao != null && acao.equalsIgnoreCase("adicionarrefeicaomacros")) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			String data = request.getParameter("data");
 			ModelConsumidoDia macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
-			ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, id);
-			if (macros != null && (daoRefeicao.contarTotalRefeicoesConsumidas(idLogado,
-					macros.getId()) == Constantes.VALOR_MAXIMO_REFEICOES_CONSUMIDAS)) {
+			ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, id);
+			DAOGeneric<ModelRefeicaoConsumida> daoGeneric = new DAOGeneric<ModelRefeicaoConsumida>();
+			String hql = "";
+			if (macros != null) {
+				hql = "select count(u) from ModelRefeicaoConsumida u where u.macros.id=" + macros.getId();
+			}
+			if (macros != null && (daoGeneric.retornaLongHql(hql) == Constantes.VALOR_MAXIMO_REFEICOES_CONSUMIDAS)) {
 				response.getWriter().write(Mensagem.VALOR_MAXIMO);
 			} else {
 				if (macros != null) {
 
 					macros.adicionarRefeicao(ref);
-					dao.merge(macros);
+					daoConsumido.merge(macros);
 
 				} else {
 
 					macros = new ModelConsumidoDia();
-					macros.setUsuario((ModelUsuario) dao.consultarPorId(ModelUsuario.class, idLogado));
+					macros.setUsuario(userLogado);
 					macros.setData(super.editaData(data));
 					macros.adicionarRefeicao(ref);
-					dao.salvar(macros);
+					daoConsumido.salvar(macros);
 
 					macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
 
 				}
+				ModelRefeicaoConsumida refeicaoNova = new ModelRefeicaoConsumida();
 
-				ref.setId(null);
-				ref.setMacros(macros);
-				dao.salvar(ref);
+				refeicaoNova.setMacros(macros);
+				refeicaoNova.setRefeicao(ref);
+
+				daoGeneric = new DAOGeneric<ModelRefeicaoConsumida>();
+				daoGeneric.salvar(refeicaoNova);
 
 				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 			}
@@ -182,53 +199,9 @@ public class ServletAlimento extends ContextoBean {
 			ModelAlimento alimento = ((ModelAlimento) daoAlimento.consultarPorId(ModelAlimento.class, id))
 					.consumir(quantidade);
 			String data = request.getParameter("data");
-			ModelConsumidoDia macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
+			String mensagem=consumidoService.consumirAlimento(userLogado, quantidade, alimento, data);
+			response.getWriter().write(mensagem);
 
-			boolean contem = false;
-			if (macros != null && (daoConsumido
-					.contarTodosAlimentosConsumidos(macros.getId()) == Constantes.VALOR_MAXIMO_ALIMENTOS_CONSUMIDOS)) {
-				response.getWriter().write(Mensagem.VALOR_MAXIMO);
-			} else {
-				if (macros != null) {
-					for (ModelAlimentoConsumido ali : macros.getListaAlimentos()) {
-						if (ali.getIdAlimento().intValue() == alimento.getId().intValue()) {
-							ali.setQuantidade(ali.getQuantidade() + quantidade);
-							dao.merge(ali);
-							macros.adicionarAlimento(alimento);
-							daoConsumido.merge(macros);
-							contem = true;
-							break;
-						}
-					}
-				}
-
-				if (!contem) {
-					ModelAlimentoConsumido alimentoConsumido = new ModelAlimentoConsumido();
-
-					alimentoConsumido.setIdAlimento(alimento.getId());
-					alimentoConsumido.setNome(alimento.getNome());
-					alimentoConsumido.setQuantidade(quantidade);
-					
-					if (macros != null) {
-						macros.adicionarAlimento(alimento);
-						dao.merge(macros);
-						alimentoConsumido.setMacros(macros);
-
-					} else {
-
-						ModelConsumidoDia dia = new ModelConsumidoDia();
-						dia.setUsuario((ModelUsuario) dao.consultarPorId(ModelUsuario.class, idLogado));
-						dia.setData(super.editaData(data));
-						dia.adicionarAlimento(alimento);
-						dao.salvar(dia);
-						alimentoConsumido.setMacros(dia);
-
-					}
-					dao.salvar(alimentoConsumido);
-				}
-
-				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
-			}
 
 		} else if (acao != null && acao.equalsIgnoreCase("consultarmacros")) {
 
@@ -249,10 +222,10 @@ public class ServletAlimento extends ContextoBean {
 
 			alimentoConsumido.setQuantidade(alimentoConsumido.getQuantidade() - quantidade);
 			if (alimentoConsumido.getQuantidade() <= 0) {
-				dao.deletarPorId(ModelAlimentoConsumido.class, alimentoConsumido.getId());
+				daoAlimentoConsumido.deletarPorId(ModelAlimentoConsumido.class, alimentoConsumido.getId());
 
 			} else {
-				dao.merge(alimentoConsumido);
+				daoAlimentoConsumido.merge(alimentoConsumido);
 			}
 			ModelAlimento alimento = ((ModelAlimento) daoAlimento.consultarPorId(ModelAlimento.class,
 					alimentoConsumido.getIdAlimento())).consumir(quantidade);
@@ -261,9 +234,9 @@ public class ServletAlimento extends ContextoBean {
 			consumoDia.retirarAlimento(alimento);
 			if (consumoDia.getProteinas().doubleValue() < 0.1 && consumoDia.getCalorias().doubleValue() < 0.1
 					&& consumoDia.getCarboidrato().doubleValue() < 0.1 && consumoDia.getGordura().doubleValue() < 0.1) {
-				dao.deletarPorId(ModelConsumidoDia.class, consumoDia.getId());
+				daoConsumido.deletarPorId(ModelConsumidoDia.class, consumoDia.getId());
 			} else {
-				dao.merge(consumoDia);
+				daoConsumido.merge(consumoDia);
 
 			}
 
@@ -273,8 +246,10 @@ public class ServletAlimento extends ContextoBean {
 			Long id = Long.parseLong(request.getParameter("id"));
 			// Alimento que será removido
 
-			ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, id);
-			dao.deletarPorId(ModelRefeicao.class, ref.getId());
+			ModelRefeicaoConsumida refeicaoConsumida = (ModelRefeicaoConsumida) daoRefeicaoConsumida
+					.consultarPorId(ModelRefeicaoConsumida.class, id);
+			ModelRefeicao ref = daoRefeicao.consultarPorId(refeicaoConsumida.getRefeicao().getId());
+			daoRefeicaoConsumida.deletarPorId(ModelRefeicaoConsumida.class, refeicaoConsumida.getId());
 
 			String data = request.getParameter("data");
 			ModelConsumidoDia consumoDia = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
@@ -282,9 +257,9 @@ public class ServletAlimento extends ContextoBean {
 
 			if (consumoDia.getProteinas().doubleValue() < 0.1 && consumoDia.getCalorias().doubleValue() < 0.1
 					&& consumoDia.getCarboidrato().doubleValue() < 0.1 && consumoDia.getGordura().doubleValue() < 0.1) {
-				dao.deletarPorId(ModelConsumidoDia.class, consumoDia.getId());
+				daoConsumido.deletarPorId(ModelConsumidoDia.class, consumoDia.getId());
 			} else {
-				dao.merge(consumoDia);
+				daoConsumido.merge(consumoDia);
 
 			}
 
@@ -312,26 +287,25 @@ public class ServletAlimento extends ContextoBean {
 
 			List<ModelConsumidoDia> lista = daoConsumido.consultarTodos(idLogado);
 
-			lista.sort(new Comparator<ModelConsumidoDia>() {
-
-				@Override
-				public int compare(ModelConsumidoDia o1, ModelConsumidoDia o2) {
-					// TODO Auto-generated method stub
-					return o1.getData().after(o2.getData()) ? 1 : -1;
-				}
-			});
-
 			GraficoMacros graficoMacros = new GraficoMacros();
+			if (lista != null) {
+				lista.sort(new Comparator<ModelConsumidoDia>() {
 
-			lista.forEach(e -> {
+					@Override
+					public int compare(ModelConsumidoDia o1, ModelConsumidoDia o2) {
+						// TODO Auto-generated method stub
+						return o1.getData().after(o2.getData()) ? 1 : -1;
+					}
+				});
+				for (ModelConsumidoDia e : lista) {
+					graficoMacros.getListaCalorias().add(e.getCalorias());
+					graficoMacros.getListaData().add(e.getData());
+					graficoMacros.getListaProteinas().add(e.getProteinas());
+					graficoMacros.getListaCarboidratos().add(e.getCarboidrato());
+					graficoMacros.getListaGorduras().add(e.getGordura());
+				}
 
-				graficoMacros.getListaCalorias().add(e.getCalorias());
-				graficoMacros.getListaData().add(e.getData());
-				graficoMacros.getListaProteinas().add(e.getProteinas());
-				graficoMacros.getListaCarboidratos().add(e.getCarboidrato());
-				graficoMacros.getListaGorduras().add(e.getGordura());
-
-			});
+			}
 
 			super.responderAjax(response, graficoMacros);
 
@@ -346,7 +320,9 @@ public class ServletAlimento extends ContextoBean {
 				consumoDia.setCarboidrato(new BigDecimal(0));
 				consumoDia.setGordura(new BigDecimal(0));
 				daoConsumido.deletarAlimentoConsumidoPorId(consumoDia.getId());
-				daoRefeicao.deletarRefeicoesConsumidas(consumoDia.getId());
+				String hql = "delete from " + ModelRefeicaoConsumida.class.getCanonicalName() + " m where m.macros.id="
+						+ consumoDia.getId();
+				daoRefeicaoConsumida.realizarUpdate(hql);
 				daoConsumido.deletarPorId(ModelConsumidoDia.class, consumoDia.getId());
 				responderAjax(response, Mensagem.MENSAGEM_SUCESSO);
 			} else {
@@ -370,7 +346,7 @@ public class ServletAlimento extends ContextoBean {
 						paginaAtual, macroId);
 
 				super.realizaPaginacao(response, todos, porPagina, total);
-
+				todos.clear();
 			} else {
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writeValueAsString(new ArrayList());
@@ -392,11 +368,18 @@ public class ServletAlimento extends ContextoBean {
 			ModelConsumidoDia macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
 			if (macros != null) {
 				Long macroId = macros.getId();
-				Long total = daoRefeicao.contarTotalRefeicoesConsumidas(idLogado, macroId);
+				String hql = "select count(u) from ModelRefeicaoConsumida u where u.macros.id=" + macroId;
+				Long total = daoRefeicaoConsumida.retornaLongHql(hql);
 
-				List todos = daoConsumido.consultarRefsMacros(porPagina, paginaAtual, macroId);
+				if (total.intValue() != 0) {
+					List<ModelRefeicaoConsumida> todos = daoConsumido.consultarRefsMacros(porPagina, paginaAtual,
+							macroId);
 
-				super.realizaPaginacao(response, todos, porPagina, total);
+					super.realizaPaginacao(response, todos, porPagina, total);
+					todos.clear();
+				} else {
+					responderAjax(response, "");
+				}
 
 			} else {
 				responderAjax(response, "");
@@ -408,7 +391,9 @@ public class ServletAlimento extends ContextoBean {
 		else if (acao != null && acao.equalsIgnoreCase("ImprimirRelatorioMacrosPDF")) {
 
 			List<ModelConsumidoDia> lista = daoConsumido.consultarTodos(idLogado);
-
+			for (ModelConsumidoDia m : lista) {
+				m.setUsuario(userLogado);
+			}
 			lista.sort(new Comparator<ModelConsumidoDia>() {
 
 				@Override
@@ -425,6 +410,7 @@ public class ServletAlimento extends ContextoBean {
 					+ File.separator + "user-1.png");
 
 			super.relatorio(response, request, params, "rel_alimentos_jsp", lista);
+			lista.clear();
 		} else if (acao != null && acao.equalsIgnoreCase("novarefeicao")) {
 			String nome = request.getParameter("nome");
 			ModelRefeicao refeicao = new ModelRefeicao();
@@ -433,10 +419,7 @@ public class ServletAlimento extends ContextoBean {
 				response.getWriter().write(Mensagem.MENSAGEM_ERRO);
 
 			} else {
-				refeicao.setNome(nome);
-				refeicao.setIdUserLogado(idLogado);
-
-				dao.salvar(refeicao);
+				refeicaoService.salvar(idLogado, nome);
 				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 			}
 
@@ -448,23 +431,23 @@ public class ServletAlimento extends ContextoBean {
 			List<ModelRefeicao> todos = daoRefeicao.consultarTodosRefeicaoPaginado(paginaAtual, porPagina, idLogado);
 
 			super.realizaPaginacao(response, todos, porPagina, total);
+			todos.clear();
 
 		} else if (acao != null && acao.equalsIgnoreCase("consultarrefeicao")) {
 
 			Long idRefeicao = Long.parseLong(request.getParameter("idrefeicao"));
-			ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
+			ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, idRefeicao);
 			request.setAttribute("ref", ref);
 			request.getRequestDispatcher("principal/consultarefeicao.jsp").forward(request, response);
 		} else if (acao != null && acao.equalsIgnoreCase("mediamacros")) {
-			Long userLogado = super.getUserLogado(request).getId();
 
-			List mediaMacros = daoConsumido.mediaMacros(userLogado);
+			List mediaMacros = daoConsumido.mediaMacros(idLogado);
 			super.responderAjax(response, mediaMacros);
+			mediaMacros.clear();
 
 		}
 
 		else if (acao != null && acao.equalsIgnoreCase("pesquisaralimentorefeicao")) {
-			Long userLogado = super.getUserLogado(request).getId();
 
 			int porPagina = Integer.parseInt(request.getParameter("porpagina"));
 			int paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
@@ -476,53 +459,25 @@ public class ServletAlimento extends ContextoBean {
 				daoAlimento.setNome(nome);
 
 			}
-			todos = daoAlimento.consultarTodosPaginado(userLogado, porPagina, paginaAtual);
-			total = daoAlimento.contarTotalAlimentos(userLogado);
+			todos = daoAlimento.consultarTodosPaginado(idLogado, porPagina, paginaAtual);
+			total = daoAlimento.contarTotalAlimentos(idLogado);
 
 			super.realizaPaginacao(response, todos, porPagina, total);
+			todos.clear();
 
 		} else if (acao != null && acao.equalsIgnoreCase("adicionaralimentorefeicao")) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			Long idRefeicao = Long.parseLong(request.getParameter("idrefeicao"));
-
+			DAOGeneric<ModelAlimentoRefeicao> dao = new DAOGeneric<ModelAlimentoRefeicao>();
 			double quantidade = Double.parseDouble(request.getParameter("quantidade"));
 
-			ModelAlimento alimento = (ModelAlimento) dao.consultarPorId(ModelAlimento.class, id);
-			ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
-			boolean contem = false;
-			for (ModelAlimentoRefeicao ali : ref.getListaAlimentos()) {
-				if (ali.getAlimento().getId().intValue() == alimento.getId().intValue()) {
-					ali.setQuantidade(ali.getQuantidade() + quantidade);
-					dao.merge(ali);
-
-					contem = true;
-				}
-			}
-			ModelAlimentoRefeicao ali = new ModelAlimentoRefeicao();
-			ali.setAlimento(alimento);
-			ali.setQuantidade(quantidade);
-			ali.setRefeicao(ref);
-			if (!contem) {
-				dao.salvar(ali);
-
-			}
-			ali.getAlimento().consumir(ali.getQuantidade());
-
+			ModelAlimento alimento = (ModelAlimento) daoAlimento.consultarPorId(ModelAlimento.class, id);
+			ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, idRefeicao);
+			
+			ref = refeicaoService.adicionarAlimento(ref, quantidade, alimento);
 			if (ref.getDieta() != null) {
-				ModelDieta dieta = ref.getDieta();
-				ModelRefeicao refaux = new ModelRefeicao();
-				ModelAlimentoRefeicao aliaux=new ModelAlimentoRefeicao();
-				aliaux.setQuantidade(quantidade);
-				aliaux.setAlimento(alimento);
-				refaux.setNome("Auxiliar");
-				refaux.addAlimento(ali);
-				System.out.println(refaux.getCalorias() + "--- REFAUX");
-				dieta.adicionarRefeicao(refaux);
-				dao.merge(dieta);
+				dietaService.adicionarAlimentoRefeicao(ref.getDieta(), quantidade, alimento);
 			}
-			ref.addAlimento(ali);
-
-			ref=daoRefeicao.merge(ref);
 			super.responderAjax(response, ref);
 
 		} else if (acao != null && acao.equalsIgnoreCase("informacaodarefeicao")) {
@@ -533,48 +488,24 @@ public class ServletAlimento extends ContextoBean {
 		} else if (acao != null && acao.equalsIgnoreCase("alimentosrefeicao")) {
 			Long idRefeicao = Long.parseLong(request.getParameter("idrefeicao"));
 
-			List lista = daoRefeicao.consultarAlimentosRefeicao(idRefeicao);
+			List<ModelAlimentoRefeicao> lista = new ArrayList<ModelAlimentoRefeicao>();
+			lista = daoRefeicao.consultarAlimentosRefeicao(idRefeicao);
 			super.responderAjax(response, lista);
 
 		} else if (acao != null && acao.equalsIgnoreCase("removeralimentorefeicao")) {
 			Long idAlimento = Long.parseLong(request.getParameter("idalimento"));
 			Long idRefeicao = Long.parseLong(request.getParameter("idrefeicao"));
 			int quantidadeRetirar = Integer.parseInt(request.getParameter("quantidade"));
+
+			DAOGeneric<ModelAlimentoRefeicao> dao = new DAOGeneric<ModelAlimentoRefeicao>();
 			ModelAlimentoRefeicao ali = (ModelAlimentoRefeicao) dao.consultarPorId(ModelAlimentoRefeicao.class,
 					idAlimento);
-			ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
+			ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, idRefeicao);
+			
 			if (ali != null) {
-				Double quantidadeAtual = ali.getQuantidade();
-				Double quantidadeNova = quantidadeAtual - quantidadeRetirar;
-				ali.setQuantidade(quantidadeRetirar);
-
-				ref.removeralimento(ali);
+				ref = refeicaoService.removerAlimento(ali, ref, quantidadeRetirar);
 				if (ref.getDieta() != null) {
-					ModelDieta dieta = ref.getDieta();
-					dieta.removerRefeicao(ref);
-
-					dao.merge(verificaDieta(dieta));
-
-				}
-				if (refInvalida(ref)) {
-					ref.setCalorias(BigDecimal.ZERO);
-					ref.setProteinas(BigDecimal.ZERO);
-					ref.setCarboidratos(BigDecimal.ZERO);
-					ref.setGorduras(BigDecimal.ZERO);
-
-				}
-
-				dao.merge(ref);
-				if (quantidadeNova.intValue() <= 0) {
-
-					dao.deletarPorId(ModelAlimentoRefeicao.class, idAlimento);
-
-				}
-
-				else {
-					ali.setQuantidade(quantidadeNova);
-
-					dao.merge(ali);
+					dietaService.removerAlimentoRefeicao(ref, ali, quantidadeRetirar);
 				}
 			}
 
@@ -583,8 +514,11 @@ public class ServletAlimento extends ContextoBean {
 		} else if (acao != null && acao.equalsIgnoreCase("removerrefeicao")) {
 			Long idrefeicao = Long.parseLong(request.getParameter("idrefeicao"));
 
+			String hql = "select count(u) from ModelRefeicaoConsumida u where u.refeicao.id=" + idrefeicao;
+			Long total = daoRefeicaoConsumida.retornaLongHql(hql);
 			daoRefeicao.removerAlimentoRefeicao(idrefeicao);
-			dao.deletarPorId(ModelRefeicao.class, idrefeicao);
+			daoRefeicaoConsumida.realizarUpdate("delete from ModelRefeicaoConsumida where refeicao_id=" + idrefeicao);
+			daoRefeicao.deletarPorId(ModelRefeicao.class, idrefeicao);
 			response.getWriter().write("");
 
 		} else if (acao != null && acao.equalsIgnoreCase("addrefeicao")) {
@@ -598,7 +532,7 @@ public class ServletAlimento extends ContextoBean {
 				response.getWriter().write(Mensagem.VALOR_MAXIMO);
 
 			} else {
-				ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
+				ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, idRefeicao);
 				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 
 			}

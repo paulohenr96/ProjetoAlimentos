@@ -58,6 +58,7 @@ public class ContextoBean extends HttpServlet implements Serializable {
 			response.addHeader(TOTAL_PAGINAS, "" + totalPaginas);
 			response.setCharacterEncoding("UTF-8");
 			responderAjax(response, todos);
+			todos=null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,6 +83,7 @@ public class ContextoBean extends HttpServlet implements Serializable {
 			json = mapper.writeValueAsString(o);
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(json);
+		
 
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block

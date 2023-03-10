@@ -90,7 +90,7 @@ public class ServletDieta extends ContextoBean {
 				Long id = Long.parseLong(request.getParameter("id"));
 
 				ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);
-
+				
 				dieta.getListaRefeicoes().forEach((e) -> {
 					daoRefeicao.removerAlimentoRefeicao(e.getId());
 				});
@@ -109,6 +109,7 @@ public class ServletDieta extends ContextoBean {
 				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 				int paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
 				int porpagina = 5;
+				daoDieta.flush();
 				List todos = daoDieta.consultarTodasDietasPorIdPaginado(idUserLogado, paginaAtual, porpagina);
 				Long total = daoDieta.contarDietas(idUserLogado);
 
@@ -116,7 +117,6 @@ public class ServletDieta extends ContextoBean {
 			} else if ((!stringVazia(acao)) && acao.equalsIgnoreCase("entidadedieta")) {
 				Long id = Long.parseLong(request.getParameter("id"));
 				ModelDieta dieta = daoDieta.consultarPorId(id);
-				System.out.println(dieta + "------");
 				List lista = new ArrayList<>();
 				lista.add(dieta);
 				responderAjax(response, lista);
@@ -127,7 +127,6 @@ public class ServletDieta extends ContextoBean {
 				Long id = Long.parseLong(request.getParameter("id"));
 
 				ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);
-				System.out.println("Consultando dieta " + dieta);
 				request.setAttribute("dieta", dieta);
 				request.getRequestDispatcher("principal/consultadieta.jsp").forward(request, response);
 			} else if (acao != null && acao.equalsIgnoreCase("novaref")) {
@@ -171,7 +170,6 @@ public class ServletDieta extends ContextoBean {
 				ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
 				System.out.println(dieta);
 				dieta.removerRefeicao(ref);
-				System.out.println(dieta);
 
 				dao.merge(verificaDieta(dieta));
 
@@ -183,7 +181,12 @@ public class ServletDieta extends ContextoBean {
 			} else if (acao != null && acao.equalsIgnoreCase("imprimirdieta")) {
 
 				Long iddieta = Long.parseLong(request.getParameter("iddieta"));
-				List lista = daoDieta.todasRefsDieta(iddieta);
+				List<ModelRefeicao> lista =(List<ModelRefeicao>) daoDieta.todasRefsDieta(iddieta);
+				
+				for (ModelRefeicao r : lista) {
+					r.setListaAlimentos(daoRefeicao.consultarAlimentosRefeicao(r.getId()));
+				}
+				
 				HashMap<String, Object> params = new HashMap<>();
 				params.put("param_sub_report", request.getServletContext().getRealPath("relatorio") + File.separator);
 

@@ -369,6 +369,7 @@
 						
 						
 						
+						infoRefeicao();
 
 					}
 					}
@@ -415,8 +416,8 @@
 					url:urlAction,
 					data:"quantidade="+quantidade+"&idalimento="+id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
 					success:function(response,textStatus,xhr){
-						infoRefeicao();
 						verAlimentosRefeicao();
+
 					}
 				}).fail(function(xhr,status,erroThrown){
 					alert("Erro : "+xhr.responseText);

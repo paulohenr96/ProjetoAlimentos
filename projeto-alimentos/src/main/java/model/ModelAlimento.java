@@ -29,7 +29,7 @@ private Long id;
 private String nome;
 
 @JsonIgnore
-@OneToMany(mappedBy = "alimento",fetch=FetchType.EAGER)
+@OneToMany(mappedBy = "alimento",fetch=FetchType.LAZY)
 private List<ModelAlimentoRefeicao> listaAlimentosRefeicao;
 
 
@@ -74,7 +74,7 @@ public ModelAlimento consumir(double quantidade) {
 	BigDecimal k=new BigDecimal((quantidade/porcao)).setScale(2,RoundingMode.UP);
 	
 	proteina=new BigDecimal(converterDouble(k.doubleValue()* ((proteina).doubleValue())));
-	caloria=new BigDecimal(converterDouble(k.doubleValue()* ((caloria).doubleValue())));
+	caloria=new BigDecimal((k.doubleValue()* ((caloria).doubleValue())));
 	gordura=new BigDecimal(converterDouble(k.doubleValue()* ((gordura).doubleValue())));
 	carboidrato=new BigDecimal(converterDouble(k.doubleValue()* ((carboidrato).doubleValue())));
 	return this;
