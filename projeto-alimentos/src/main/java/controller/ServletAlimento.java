@@ -156,49 +156,17 @@ public class ServletAlimento extends ContextoBean {
 		} else if (acao != null && acao.equalsIgnoreCase("adicionarrefeicaomacros")) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			String data = request.getParameter("data");
-			ModelConsumidoDia macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
-			ModelRefeicao ref = (ModelRefeicao) daoRefeicao.consultarPorId(ModelRefeicao.class, id);
-			DAOGeneric<ModelRefeicaoConsumida> daoGeneric = new DAOGeneric<ModelRefeicaoConsumida>();
-			String hql = "";
-			if (macros != null) {
-				hql = "select count(u) from ModelRefeicaoConsumida u where u.macros.id=" + macros.getId();
-			}
-			if (macros != null && (daoGeneric.retornaLongHql(hql) == Constantes.VALOR_MAXIMO_REFEICOES_CONSUMIDAS)) {
-				response.getWriter().write(Mensagem.VALOR_MAXIMO);
-			} else {
-				if (macros != null) {
-
-					macros.adicionarRefeicao(ref);
-					daoConsumido.merge(macros);
-
-				} else {
-
-					macros = new ModelConsumidoDia();
-					macros.setUsuario(userLogado);
-					macros.setData(super.editaData(data));
-					macros.adicionarRefeicao(ref);
-					daoConsumido.salvar(macros);
-
-					macros = daoConsumido.consultarConsumoDia(super.editaData(data), idLogado);
-
-				}
-				ModelRefeicaoConsumida refeicaoNova = new ModelRefeicaoConsumida();
-
-				refeicaoNova.setMacros(macros);
-				refeicaoNova.setRefeicao(ref);
-
-				daoGeneric = new DAOGeneric<ModelRefeicaoConsumida>();
-				daoGeneric.salvar(refeicaoNova);
-
-				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
-			}
+			
+			String mensagem = consumidoService.consumirRefeicao(userLogado, data, id);
+			
+			response.getWriter().write(mensagem);
 
 		} else if (acao != null && acao.equalsIgnoreCase("alimentoconsumido")) {
 			Long id = Long.parseLong(request.getParameter("id"));
 			int quantidade = Integer.parseInt(request.getParameter("quantidade"));
-			ModelAlimento alimento = ((ModelAlimento) daoAlimento.consultarPorId(ModelAlimento.class, id))
-					.consumir(quantidade);
+			ModelAlimento alimento = ((ModelAlimento) daoAlimento.consultarPorId(ModelAlimento.class, id));
 			String data = request.getParameter("data");
+			
 			String mensagem=consumidoService.consumirAlimento(userLogado, quantidade, alimento, data);
 			response.getWriter().write(mensagem);
 

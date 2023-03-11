@@ -105,6 +105,8 @@ public class ModelConsumidoDia implements Serializable {
 
 	
 	public void adicionarAlimento(ModelAlimento ali) {
+	
+
 		
 		if (proteinas!=null && calorias !=null && gordura!=null && carboidrato!=null) {
 			proteinas=new BigDecimal(proteinas.doubleValue()+ali.getProteina().doubleValue());
