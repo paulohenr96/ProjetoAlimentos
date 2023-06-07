@@ -29,9 +29,8 @@
 			<main>
 				<div class="container-fluid px-4">
 
-					<button class="btn btn-link hBack" type="button">VOLTAR</button>
-
-					<h1>Seja Bem-Vindo ao meu Projeto !</h1>
+					
+					<h1>Detalhes da refeição</h1>
 
 
 
@@ -49,32 +48,32 @@
 								<label for="nomerefeicao">Refeicao</label> <input
 									class="form-control" name="nomerefeicao" required
 									id="nomerefeicao" value="${ref.nome}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 
 							<div class="col">
 								<label for="caloriatotal">Calorias</label> <input
 									class="form-control" name="caloriatotal" required
 									id="caloriatotal" value="${ref.calorias}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 							<div class="col">
 								<label for="proteinatotal">Proteinas</label> <input
 									class="form-control" name="proteinatotal" required
 									id="proteinatotal" value="${ref.proteinas}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 							<div class="col">
 								<label for="carboidratototal">Carboidratos</label> <input
 									class="form-control" name="carboidratototal" required
 									id="carboidratototal" value="${ref.carboidratos}"
-									readonly="readonly" type="text" placeholder="Nome da refeição" />
+									readonly="readonly" type="text"  />
 							</div>
 							<div class="col">
 								<label for="gorduratotal">Gorduras</label> <input
 									class="form-control" name="gorduratotal" required
 									id="gorduratotal" value="${ref.gorduras}" readonly="readonly"
-									type="text" placeholder="Nome da refeição" />
+									type="text"  />
 							</div>
 						</div>
 
@@ -101,6 +100,8 @@
 
 							<button type="button" onclick="adicionarAlimento()"
 								class="btn btn-primary ">Adicionar Alimento</button>
+								<button type="button" onclick="imprimirRefeicao()"
+								class="btn btn-primary ">Imprimir Refeicao</button>
 							<button type="button" class="btn btn-success "
 								data-toggle="modal" data-target="#exampleModal"
 								onclick="verAlimentosRefeicao()">Ver Todos os Alimentos</button>
@@ -108,7 +109,12 @@
 						</div>
 
 					</form>
-
+<form id="form-refeicao" method="get"
+						action="<%=request.getContextPath()%>/ServletRefeicao">
+						<input type="hidden" id="acao2" name="acao" value="">
+						<input type="hidden" name="id" value="${ref.id}">
+						
+						</form>
 					<div class="row mb-2">
 
 						<div class="col">
@@ -154,7 +160,7 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">${ref.nome}</h5>
+							<h5 class="modal-title" id="exampleModalLabel">Alimentos da Refeição ${ref.nome}</h5>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -162,7 +168,7 @@
 						</div>
 						<div class="modal-body" style="height: 400px; overflow: scroll">
 
-							<table class="table">
+							<table class="table modalalimentos">
 								<thead>
 									<tr>
 										<th scope="col">#</th>
@@ -286,23 +292,24 @@
 		}
 		function pegarAlimento(id){
 			var linha=document.getElementById(id);
-			
 
 			document.querySelector("#id").value=linha.cells[0].innerHTML;
 			document.querySelector("#nome").value=linha.cells[1].innerHTML;
+			verificarFormulario();
+
 		}
 		function verificarFormulario(){
 			var id=$("#id");
 			var quantidade=$("#quantidade");
 			if ( $.trim(id.val())==''){
 				$("p.alerta").remove();
-				var aviso=$("<p>").addClass("alerta").css("color","red").html("selecione um elemento");
+				var aviso=$("<p>").addClass("alerta").css("color","red").html("Selecione um elemento");
 				$("#id").parent().append(aviso[0]);
 				
 				return false;
 			}else if ($.trim(quantidade.val())==""){
 				$("p.alerta").remove();
-				var aviso=$("<p>").addClass("alerta").css("color","red").html("insira uma quantidade");
+				var aviso=$("<p>").addClass("alerta").css("color","red").html("Insira uma quantidade");
 				$("#quantidade").parent().append(aviso[0]);
 				
 				return false;
@@ -321,6 +328,9 @@
 			var urlAction=document.getElementById("form-user").action;
 			var idrefeicao=document.getElementById("idrefeicao").value;
 			var tbody=document.querySelector("tbody.alimentos-refeicao");
+			$("table.modalalimentos").empty();
+			$("table.modalalimentos").show();
+
 			$.ajax({
 				method:"get",
 				url:urlAction,
@@ -328,41 +338,40 @@
 				success:function(response,textStatus,xhr){
 					var json=JSON.parse(response);
 					if (json.length==0){
-						tbody.innerHTML="LISTA VAZIA";
-						$(".modal thead").hide();
-					}else {
-						$(".modal .table").show();
-						$(".modal .table>tbody").empty();
+						$("table.modalalimentos").append("<thead><th>Lista Vazia</th></thead>");
+						infoRefeicao();
 
+					}else {
+						
+
+						$("table.modalalimentos").append("<thead></thead>");
+						$("table.modalalimentos >thead").append("<tr></tr>");
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>#</th>");
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>Nome</th>");
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>QUANTIDADE</th>")
+						$("table.modalalimentos >thead >tr").append("<th scope='col'>REMOVER</th>")
+
+						$("table.modalalimentos").append("<tbody class='alimentos-refeicao'></tbody>");
+
+						var tbody=document.querySelector("tbody.alimentos-refeicao");
+
+						
+						
 						json.forEach((e)=>{
+							var idinput='quantidade_remover'+e.id;
 							var linha=tbody.insertRow();
-							var button=$("<button>").addClass("btn btn-danger").attr("type","button").html("REMOVER").click(function(){
-								
-								
-								$.ajax({
-									method:"get",
-									url:urlAction,
-									data:"idalimento="+e.id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
-									success:function(response,textStatus,xhr){
-										infoRefeicao();
-										verAlimentosRefeicao();
-									}
-								}).fail(function(xhr,status,erroThrown){
-									alert("Erro : "+xhr.responseText);
-								})
-								
-								
-							});
+							var button=icone("deletar.png","removerAlimentoRefeicao("+e.id+")");
 							linha.insertCell().innerHTML=e.id;
 							linha.insertCell().innerHTML=e.alimento.nome;
 							linha.insertCell().innerHTML=e.quantidade;
-							linha.insertCell().append(button[0]);
+							linha.insertCell().innerHTML="<input type='number' placeholder='quantidade' id="+idinput+" style='width:75px;'/>"+button;
 
 
 						});
 						
 						
 						
+						infoRefeicao();
 
 					}
 					}
@@ -389,7 +398,7 @@
 					$("#caloriatotal").attr("value",json.calorias);
 					$("#gorduratotal").attr("value",json.gorduras);
 					$("#carboidratototal").attr("value",json.carboidratos);
-
+					console.log(json);
 				}
 			}).fail(function(xhr,status,erroThrown){
 				alert("Erro : "+xhr.responseText);
@@ -397,6 +406,33 @@
 			
 			
 		}
+		function removerAlimentoRefeicao(id){
+			var urlAction=document.getElementById("form-user").action;
+
+			var idrefeicao=document.getElementById("idrefeicao").value;
+			var quantidade=$("#quantidade_remover"+id).val();
+			if (quantidade != null && quantidade != ""){
+				
+				$.ajax({
+					method:"get",
+					url:urlAction,
+					data:"quantidade="+quantidade+"&idalimento="+id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
+					success:function(response,textStatus,xhr){
+						verAlimentosRefeicao();
+						
+
+					}
+				}).fail(function(xhr,status,erroThrown){
+					alert("Erro : "+xhr.responseText);
+				});
+				
+			}else {
+				alert("Insira uma quantidade para remover.")
+			}
+				
+			
+		}
+		
 		
 		function adicionarAlimento(){
 			if (verificarFormulario()){
@@ -423,6 +459,18 @@
 				
 			}
 		
+		}
+		
+		function imprimirRefeicao(){
+			var idrefeicao=document.getElementById("idrefeicao").value;
+			var data="acao=imprimir"+"&"+"id="+idrefeicao;
+			var urlAction=getContextPath()+"/ServletRefeicao";
+			
+			document.getElementById("acao2").value="imprimir";
+			
+			$("#form-refeicao").submit();
+			return false;
+			
 		}
 	</script>
 </body>

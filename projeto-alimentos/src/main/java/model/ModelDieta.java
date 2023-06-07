@@ -2,6 +2,8 @@ package model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +23,14 @@ public class ModelDieta implements Serializable{
 	 * 
 	 */
 	
-	private static final long serialVersionUID = 8904137132967527454L;
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public String toString() {
+		return "ModelDieta [id=" + id + ", idUsuario=" + idUsuario + ", nome=" + nome + ", objetivo=" + objetivo
+				+ ", totalCalorias=" + totalCalorias + ", totalProteinas=" + totalProteinas + ", totalCarboidratos="
+				+ totalCarboidratos + ", totalGorduras=" + totalGorduras + ", listaRefeicoes=" + listaRefeicoes + "]";
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO )
@@ -42,8 +51,8 @@ public class ModelDieta implements Serializable{
 	
 	
 	@JsonIgnore
-	@OneToMany(mappedBy ="dieta",fetch=FetchType.EAGER)
-	private List<ModelRefeicao> listaRefeicoes;
+	@OneToMany(mappedBy ="dieta",fetch=FetchType.LAZY)
+	private List<ModelRefeicao> listaRefeicoes=new ArrayList<ModelRefeicao>();
 
 	public Long getId() {
 		return id;
@@ -114,10 +123,13 @@ public class ModelDieta implements Serializable{
 	}
 	
 	public void adicionarRefeicao(ModelRefeicao ref) {
+
 		totalCalorias=totalCalorias.add(ref.getCalorias());
 		totalProteinas=totalProteinas.add(ref.getProteinas());
 		totalCarboidratos=totalCarboidratos.add(ref.getCarboidratos());
 		totalGorduras=totalGorduras.add(ref.getGorduras());
+		
+		
 
 	}
 	
@@ -128,7 +140,6 @@ public class ModelDieta implements Serializable{
 				totalProteinas=totalProteinas.subtract(ref.getProteinas());
 				totalCarboidratos=totalCarboidratos.subtract(ref.getCarboidratos());
 				totalGorduras=totalGorduras.subtract(ref.getGorduras());
-				System.out.println("REMOVERREFEICAO + ID="+ref.getId());
 			
 		
 
@@ -159,14 +170,6 @@ public class ModelDieta implements Serializable{
 		return Objects.equals(id, other.id);
 	}
 
-	@Override
-	public String toString() {
-		return "ModelDieta [id=" + id + ", idUsuario=" + idUsuario + ", nome=" + nome + ", objetivo=" + objetivo
-				+ ", totalCalorias=" + totalCalorias + ", totalProteinas=" + totalProteinas + ", totalCarboidratos="
-				+ totalCarboidratos + ", totalGorduras=" + totalGorduras + ", Refeições=" + listaRefeicoes.size() + "]";
-	}
-
-	
 	
 	
 	

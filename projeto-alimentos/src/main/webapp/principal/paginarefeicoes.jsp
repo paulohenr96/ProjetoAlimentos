@@ -118,7 +118,13 @@
 						data : "acao=novarefeicao&nome=" + nome,
 						success : function(response) {
 							mostrarTodasRefeicoes(1);
-							mensagemSucesso("mensagem","Refeição adicionada com sucesso.")
+							
+							if (response == "SUCESSO"){
+								mensagemSucesso("mensagem","Refeição adicionada com sucesso.")
+
+							}else {
+								mensagemErro("mensagem","Você já atingiu o valor máximo de refeições.");
+							}
 						}
 
 					}).fail(function(xhr, status, errorThrown) {

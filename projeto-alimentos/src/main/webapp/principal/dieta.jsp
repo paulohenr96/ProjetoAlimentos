@@ -46,9 +46,9 @@
 							<select id="obj" class="form-select"
 								aria-label="Default select example">
 								<option selected value="">Open this select menu</option>
-								<option value="PERDER_MASSA">Emagrecer</option>
-								<option value="GANHAR_MASSA">Ganho de Massa</option>
-								<option value="MANTER_MASSA">Manter</option>
+								<option value="Perder Peso">Emagrecer</option>
+								<option value="Ganhar Peso">Ganho de Massa</option>
+								<option value="Manter Peso">Manter</option>
 							</select> <span id="select-vazio" class="alerta"></span>
 
 						</div>
@@ -63,7 +63,8 @@
 							</div>
 
 						</div>
-						<span class="sucesso"></span>
+						<br><br>
+						<div class="sucesso" id="mensagem"></div>
 
 					</form>
 					<div id="todas_dietas" style="height:400px;">
@@ -135,12 +136,16 @@
 							data : "acao=novadieta&nome=" + nome+
 									"&objetivo="+objetivo,
 							success : function(response,textStatus,xhr) {
-
+								
 								 document.querySelector("#nome").value="";
-								mostrarTodasDietas(1);
+								if (response =="SUCESSO"){
+									 mostrarTodasDietas(1);
 
-								$(".sucesso").html("Dieta Adicionada ").attr("style","color:green;font-weight:bold");
-
+									 mensagemSucesso("mensagem","Dieta Adicionada Com Sucesso.")
+								}else {
+									mensagemErro("mensagem","Numero maximo de dieta atingido.")
+								}
+								
 							}
 
 						}).fail(function(xhr, status, errorThrown) {
@@ -154,7 +159,6 @@
 			if (json.length==0){
 				$("table>thead").html("<th>Sem Dietas.</th>");
 				document.querySelector("table >tbody").innerHTML="";
-				$(".sucesso").html("");
 
 			}
 			else{
@@ -194,8 +198,7 @@
 								
 							mostrarTodasDietas(1);
 
-
-							$(".sucesso").html("Dieta Removida ").attr("style","color:green;font-weight:bold");
+							mensagemSucesso("mensagem","Dieta removida com sucesso.");
 
 						}
 

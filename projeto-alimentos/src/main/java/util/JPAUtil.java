@@ -11,7 +11,6 @@ public class JPAUtil {
 	
 	static {
 			if (factory==null) {
-				System.out.println("Factory JPAUTIL ESTATICO");
 				factory= Persistence.createEntityManagerFactory("projeto-alimentos");
 			}
 	

@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -28,7 +29,7 @@ private Long id;
 private String nome;
 
 @JsonIgnore
-@OneToMany(mappedBy = "alimento",fetch=FetchType.EAGER)
+@OneToMany(mappedBy = "alimento",fetch=FetchType.LAZY)
 private List<ModelAlimentoRefeicao> listaAlimentosRefeicao;
 
 
@@ -70,15 +71,38 @@ public void setPorcao(double porcao) {
 }
 
 public ModelAlimento consumir(double quantidade) {
-	double k=(quantidade/porcao);
+	BigDecimal k=new BigDecimal((quantidade/porcao));
 	
-	proteina=new BigDecimal(k* ((proteina).doubleValue()));
-	caloria=new BigDecimal(k* ((caloria).doubleValue()));
-	gordura=new BigDecimal(k* ((gordura).doubleValue()));
-	carboidrato=new BigDecimal(k* ((carboidrato).doubleValue()));
+	proteina= proteina.multiply(k);
+	caloria=caloria.multiply(k);
+	carboidrato=carboidrato.multiply(k);
+	gordura=gordura.multiply(k);
+
+//	proteina=new BigDecimal(converterDouble(k.doubleValue()* ((proteina).doubleValue())));
+//	caloria=new BigDecimal((k.doubleValue()* ((caloria).doubleValue())));
+//	gordura=new BigDecimal(converterDouble(k.doubleValue()* ((gordura).doubleValue())));
+//	carboidrato=new BigDecimal(converterDouble(k.doubleValue()* ((carboidrato).doubleValue())));
 	return this;
 }
+public double converterDouble (double valor) {
+	
+	String str=valor+"";
+	if (str.contains(".")) {
+		String[] split = str.split("\\.");
+		String inteiro=split[0];
+		String decimal="";
+		if (split[1].length()>1) {
+			decimal=split[1].substring(0, 2);
 
+		}else {
+			decimal=split[1];
+		}
+		double novovalor=Double.parseDouble(inteiro+"."+decimal);
+		valor=novovalor;
+	}
+	return valor;
+
+}
 
 @Override
 public String toString() {

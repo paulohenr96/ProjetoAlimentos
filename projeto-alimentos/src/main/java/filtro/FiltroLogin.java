@@ -14,6 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.DAOGeneric;
+import model.ModelUsuario;
+import util.JPAUtil;
+
 /**
  * Servlet Filter implementation class FiltroLogin
  */
@@ -47,17 +51,23 @@ public class FiltroLogin extends HttpFilter implements Filter {
 		String urlParaAutentificar = servletRequest.getServletPath();
 		// pass the request along the filter chain
 		 Object attribute = session.getAttribute("user");
-		 System.out.println(urlParaAutentificar);
 		 if (attribute==null && !urlParaAutentificar.contains("/ServletLogin") && !urlParaAutentificar.contains("/registrar.jsp")) {
-			 System.out.println(urlParaAutentificar+"-----------");
+			
 			request.getRequestDispatcher("/index.jsp?url="+urlParaAutentificar).forward(request, response);
+			attribute=null;
 			return;
 		}
 		else {
-			HttpServletResponse httpres = (HttpServletResponse) response;
-			httpres.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-			httpres.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-			httpres.setDateHeader("Expires", 0); // Proxies.
+			
+//			HttpServletResponse httpres = (HttpServletResponse) response;
+//			httpres.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+//			httpres.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+//			httpres.setDateHeader("Expires", 0); // Proxies.
+//			attribute=null;
+//			
+			DAOGeneric<ModelUsuario> daoGeneric=new DAOGeneric<ModelUsuario>();
+			
+			daoGeneric.flush();
 			
 			chain.doFilter(request, response);
 

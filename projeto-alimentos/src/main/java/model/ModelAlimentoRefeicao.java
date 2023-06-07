@@ -75,6 +75,13 @@ public class ModelAlimentoRefeicao implements Serializable {
 	public void setAlimento(ModelAlimento alimento) {
 		this.alimento = alimento;
 	}
+
+
+	@Override
+	public String toString() {
+		return "ModelAlimentoRefeicao [id=" + id + ", quantidade=" + quantidade + ", refeicao=" + refeicao
+				+ ", alimento=" + alimento + "]";
+	}
 	
 	
 	

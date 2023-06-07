@@ -18,17 +18,17 @@ public class DAOAlimento extends DAOGeneric<ModelAlimento> {
 
 	public Long contarTotalAlimentos(Long user) {
 
-		String sql = "select count(1) from " + ModelAlimento.class.getCanonicalName() + " where iduser=" + user+condicaoNome();
+		String hql = "select count(u) from ModelAlimento u where u.idUser=" + user+condicaoNome();
 
-		return retornaLong(sql);
+		return retornaLongHql(hql);
 	}
 
 
 
 	public List consultarTodosPaginado(Long idUser, int porPagina, int paginaAtual) {
-		String sql = "from " + ModelAlimento.class.getCanonicalName() + " where iduser=" + idUser + condicaoNome()+ " ORDER BY id DESC";
+		String sql = "from " + ModelAlimento.class.getCanonicalName() + " m where m.idUser=" + idUser + condicaoNome()+ " ORDER BY id DESC";
 		int offset = porPagina * (paginaAtual - 1);
-
+		
 		return retornaListaEntidadesPaginadas(sql, offset, porPagina);
 	}
 

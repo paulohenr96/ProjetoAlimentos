@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,9 @@ import dao.DAORefeicao;
 import model.ModelConsumidoDia;
 import model.ModelDieta;
 import model.ModelRefeicao;
+import srv.DietaService;
+import util.Constantes;
+import util.Mensagem;
 import util.ReportUtil;
 
 /**
@@ -37,6 +41,8 @@ public class ServletDieta extends ContextoBean {
 	private DAOGeneric dao = new DAOGeneric<>();
 	private DAODieta daoDieta = new DAODieta();
 	private DAORefeicao daoRefeicao = new DAORefeicao();
+	private DietaService dietaService = new DietaService();
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -55,7 +61,7 @@ public class ServletDieta extends ContextoBean {
 		System.out.println("Servlet Dieta Metodo INIT");
 		super.init(config);
 	}
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -68,25 +74,14 @@ public class ServletDieta extends ContextoBean {
 				String nome = request.getParameter("nome");
 				String objetivo = request.getParameter("objetivo");
 
-				ModelDieta dieta = new ModelDieta();
-				dieta.setNome(nome);
-				dieta.setObjetivo(objetivo);
-				dieta.setIdUsuario(idLogado);
+				String msg = dietaService.novaDieta(nome, objetivo, getUserLogado(request));
 
-				dao.salvar(dieta);
-
-				response.getWriter().write("");
+				response.getWriter().write(msg);
 
 			} else if (acao != null && acao.equalsIgnoreCase("removerdieta")) {
 				Long id = Long.parseLong(request.getParameter("id"));
 
-				ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);
-
-				dieta.getListaRefeicoes().forEach((e) -> {
-					daoRefeicao.removerAlimentoRefeicao(e.getId());
-				});
-				daoDieta.removerTodasRefeicaoDieta(id);
-				dao.deletarPorId(ModelDieta.class, id);
+				dietaService.deletarDieta(id);
 
 				response.getWriter().write("");
 			} else if (acao != null && acao.equalsIgnoreCase("todasdietas")) {
@@ -100,44 +95,33 @@ public class ServletDieta extends ContextoBean {
 				Long idUserLogado = (Long) request.getSession().getAttribute("IDLogado");
 				int paginaAtual = Integer.parseInt(request.getParameter("paginaatual"));
 				int porpagina = 5;
+				daoDieta.flush();
 				List todos = daoDieta.consultarTodasDietasPorIdPaginado(idUserLogado, paginaAtual, porpagina);
 				Long total = daoDieta.contarDietas(idUserLogado);
 
 				super.realizaPaginacao(response, todos, porpagina, total);
+			} else if ((!stringVazia(acao)) && acao.equalsIgnoreCase("entidadedieta")) {
+				Long id = Long.parseLong(request.getParameter("id"));
+				ModelDieta dieta = daoDieta.consultarPorId(id);
+				List lista = new ArrayList<>();
+				lista.add(dieta);
+				responderAjax(response, lista);
+
 			}
 
 			else if (acao != null && acao.equalsIgnoreCase("verdieta")) {
 				Long id = Long.parseLong(request.getParameter("id"));
 
 				ModelDieta dieta = (ModelDieta) dao.consultarPorId(ModelDieta.class, id);
-				System.out.println("Consultando dieta "+dieta);
 				request.setAttribute("dieta", dieta);
 				request.getRequestDispatcher("principal/consultadieta.jsp").forward(request, response);
 			} else if (acao != null && acao.equalsIgnoreCase("novaref")) {
-				Long id = Long.parseLong(request.getParameter("id"));
+				Long idDieta = Long.parseLong(request.getParameter("id"));
 				String horario = request.getParameter("hora");
 				String nome = request.getParameter("nome");
-				String hora = horario.replace("-", ":");
 
-				ModelDieta dieta = (ModelDieta) daoDieta.consultarDietaPorId(id, idLogado);
-				ModelRefeicao ref = new ModelRefeicao();
-
-				ref.setNome(nome);
-
-				try {
-					ref.setHorario(new SimpleDateFormat("HH:mm").parse(hora));
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				ref.setDieta(dieta);
-				dao.salvar(ref);
-				dao.merge(dieta);
-
-				List<ModelRefeicao> lista = daoDieta.todasRefsDieta(id);
-
-				super.responderAjax(response, lista);
-
+				String msg = dietaService.adicionarRefeicao(idDieta, idLogado, nome, horario);
+				response.getWriter().write(msg);
 			} else if (acao != null && acao.equalsIgnoreCase("mostrarrefeicoes")) {
 				Long id = Long.parseLong(request.getParameter("id"));
 
@@ -148,24 +132,21 @@ public class ServletDieta extends ContextoBean {
 				Long idRefeicao = Long.parseLong(request.getParameter("idrefeicao"));
 				Long idDieta = Long.parseLong(request.getParameter("iddieta"));
 
-				ModelDieta dieta = (ModelDieta) daoDieta.consultarDietaPorId(idDieta, idLogado);
-				ModelRefeicao ref = (ModelRefeicao) dao.consultarPorId(ModelRefeicao.class, idRefeicao);
-
-				dieta.removerRefeicao(ref);
-				dao.merge(dieta);
-
-				daoRefeicao.removerAlimentoRefeicao(idRefeicao);
-				dao.deletarPorId(ModelRefeicao.class, idRefeicao);
-
+				dietaService.removerRefeicao(idDieta, idLogado, idRefeicao);
 				response.getWriter().write("");
 
 			} else if (acao != null && acao.equalsIgnoreCase("imprimirdieta")) {
-				System.out.println("Imprimir dieta...");
 
 				Long iddieta = Long.parseLong(request.getParameter("iddieta"));
-				List lista = daoDieta.todasRefsDieta(iddieta);
+				List<ModelRefeicao> lista = (List<ModelRefeicao>) daoDieta.todasRefsDieta(iddieta);
+
+				for (ModelRefeicao r : lista) {
+					r.setListaAlimentos(daoRefeicao.consultarAlimentosRefeicao(r.getId()));
+				}
+
 				HashMap<String, Object> params = new HashMap<>();
 				params.put("param_sub_report", request.getServletContext().getRealPath("relatorio") + File.separator);
+
 				super.relatorio(response, request, params, "rel_dieta", lista);
 			}
 

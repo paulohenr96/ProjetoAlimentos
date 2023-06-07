@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -23,7 +24,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
 @Entity
 public class ModelConsumidoDia implements Serializable {
 	/**
@@ -42,17 +44,16 @@ public class ModelConsumidoDia implements Serializable {
 
 	
 	@JsonIgnore
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name="usuario_id")
 	private ModelUsuario usuario;
 	
 	
 	private Long idAlimento;
 	
-	
 	@JsonIgnore
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "macros")
-	private List<ModelAlimentoConsumido> listaAlimentosConsumidos;
+	@OneToMany(mappedBy = "macros",fetch = FetchType.LAZY)
+	private List<ModelAlimentoConsumido> listaAlimentosConsumidos=new ArrayList<ModelAlimentoConsumido>();
 	
 	
 	@Basic
@@ -72,10 +73,7 @@ public class ModelConsumidoDia implements Serializable {
 	private BigDecimal gordura=new BigDecimal(0);
 	
 
-	@JsonIgnore
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany (mappedBy = "macros")
-	private List<ModelRefeicao> refeicoes;
+	
 	
 	
 	public Long getId() {
@@ -106,21 +104,13 @@ public class ModelConsumidoDia implements Serializable {
 
 	
 	public void adicionarAlimento(ModelAlimento ali) {
-		
-		if (proteinas!=null && calorias !=null && gordura!=null && carboidrato!=null) {
-			proteinas=new BigDecimal(proteinas.doubleValue()+ali.getProteina().doubleValue());
-			carboidrato=new BigDecimal(carboidrato.doubleValue()+ali.getCarboidrato().doubleValue());
-			gordura=new BigDecimal(gordura.doubleValue()+ali.getGordura().doubleValue());
-			calorias=new BigDecimal(calorias.doubleValue()+ali.getCaloria().doubleValue());
-		}else {
-			proteinas=new BigDecimal(ali.getProteina().doubleValue());
-			carboidrato=new BigDecimal(ali.getCarboidrato().doubleValue());
-			gordura=new BigDecimal(ali.getGordura().doubleValue());
-			calorias=new BigDecimal(ali.getCaloria().doubleValue());
-		}
-		
-		
 	
+
+		
+		proteinas=proteinas.add(ali.getProteina());
+		carboidrato=carboidrato.add(ali.getCarboidrato());
+		gordura=gordura.add(ali.getGordura());
+		calorias=calorias.add(ali.getCaloria());
 		
 	
 	}
@@ -128,10 +118,11 @@ public class ModelConsumidoDia implements Serializable {
 	
 	
 	public void retirarAlimento(ModelAlimento ali) {
-		proteinas=new BigDecimal(proteinas.doubleValue()-ali.getProteina().doubleValue());
-		carboidrato=new BigDecimal(carboidrato.doubleValue()-ali.getCarboidrato().doubleValue());
-		gordura=new BigDecimal(gordura.doubleValue()-ali.getGordura().doubleValue());
-		calorias=new BigDecimal(calorias.doubleValue()-ali.getCaloria().doubleValue());
+		proteinas=proteinas.subtract(ali.getProteina());
+		carboidrato=carboidrato.subtract(ali.getCarboidrato());
+		gordura=gordura.subtract(ali.getGordura());
+		calorias=calorias.subtract(ali.getCaloria());
+
 		
 		
 	
@@ -181,12 +172,7 @@ public class ModelConsumidoDia implements Serializable {
 	public void setGordura(BigDecimal gordura) {
 		this.gordura = gordura;
 	}
-	public List<ModelRefeicao> getRefeicoes() {
-		return refeicoes;
-	}
-	public void setRefeicoes(List<ModelRefeicao> refeicoes) {
-		this.refeicoes = refeicoes;
-	}
+	
 	
 	
 	

@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
@@ -40,8 +41,8 @@ public class ModelAlimentoConsumido implements Serializable {
 	
 	
     @JsonIgnore
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	private ModelConsumidoDia macros;
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private ModelConsumidoDia macros;
     
     
 	private String nome;

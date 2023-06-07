@@ -30,7 +30,6 @@
 
 			<main>
 				<div class="container-fluid px-4">
-					<button class="btn btn-link hBack" type="button">VOLTAR</button>
 					
 					<h1>Dieta</h1>
 					<form id="form-user"
@@ -39,28 +38,28 @@
 						<input type="hidden" id="id-dieta" name="iddieta" value="${dieta.id}">
 						<input type="hidden" id="acao" name="acao" >
 						
-						<table class="table  table-borderless">
-							<thead>
+						<table class="table  table-borderless" style="content-align:center;">
+							<thead style="text-align:center;">
 
 								<th>NOME</th>
 								<th>OBJETIVO</th>
 								<th>CALORIAS</th>
 								<th>PROTEINAS</th>
 								<th>CARBOIDRATOS</th>
-								<th>CALORIAS</th>
+								<th>GORDURAS</th>
 
 
 							</thead>
 
 							<tbody>
-								<tr>
+								<tr style="text-align:center;">
 
-									<td>${dieta.nome}</td>
-									<td>${dieta.objetivo}</td>
-									<td>${dieta.totalCalorias}</td>
-									<td>${dieta.totalProteinas}</td>
-									<td>${dieta.totalCarboidratos}</td>
-									<td>${dieta.totalGorduras}</td>
+									<td id="nome_dieta"></td>
+									<td id="objetivo_dieta"></td>
+									<td id="totalcalorias_dieta"></td>
+									<td id="totalproteinas_dieta"></td>
+									<td id="totalcarboidratos_dieta"></td>
+									<td id="totalgorduras_dieta"></td>
 
 
 
@@ -89,6 +88,7 @@
 						</div>
 						<span style='color:red;'></span>
 					</div>
+						<div id="alerta_dieta"></div>
 
 					<button type="button" onclick="salvarRefs()"
 						class="btn btn-primary" id="btn-salvar">Salvar</button>
@@ -97,8 +97,7 @@
 
 					<button type="button" onclick="imprimirDieta()"
 						class="btn btn-primary" id="btn-salvar">Imprimir</button>
-
-
+						
 					<div class="refeicoes">
 						<table class="table  table-borderless">
 							<thead>
@@ -164,7 +163,7 @@
 		
 		function imprimirDieta(){
 			if ($("div.refeicoes>table>tbody").children().length==0){
-				alert("Você não possui refeições cadastradas nesta dieta, por isso o relatório está indisponível. Cadastre refeições na dieta.")
+				mensagemErro("alerta_dieta","Você não possui refeições cadastradas nesta dieta, por isso o relatório está indisponível. Cadastre refeições na dieta.")
 			}else{
 				document.getElementById("acao").value="imprimirdieta";
 				var urlAction = document.getElementById("form-user").action;
@@ -193,14 +192,19 @@
 							data : "acao=novaref&hora=" + hora + "&nome=" + nome
 									+ "&id=" + id,
 							success : function(response) {
-								
-								 $("#nome-novo").val("");
+								if (response=="SUCESSO"){
+									 $("#nome-novo").val("");
 
-								var json=JSON.parse(response);
-								
-								montarTabelaRefeicoes(json);
-
-								$("btn-salvar").removeClass("disabled");
+										
+										mostrarRefs();
+										$("btn-salvar").removeClass("disabled");
+										mensagemSucesso("alerta_dieta","Refeição salva com sucesso !");
+										dadosDieta();
+								}
+								else {
+									mensagemErro("alerta_dieta","Você atingiu o numero máximo de refeicoes !");
+								}
+							
 
 							}
 
@@ -229,7 +233,6 @@
 			return true;
 			
 		}
-		mostrarRefs();
 		function mostrarRefs(){
 			var id = $("#id-dieta").val();
 	
@@ -279,6 +282,25 @@
 		
 		
 	}
+	dadosDieta();
+	function dadosDieta (){
+		var id=document.getElementById('id-dieta').value;
+		var urlAction=document.getElementById("form-user").action;
+
+		
+		$.get(urlAction,"acao=entidadedieta&id="+id,function(response){
+				var json=JSON.parse(response);
+				$("#totalproteinas_dieta").html(json[0].totalProteinas);
+				$("#totalgorduras_dieta").html(json[0].totalGorduras);
+				$("#totalcarboidratos_dieta").html(json[0].totalCarboidratos);
+				$("#totalcalorias_dieta").html(json[0].totalCalorias);
+				$("#nome_dieta").html(json[0].nome);
+				$("#objetivo_dieta").html(json[0].objetivo);
+				mostrarRefs();
+
+				console.log(json[0].objetivo);
+		})
+	}
 	function deletar(idrefeicao){
 		var urlAction=document.getElementById("form-user").action;
 		var id=document.getElementById("id-dieta").value;
@@ -291,6 +313,9 @@
 				if ($("div.refeicoes>table>tbody").children().length==0){
 					montarTabelaRefeicoes("");
 				}
+				dadosDieta();
+
+				mensagemSucesso("alerta_dieta","Refeição Removida Com Sucesso.");
 			}
 		}).fail(function(xhr,status,erroThrown){
 			alert("Erro ao deletar : "+xhr.responseText);

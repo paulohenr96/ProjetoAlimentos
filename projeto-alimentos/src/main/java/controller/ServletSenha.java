@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import bean.ContextoBean;
 import dao.DAOUsuario;
 import model.ModelUsuario;
+import util.Constantes;
 import util.Mensagem;
 
 /**
@@ -18,44 +19,49 @@ import util.Mensagem;
 @WebServlet("/ServletSenha")
 public class ServletSenha extends ContextoBean {
 	private static final long serialVersionUID = 1L;
-    private DAOUsuario daoUsuario=new DAOUsuario();
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ServletSenha() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private DAOUsuario daoUsuario = new DAOUsuario();
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	
+	public ServletSenha() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		ModelUsuario user = super.getUserLogado(request);
-		String senha=request.getParameter("senha");
-		String senhaNova=request.getParameter("senhanova");
-		String confirmaSenha=request.getParameter("confirmasenha");
+		if (Constantes.EDITAR_LOGIN) {
+			ModelUsuario user = super.getUserLogado(request);
+			String senhaantiga = request.getParameter("senhaantiga");
+			String senhaNova = request.getParameter("senhanova");
+			String confirmaSenha = request.getParameter("confirmasenha");
 
-		
-		if (!senha.equals(user.getSenha())) {
-			response.getWriter().write(Mensagem.MENSAGEM_ERRO);
+			if (!senhaantiga.equals(user.getSenha())) {
+				responderAjax(response, Mensagem.MENSAGEM_SENHA);
+			} else if (!senhaNova.equals(confirmaSenha)) {
+				responderAjax(response, Mensagem.MENSAGEM_CONFIRMA_SENHA);
 
-		}
-		else if (!senhaNova.equals(confirmaSenha)) {
-			response.getWriter().write(Mensagem.MENSAGEM_ERRO);
-
+			} else {
+				user.setSenha(senhaNova);
+				setUserLogado(request, daoUsuario.merge(user));
+				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
+			}
 		}else {
-			user.setSenha(senhaNova);
-			
-			request.getSession().setAttribute("user", daoUsuario.merge(user));
-			response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(Mensagem.PERMISSAO);
 		}
+		
 	}
 
 }
