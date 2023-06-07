@@ -339,6 +339,8 @@
 					var json=JSON.parse(response);
 					if (json.length==0){
 						$("table.modalalimentos").append("<thead><th>Lista Vazia</th></thead>");
+						infoRefeicao();
+
 					}else {
 						
 
@@ -396,7 +398,7 @@
 					$("#caloriatotal").attr("value",json.calorias);
 					$("#gorduratotal").attr("value",json.gorduras);
 					$("#carboidratototal").attr("value",json.carboidratos);
-
+					console.log(json);
 				}
 			}).fail(function(xhr,status,erroThrown){
 				alert("Erro : "+xhr.responseText);
@@ -417,6 +419,7 @@
 					data:"quantidade="+quantidade+"&idalimento="+id+"&acao=removeralimentorefeicao&idrefeicao="+idrefeicao,
 					success:function(response,textStatus,xhr){
 						verAlimentosRefeicao();
+						
 
 					}
 				}).fail(function(xhr,status,erroThrown){

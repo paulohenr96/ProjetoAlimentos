@@ -54,9 +54,7 @@ public class ServletSenha extends ContextoBean {
 
 			} else {
 				user.setSenha(senhaNova);
-
 				setUserLogado(request, daoUsuario.merge(user));
-
 				response.getWriter().write(Mensagem.MENSAGEM_SUCESSO);
 			}
 		}else {

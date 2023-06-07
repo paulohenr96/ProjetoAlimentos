@@ -71,12 +71,17 @@ public void setPorcao(double porcao) {
 }
 
 public ModelAlimento consumir(double quantidade) {
-	BigDecimal k=new BigDecimal((quantidade/porcao)).setScale(2,RoundingMode.UP);
+	BigDecimal k=new BigDecimal((quantidade/porcao));
 	
-	proteina=new BigDecimal(converterDouble(k.doubleValue()* ((proteina).doubleValue())));
-	caloria=new BigDecimal((k.doubleValue()* ((caloria).doubleValue())));
-	gordura=new BigDecimal(converterDouble(k.doubleValue()* ((gordura).doubleValue())));
-	carboidrato=new BigDecimal(converterDouble(k.doubleValue()* ((carboidrato).doubleValue())));
+	proteina= proteina.multiply(k);
+	caloria=caloria.multiply(k);
+	carboidrato=carboidrato.multiply(k);
+	gordura=gordura.multiply(k);
+
+//	proteina=new BigDecimal(converterDouble(k.doubleValue()* ((proteina).doubleValue())));
+//	caloria=new BigDecimal((k.doubleValue()* ((caloria).doubleValue())));
+//	gordura=new BigDecimal(converterDouble(k.doubleValue()* ((gordura).doubleValue())));
+//	carboidrato=new BigDecimal(converterDouble(k.doubleValue()* ((carboidrato).doubleValue())));
 	return this;
 }
 public double converterDouble (double valor) {

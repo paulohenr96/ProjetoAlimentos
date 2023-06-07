@@ -124,7 +124,7 @@ public class ModelDieta implements Serializable{
 	
 	public void adicionarRefeicao(ModelRefeicao ref) {
 
-		totalCalorias=new BigDecimal (totalCalorias.doubleValue()+ref.getCalorias().doubleValue());
+		totalCalorias=totalCalorias.add(ref.getCalorias());
 		totalProteinas=totalProteinas.add(ref.getProteinas());
 		totalCarboidratos=totalCarboidratos.add(ref.getCarboidratos());
 		totalGorduras=totalGorduras.add(ref.getGorduras());

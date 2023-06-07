@@ -723,8 +723,6 @@
 			      "&acao=removerrefeicaoconsumida"+
 			      "&data="+data,
 			      success: function (response, textStatus, xhr) {
-						var json = JSON.parse(response);
-
 						
 						exibirModalRefs(1);
 			      },

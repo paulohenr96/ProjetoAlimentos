@@ -116,35 +116,8 @@ public class ModelRefeicao implements Serializable {
 		proteinas=proteinas.add(alimento.getProteina());
 		carboidratos=carboidratos.add(alimento.getCarboidrato());
 		gorduras=gorduras.add(alimento.getGordura());
-
-//		calorias = new BigDecimal(converterDouble(calorias.doubleValue() + (ali.getAlimento().getCaloria().doubleValue())));
-//
-//
-//		
-//		proteinas = new BigDecimal(converterDouble(proteinas.doubleValue() + (ali.getAlimento().getProteina().doubleValue())));
-//		carboidratos = new BigDecimal(converterDouble(carboidratos.doubleValue() + (ali.getAlimento().getCarboidrato().doubleValue())));
-//		gorduras = new BigDecimal(converterDouble(gorduras.doubleValue() + ali.getAlimento().getGordura().doubleValue()));
-
 	}
-	public double converterDouble (double valor) {
-		
-		String str=valor+"";
-		if (str.contains(".")) {
-			String[] split = str.split("\\.");
-			String inteiro=split[0];
-			String decimal="";
-			if (split[1].length()>1) {
-				decimal=split[1].substring(0, 2);
-
-			}else {
-				decimal=split[1];
-			}
-			double novovalor=Double.parseDouble(inteiro+"."+decimal);
-			valor=novovalor;
-		}
-		return valor;
-
-	}
+	
 	public void removeralimento(ModelAlimentoRefeicao ali) {
 		// TODO Auto-generated method stub
 		ModelAlimento alimento=new ModelAlimento();
@@ -155,16 +128,11 @@ public class ModelRefeicao implements Serializable {
 		alimento.setGordura(ali.getAlimento().getGordura());
 		
 		alimento.consumir(ali.getQuantidade());
-		
 		calorias=calorias.subtract(alimento.getCaloria());
 		proteinas=proteinas.subtract(alimento.getProteina());
 		carboidratos=carboidratos.subtract(alimento.getCarboidrato());
 		gorduras=gorduras.subtract(alimento.getGordura());
 
-//		calorias = new BigDecimal(calorias.doubleValue() - (alimento.getCaloria().doubleValue()));
-//		proteinas = new BigDecimal(proteinas.doubleValue() - (alimento.getProteina().doubleValue()));
-//		carboidratos = new BigDecimal(carboidratos.doubleValue() - (alimento.getCarboidrato().doubleValue()));
-//		gorduras = new BigDecimal(gorduras.doubleValue() - (alimento.getGordura().doubleValue()));
 
 	}
 

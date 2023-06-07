@@ -108,19 +108,8 @@ public class DAOConsumido extends DAOGeneric<ModelConsumidoDia> {
 
 	public ModelConsumidoDia consultarConsumoDia(Date date, Long idLogado) {
 		try {
-//
-//			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-//			String format = dateFormat.format(date);
-//
-//			EntityManager entityManager = getEntityManager();
-//			EntityTransaction transaction = entityManager.getTransaction();
-//			transaction.begin();
-//			ModelConsumidoDia m = (ModelConsumidoDia) entityManager
-//					.createQuery("from ModelConsumidoDia where data=:data and usuario_id=:id")
-//					.setParameter("id", idLogado).setParameter("data", date).getSingleResult();
-//			transaction.commit();
-			
 			String sql="from ModelConsumidoDia where data='"+date+"' and usuario_id="+idLogado;
+			
 			return retornaEntidade(sql);
 
 		} catch (NoResultException e) {

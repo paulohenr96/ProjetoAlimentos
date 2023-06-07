@@ -51,9 +51,8 @@ public class ModelConsumidoDia implements Serializable {
 	
 	private Long idAlimento;
 	
-	
-	@OneToMany(mappedBy = "macros",fetch = FetchType.LAZY)
 	@JsonIgnore
+	@OneToMany(mappedBy = "macros",fetch = FetchType.LAZY)
 	private List<ModelAlimentoConsumido> listaAlimentosConsumidos=new ArrayList<ModelAlimentoConsumido>();
 	
 	
@@ -108,20 +107,10 @@ public class ModelConsumidoDia implements Serializable {
 	
 
 		
-		if (proteinas!=null && calorias !=null && gordura!=null && carboidrato!=null) {
-			proteinas=new BigDecimal(proteinas.doubleValue()+ali.getProteina().doubleValue());
-			carboidrato=new BigDecimal(carboidrato.doubleValue()+ali.getCarboidrato().doubleValue());
-			gordura=new BigDecimal(gordura.doubleValue()+ali.getGordura().doubleValue());
-			calorias=new BigDecimal(calorias.doubleValue()+ali.getCaloria().doubleValue());
-		}else {
-			proteinas=new BigDecimal(ali.getProteina().doubleValue());
-			carboidrato=new BigDecimal(ali.getCarboidrato().doubleValue());
-			gordura=new BigDecimal(ali.getGordura().doubleValue());
-			calorias=new BigDecimal(ali.getCaloria().doubleValue());
-		}
-		
-		
-	
+		proteinas=proteinas.add(ali.getProteina());
+		carboidrato=carboidrato.add(ali.getCarboidrato());
+		gordura=gordura.add(ali.getGordura());
+		calorias=calorias.add(ali.getCaloria());
 		
 	
 	}
@@ -129,10 +118,11 @@ public class ModelConsumidoDia implements Serializable {
 	
 	
 	public void retirarAlimento(ModelAlimento ali) {
-		proteinas=new BigDecimal(proteinas.doubleValue()-ali.getProteina().doubleValue());
-		carboidrato=new BigDecimal(carboidrato.doubleValue()-ali.getCarboidrato().doubleValue());
-		gordura=new BigDecimal(gordura.doubleValue()-ali.getGordura().doubleValue());
-		calorias=new BigDecimal(calorias.doubleValue()-ali.getCaloria().doubleValue());
+		proteinas=proteinas.subtract(ali.getProteina());
+		carboidrato=carboidrato.subtract(ali.getCarboidrato());
+		gordura=gordura.subtract(ali.getGordura());
+		calorias=calorias.subtract(ali.getCaloria());
+
 		
 		
 	

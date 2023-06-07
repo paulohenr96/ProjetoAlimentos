@@ -42,6 +42,7 @@ public class DAOGeneric<E> implements Serializable {
 
 	public E retornaEntidade(String sql) {
 		try {
+			flush();
 			E find = (E) getEntityManager().createQuery(sql).getSingleResult();
 			return find;
 		} catch (NoResultException e) {
@@ -98,7 +99,7 @@ public class DAOGeneric<E> implements Serializable {
 	}
 
 	public List retornaListaEntidadesPaginadas(String sql, int offset, int porPagina) {
-
+		flush();
 		List<E> list = getEntityManager().createQuery(sql).setFirstResult(offset).setMaxResults(porPagina)
 				.getResultList();
 
@@ -117,7 +118,7 @@ public class DAOGeneric<E> implements Serializable {
 	}
 
 	public Long retornaLongHql(String hql) {
-
+		flush();
 		Long total = 0L;
 		total = ((Long) getEntityManager().createQuery(hql).getSingleResult());
 
@@ -141,6 +142,8 @@ public class DAOGeneric<E> implements Serializable {
 
 		getEntityManager().createQuery(sql).executeUpdate();
 		transaction.commit();
+		flush();
+
 	}
 
 	public EntityManager getEntityManager() {

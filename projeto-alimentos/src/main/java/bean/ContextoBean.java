@@ -45,12 +45,7 @@ public class ContextoBean extends HttpServlet implements Serializable {
 		request.getSession().setAttribute(USUARIO_LOGADO, user);
 		
 	}
-	public ContextoBean() {
-		// TODO Auto-generated constructor stub
-		System.out.println("Contexto Bean");
-
-	}
-
+	
 	public void realizaPaginacao(HttpServletResponse response, List todos, int porPagina, Long total) {
 		// TODO Auto-generated method stub
 		try {
