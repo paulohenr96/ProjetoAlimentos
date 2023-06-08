@@ -24,10 +24,11 @@ import util.Mensagem;
 /**
  * Servlet implementation class ServletLogin
  */
-@WebServlet(urlPatterns = { "/ServletLogin", "/principal/ServletLogin","/ServletLogin?acao=logout" })
+@WebServlet(urlPatterns = { "/ServletLogin", "/principal/ServletLogin", "/ServletLogin?acao=logout" })
 public class ServletLogin extends ContextoBean {
 	private static final long serialVersionUID = 1L;
 	private DAOUsuario daoUsuario;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -50,7 +51,10 @@ public class ServletLogin extends ContextoBean {
 			request.getSession().invalidate();
 			request.getSession().setAttribute("aviso", Mensagem.LOGOUT);
 			request.getRequestDispatcher("logout.jsp").forward(request, response);
+			return;
 		}
+			request.getRequestDispatcher(request.getContextPath()+"/principal/paginainicial.jsp").forward(request, response);
+
 	}
 
 	/**
@@ -65,25 +69,22 @@ public class ServletLogin extends ContextoBean {
 		String senha = request.getParameter("senha");
 
 		String msg = "";
-		ModelUsuario user=new ModelUsuario();
-		
+		ModelUsuario user = new ModelUsuario();
+
 		user.setLogin(login);
 		user.setSenha(senha);
 		ModelUsuario modelUsuario = daoUsuario.autentificar(user);
-		
-		String url=request.getParameter("url");
-		
-		if (login != null && senha != null && !login.isEmpty() && !senha.isEmpty() && modelUsuario!=null ) {
+
+		String url = request.getParameter("url");
+
+		if (modelUsuario != null) {
 
 			request.getSession().setAttribute("user", modelUsuario);
 			System.out.println(modelUsuario);
 			request.getSession().setAttribute("IDLogado", modelUsuario.getId());
-			
-			
-			if (url==null || url.equalsIgnoreCase("null")) {
-				url="/principal/paginainicial.jsp";
-			}
-			
+
+			url ="/principal/paginainicial.jsp";
+
 			request.getSession().setMaxInactiveInterval(100);
 			request.getRequestDispatcher(url).forward(request, response);
 
@@ -95,11 +96,11 @@ public class ServletLogin extends ContextoBean {
 
 		}
 	}
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		// TODO Auto-generated method stub
-		daoUsuario=new DAOUsuario();
+		daoUsuario = new DAOUsuario();
 
 		super.init(config);
 	}

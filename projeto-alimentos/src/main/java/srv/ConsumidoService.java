@@ -221,4 +221,10 @@ public class ConsumidoService {
 
 		return msg;
 	}
+
+	public List<ModelRefeicaoConsumida> refeicoesConsumidas(Long id) {
+		// TODO Auto-generated method stub
+		
+		return daoConsumido.findAll(ModelRefeicaoConsumida.class.getCanonicalName(), "macros_id="+id);
+	}
 }

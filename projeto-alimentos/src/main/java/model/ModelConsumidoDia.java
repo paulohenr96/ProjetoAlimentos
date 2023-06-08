@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -48,7 +49,8 @@ public class ModelConsumidoDia implements Serializable {
 	@JoinColumn(name="usuario_id")
 	private ModelUsuario usuario;
 	
-	
+	@Transient
+	private List<ModelRefeicao> refeicoes=new ArrayList<>();
 	private Long idAlimento;
 	
 	@JsonIgnore
@@ -73,7 +75,6 @@ public class ModelConsumidoDia implements Serializable {
 	private BigDecimal gordura=new BigDecimal(0);
 	
 
-	
 	
 	
 	public Long getId() {
@@ -171,6 +172,12 @@ public class ModelConsumidoDia implements Serializable {
 	}
 	public void setGordura(BigDecimal gordura) {
 		this.gordura = gordura;
+	}
+	public List<ModelRefeicao> getRefeicoes() {
+		return refeicoes;
+	}
+	public void setRefeicoes(List<ModelRefeicao> refeicoes) {
+		this.refeicoes = refeicoes;
 	}
 	
 	
