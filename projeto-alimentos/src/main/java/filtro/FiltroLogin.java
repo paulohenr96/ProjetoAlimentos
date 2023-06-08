@@ -21,7 +21,7 @@ import util.JPAUtil;
 /**
  * Servlet Filter implementation class FiltroLogin
  */
-@WebFilter(urlPatterns = { "/principal/*","/ServletAlimento","/ServletDieta" })
+@WebFilter(urlPatterns = { "/principal/*","/ServletAlimento","/ServletDieta","/ServletLogin" })
 public class FiltroLogin extends HttpFilter implements Filter {
        
     /**
@@ -46,28 +46,18 @@ public class FiltroLogin extends HttpFilter implements Filter {
 		// TODO Auto-generated method stub
 		// place your code here
 		HttpServletRequest servletRequest = (HttpServletRequest) request;
-
 		HttpSession session = servletRequest.getSession();
 		String urlParaAutentificar = servletRequest.getServletPath();
 		// pass the request along the filter chain
 		 Object attribute = session.getAttribute("user");
-		 if (attribute==null && !urlParaAutentificar.contains("/ServletLogin") && !urlParaAutentificar.contains("/registrar.jsp")) {
+		 if (attribute==null && !urlParaAutentificar.contains("/ServletLogin") && !urlParaAutentificar.contains("/registrar.jsp") ) {
 			
-			request.getRequestDispatcher("/index.jsp?url="+urlParaAutentificar).forward(request, response);
-			attribute=null;
+			request.getRequestDispatcher("/index.jsp").forward(request, response);
 			return;
 		}
 		else {
 			
-//			HttpServletResponse httpres = (HttpServletResponse) response;
-//			httpres.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-//			httpres.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-//			httpres.setDateHeader("Expires", 0); // Proxies.
-//			attribute=null;
-//			
-			DAOGeneric<ModelUsuario> daoGeneric=new DAOGeneric<ModelUsuario>();
 			
-			daoGeneric.flush();
 			
 			chain.doFilter(request, response);
 

@@ -29,7 +29,7 @@ public class DAOConsumido extends DAOGeneric<ModelConsumidoDia> {
 
 		return super.retornaLongHql(hql);
 	}
-
+	
 	public Long contarTodosAlimentosConsumidos(Long macroId) {
 		String sql = "select count(1) from " + ModelAlimentoConsumido.class.getSimpleName().toLowerCase() + " where macros_id="
 				+ macroId;
@@ -137,5 +137,7 @@ public class DAOConsumido extends DAOGeneric<ModelConsumidoDia> {
 	public void addAlimento(ModelAlimentoConsumido ali,ModelConsumidoDia macros) {
 	
 	}
+	
+	
 
 }

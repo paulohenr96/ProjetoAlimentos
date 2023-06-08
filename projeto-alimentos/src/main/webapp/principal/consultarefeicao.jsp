@@ -337,10 +337,11 @@
 				data:"idrefeicao="+idrefeicao+"&acao=alimentosrefeicao",
 				success:function(response,textStatus,xhr){
 					var json=JSON.parse(response);
-					if (json.length==0){
+					console.log("Response =>>>"+response);
+					if (json.length==0 || response.trim==='null'){
 						$("table.modalalimentos").append("<thead><th>Lista Vazia</th></thead>");
 						infoRefeicao();
-
+						alert("Lista de Alimentos Vazias");
 					}else {
 						
 
@@ -420,7 +421,6 @@
 					success:function(response,textStatus,xhr){
 						verAlimentosRefeicao();
 						
-
 					}
 				}).fail(function(xhr,status,erroThrown){
 					alert("Erro : "+xhr.responseText);

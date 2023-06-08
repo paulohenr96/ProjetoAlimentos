@@ -39,6 +39,12 @@ public class DAOGeneric<E> implements Serializable {
 	
 
 	}
+	
+	public List findAll (String nomeClasse,String condicao) {
+		
+		List list = getEntityManager().createQuery("from "+nomeClasse+" where "+condicao).getResultList();
+		return list;
+	}
 
 	public E retornaEntidade(String sql) {
 		try {
@@ -53,6 +59,7 @@ public class DAOGeneric<E> implements Serializable {
 	}
 
 	public E merge(E entidade) {
+		getEntityManager().clear();
 
 		EntityTransaction transaction = getEntityManager().getTransaction();
 		if (!getEntityManager().getTransaction().isActive()) {
